@@ -1,0 +1,118 @@
+<%- include('../partials/admin-header')%>
+<section class="content-main">
+  <div class="row">
+    <div class="col-9">
+      <div class="content-header">
+        <h2 class="content-title">Edit Product</h2>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h4>Basic</h4>
+        </div>
+        <div class="card-body">
+          <form method="post" action="/admin/edit_products?id=<%=product[0]._id%>" enctype="multipart/form-data">
+            <div class="mb-4">
+              <label for="product_id" class="form-label">Product #ID</label>
+              <input type="number" placeholder="Type here" class="form-control" id="product_id" name="product_id" value="<%=product[0].id %>">
+            </div>
+            <div class="mb-4">
+              <label for="product_name" class="form-label">Product Name</label>
+              <input type="text" placeholder="Type here" class="form-control" id="product_name" name="product_name" value="<%= product[0].productName %>">
+            </div>
+            <div class="mb-4">
+              <label for="product_brand" class="form-label">Product Brand</label>
+              <input type="text" placeholder="Type here" class="form-control" id="product_brand" name="product_brand" value="<%= product[0].brand %>">
+            </div>
+            <div class="mb-4">
+              <label class="form-label">Full description</label>
+              <textarea class="form-control" rows="4" name="product_description"><%= product[0].description %></textarea>
+            </div>
+            <div class="row">
+              <div class="col-lg-4">
+                <div class="mb-4">
+                  <label class="form-label">Regular Price</label>
+                  <div class="row gx-2">
+                    <input placeholder="$" type="text" class="form-control" name="regular_price" value="<%= product[0].regularPrice %>">
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="mb-4">
+                  <label class="form-label">Sales Price</label>
+                  <input placeholder="$" type="text" class="form-control" name="sales_price" value="<%= product[0].salePrice %>">
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label class="form-label">Units</label>
+                <input placeholder="$" type="text" class="form-control" name="units" value="<%= product[0].units %>">
+              </div>
+            </div>
+            <div class="mb-4">
+              <label class="form-label">Status</label>
+              <select class="form-select" name="product_status">
+                <option value="Active" <% if (product[0].status === 'Active') { %> selected <% } %>>Active</option>
+                <option value="Blocked" <% if (product[0].status === 'Blocked') { %> selected <% } %>>Blocked</option>
+              </select>
+            </div>
+            <div class="mb-4">
+              <label class="form-label">Stock</label>
+              <select class="form-select" name="stock">
+                <option value="Yes" <% if (product[0].stock === 'Yes') { %> selected <% } %>>Yes</option>
+                <option value="No" <% if (product[0].stock === 'No') { %> selected <% } %>>No</option>
+              </select>
+            </div>
+            <div class="mb-4">
+              <label class="form-label">Category</label>
+              <select class="form-select" name="product_category">
+                <% if (categories.length > 0) { %>
+                  <% for (let i = 0; i < categories.length; i++) { %>
+                    <option value="<%= categories[i].categoryName %>"><%= categories[i].categoryName %></option>
+                  <% } %>
+                <% } else { %>
+                  <option value="">No Category</option>
+                <% } %>
+              </select>
+                </select>
+            </div>
+          </div>
+        </div> <!-- card end// -->
+      </div>
+
+    <div class="col-lg-3">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h4>Product Images</h4>
+        </div>
+        <% if (product[0].productImage && product[0].productImage.length > 0) { %>
+            <% product[0].productImage.forEach(function(image) { %>
+                <div class="card-body">
+                <img src="data:<%= image.contentType %>;base64, <%= image.buffer.toString('base64') %>" alt="Product Image">
+            </div>
+              <% }); %>
+            <% } else { %>
+              <h4>No Image Found</h4>
+            <% } %>
+          
+      </div> <!-- card end// -->
+    </div>
+    <div class="col-lg-3">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h4>Media</h4>
+        </div>
+        <div class="card-body">
+          <div class="input-upload">
+            <img src="admin-assets/imgs/theme/upload.svg" alt="">
+            <input class="form-control" type="file" name="product_images" multiple>
+          </div>
+        </div>
+        <button class="btn btn-md rounded font-sm hover-up" type="submit">Publish</button>
+      </div> <!-- card end// -->
+    </div>
+</div>
+  </form>
+</div>
+</section> <!-- content-main end// -->
+<%- include('../partials/admin-footer')%>

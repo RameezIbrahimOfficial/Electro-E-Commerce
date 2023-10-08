@@ -1,0 +1,100 @@
+<%- include('../partials/admin-header')%>
+        <section class="content-main">
+            <div class="row">
+                <div class="col-9">
+                    <div class="content-header">
+                        <h2 class="content-title">Add New Product</h2>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h4>Basic</h4>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" action="/admin/admin_panel/add_products" enctype="multipart/form-data">
+                                <div class="mb-4">
+                                    <label for="product_name" class="form-label">Product #ID</label>
+                                    <input type="number" placeholder="Type here" class="form-control" id="product_id" name="product_id">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="product_name" class="form-label">Product Name</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="product_name" name="product_name">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="product_name" class="form-label">Product Brand</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="product_brand" name="product_brand">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Full description</label>
+                                    <textarea placeholder="Type here" class="form-control" rows="4" name="product_description"></textarea>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="mb-4">
+                                            <label class="form-label">Regular Price</label>
+                                            <div class="row gx-2">
+                                                <input placeholder="$" type="text" class="form-control" name="regular_price">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-4">
+                                            <label class="form-label">Sales Price</label>
+                                            <input placeholder="$" type="text" class="form-control" name="sales_price">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label class="form-label">Units</label>
+                                            <input placeholder="$" type="text" class="form-control" name="units">
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-select" name="product_status">
+                                        <option> Active </option>
+                                        <option> Blocked </option>
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Stock</label>
+                                    <select class="form-select" name="stock">
+                                        <option> Yes </option>
+                                        <option> No </option>
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Category</label>
+                                    <select class="form-select" name="product_category">
+                                        <% if (categories.length > 0) { %>
+                                          <% for (let i = 0; i < categories.length; i++) { %>
+                                            <option value="<%= categories[i].categoryName %>"><%= categories[i].categoryName %></option>
+                                          <% } %>
+                                        <% } else { %>
+                                          <option value="">No Category</option>
+                                        <% } %>
+                                      </select>
+                                        </select>
+                                </div>
+                            </div>
+                        </div> <!-- card end// -->
+                        
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h4>Media</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="input-upload">
+                                    <img src="admin-assets/imgs/theme/upload.svg" alt="">
+                                    <input class="form-control" type="file" name="product_images" multiple>
+                                </div>
+                            </div>
+                            <button class="btn btn-md rounded font-sm hover-up" type="submit">Publish</button>
+                        </div> <!-- card end// -->
+                    </div>
+                </form>
+            </div>
+        </section> <!-- content-main end// -->
+        <%- include('../partials/admin-footer')%>
