@@ -48,22 +48,69 @@
                                         <label class="form-label">Units</label>
                                             <input placeholder="$" type="text" class="form-control" name="units">
                                     </div>
-                                </div>
-                                <div class="mb-4">
+                                    <div class="mb-4">
+                                        <label class="form-label">Operating System</label>
+                                            <input placeholder="OS" type="text" class="form-control" name="operatingSystem">
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label">Cellular Technology</label>
+                                            <input placeholder="2G,3G,4G,5G" type="text" class="form-control" name="cellularTechnology">
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label class="form-label">Internal Memory</label>
+                                        <select class="form-select" name="internalMemory">
+                                            <option > 32 </option>
+                                            <option > 64 </option>
+                                            <option > 128 </option>
+                                            <option > 256 </option>
+                                            <option > 512 </option>
+                                            <option > 1024 </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label class="form-label">RAM</label>
+                                        <select class="form-select" name="ram">
+                                            <option > 2 </option>
+                                            <option > 4 </option>
+                                            <option > 6 </option>
+                                            <option > 8 </option>
+                                            <option > 12 </option>
+                                            <option > 16 </option>
+                                            <option > 32 </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label class="form-label">Screen Size</label>
+                                        <select class="form-select" name="screenSize">
+                                            <option > 5.8 </option>
+                                            <option > 6.2 </option>
+                                            <option > 6.4 </option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label">Battery Capacity</label>
+                                        <input placeholder="Mah" type="number" class="form-control" name="batteryCapacity">
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label">Processor</label>
+                                        <input placeholder="Processor" type="text" class="form-control" name="processor">
+                                    </div>
+                                
+                                <div class="col-lg-4">
                                     <label class="form-label">Status</label>
                                     <select class="form-select" name="product_status">
-                                        <option> Active </option>
-                                        <option> Blocked </option>
+                                        <option value=true> Active </option>
+                                        <option value=false> Blocked </option>
                                     </select>
                                 </div>
-                                <div class="mb-4">
+                                <div class="col-lg-4">
                                     <label class="form-label">Stock</label>
                                     <select class="form-select" name="stock">
-                                        <option> Yes </option>
-                                        <option> No </option>
+                                        <option value=true> Yes </option>
+                                        <option value=false> No </option>
                                     </select>
                                 </div>
-                                <div class="mb-4">
+                                <div class="col-lg-4">
                                     <label class="form-label">Category</label>
                                     <select class="form-select" name="product_category">
                                         <% if (categories.length > 0) { %>
@@ -76,6 +123,7 @@
                                       </select>
                                         </select>
                                 </div>
+                            </div>
                             </div>
                         </div> <!-- card end// -->
                         

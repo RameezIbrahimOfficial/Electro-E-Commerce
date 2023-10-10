@@ -64,7 +64,7 @@
                                     <div class="product-cart-wrap mb-30">
                                         <div class="product-img-action-wrap">
                                             <div class="product-img product-img-zoom">
-                                                <a href="#">
+                                                <a href="/product?id=<%=products[i]._id%>">
                                                     <img class="default-img" src="data:<%= products[i].productImage[0].contentType %>;base64, <%= products[i].productImage[0].buffer.toString('base64') %>" alt="">
                                                     <img class="hover-img" src="data:<%= products[i].productImage[0].contentType %>;base64, <%= products[i].productImage[0].buffer.toString('base64') %>" alt="">
                                                 </a>

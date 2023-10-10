@@ -35,7 +35,7 @@ const productSchema = new mongoose.Schema({
     required: true,
   },
   stock: {
-    type: String,
+    type: Boolean,
     required: true,
   },
   units: {
@@ -51,6 +51,34 @@ const productSchema = new mongoose.Schema({
     mimeType: String,
     buffer: Buffer,
   }],
+  operatingSystem:{
+    type:String,
+    required:true
+  },
+  cellularTechnology:{
+    type:String,
+    required:true
+  },
+  internalMemory:{
+    type:Number,
+    required:true
+  },
+  ram:{
+    type:Number,
+    required:true
+  },
+  screenSize:{
+    type:Number,
+    required:true
+  },
+  batteryCapacity:{
+    type:Number,
+    required:true
+  },
+  processor:{
+    type:String,
+    required:true
+  }
 });
 
 const productsModel = mongoose.model('Product', productSchema);

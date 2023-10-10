@@ -48,22 +48,68 @@
                 <label class="form-label">Units</label>
                 <input placeholder="$" type="text" class="form-control" name="units" value="<%= product[0].units %>">
               </div>
+              <div class="mb-4">
+                <label class="form-label">Operating System</label>
+                    <input placeholder="OS" type="text" class="form-control" name="operatingSystem" value="<%= product[0].operatingSystem %>">
             </div>
             <div class="mb-4">
+                <label class="form-label">Cellular Technology</label>
+                    <input placeholder="2G,3G,4G,5G" type="text" class="form-control" name="cellularTechnology" value="<%= product[0].cellularTechnology %>">
+            </div>
+            <div class="col-lg-4">
+                <label class="form-label">Internal Memory</label>
+                <select class="form-select" name="internalMemory">
+                    <option value=32 <% if (product[0].internalMemory === 32) { %> selected <% } %>> 32 </option>
+                    <option value=64 <% if (product[0].internalMemory === 64) { %> selected <% } %>> 64 </option>
+                    <option value=128 <% if (product[0].internalMemory === 128) { %> selected <% } %>> 128 </option>
+                    <option value=256 <% if (product[0].internalMemory === 256) { %> selected <% } %>> 256 </option>
+                    <option value=512 <% if (product[0].internalMemory === 512) { %> selected <% } %>> 512 </option>
+                    <option value=1024 <% if (product[0].internalMemory === 1024) { %> selected <% } %>> 1024 </option>
+                </select>
+            </div>
+            <div class="col-lg-4">
+                <label class="form-label">RAM</label>
+                <select class="form-select" name="ram">
+                    <option value=2 <% if (product[0].ram === 2) { %> selected <% } %>> 2 </option>
+                    <option value=4 <% if (product[0].ram === 4) { %> selected <% } %>> 4 </option>
+                    <option value=6 <% if (product[0].ram === 6) { %> selected <% } %>> 6 </option>
+                    <option value=8 <% if (product[0].ram === 8) { %> selected <% } %>> 8 </option>
+                    <option value=12 <% if (product[0].ram === 12) { %> selected <% } %>> 12 </option>
+                    <option value=16 <% if (product[0].ram === 16) { %> selected <% } %>> 16 </option>
+                    <option value=32 <% if (product[0].ram === 32) { %> selected <% } %>> 32 </option>
+                </select>
+            </div>
+            <div class="col-lg-4">
+                <label class="form-label">Screen Size</label>
+                <select class="form-select" name="screenSize">
+                    <option value=5.8 <% if (product[0].screenSize === 5.8) { %> selected <% } %>> 5.8 </option>
+                    <option value=6.2 <% if (product[0].screenSize === 6.2) { %> selected <% } %>> 6.2 </option>
+                    <option value=6.4 <% if (product[0].screenSize === 6.4) { %> selected <% } %>> 6.4 </option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label class="form-label">Battery Capacity</label>
+                <input placeholder="Mah" type="number" class="form-control" name="batteryCapacity" value="<%= product[0].batteryCapacity%>">
+            </div>
+            <div class="mb-4">
+                <label class="form-label">Processor</label>
+                <input placeholder="Processor" type="text" class="form-control" name="processor" value="<%= product[0].processor%>">
+            </div>
+            <div class="col-lg-4">
               <label class="form-label">Status</label>
               <select class="form-select" name="product_status">
-                <option value="Active" <% if (product[0].status === 'Active') { %> selected <% } %>>Active</option>
-                <option value="Blocked" <% if (product[0].status === 'Blocked') { %> selected <% } %>>Blocked</option>
+                <option value=true <% if (product[0].status === true) { %> selected <% } %>>Active</option>
+                <option value=false <% if (product[0].status === false) { %> selected <% } %>>Blocked</option>
               </select>
             </div>
-            <div class="mb-4">
+            <div class="col-lg-4">
               <label class="form-label">Stock</label>
               <select class="form-select" name="stock">
-                <option value="Yes" <% if (product[0].stock === 'Yes') { %> selected <% } %>>Yes</option>
-                <option value="No" <% if (product[0].stock === 'No') { %> selected <% } %>>No</option>
+                <option value=true <% if (product[0].stock === true) { %> selected <% } %>>Yes</option>
+                <option value=false <% if (product[0].stock === false) { %> selected <% } %>>No</option>
               </select>
             </div>
-            <div class="mb-4">
+            <div class="col-lg-4">
               <label class="form-label">Category</label>
               <select class="form-select" name="product_category">
                 <% if (categories.length > 0) { %>
@@ -76,6 +122,7 @@
               </select>
                 </select>
             </div>
+          </div>
           </div>
         </div> <!-- card end// -->
       </div>
