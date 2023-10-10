@@ -1,22 +1,22 @@
-const express = require('express');
-const mongoose = require('mongoose');
+const express = require("express");
+const mongoose = require("mongoose");
 
 const categorySchema = new mongoose.Schema({
-    categoryId:{
-        type:Number,
-        required:true,
-        unique:true
-    },
-    categoryName:{
-        type:String,
-        required:true
-    },
-    isListed:{
-        type:String,
-        default:true
-    }
-})
+  categoryId: {
+    type: Number,
+    required: true,
+    unique: true,
+  },
+  categoryName: {
+    type: String,
+    required: true,
+  },
+  isListed: {
+    type: String,
+    default: true,
+  },
+});
 
-const categoryModel = mongoose.model('Categories',categorySchema)
+const categoryModel = mongoose.model("Categories", categorySchema);
 
-module.exports = categoryModel
+module.exports = categoryModel;

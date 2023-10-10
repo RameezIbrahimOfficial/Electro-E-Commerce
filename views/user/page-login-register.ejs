@@ -8,7 +8,13 @@
             sendOTPButton.addEventListener("click", function (e) {
                 e.preventDefault();
 
-                phoneNumber = document.querySelector('input[name="phoneNumber"]').value;
+                const phoneNumber = document.querySelector('input[name="phoneNumber"]').value;
+
+                if (!phoneNumber) {
+                    errSignupPhoneNumber.innerHTML = "Phone number is required."
+                    return;
+                }
+
                 fetch(`/send_otp?phoneNumber=${phoneNumber}`)
                     .then((response) => {
                         if (!response.ok) {
@@ -22,13 +28,19 @@
                     .catch((error) => {
                         console.error("Error sending OTP:", error);
                     });
-
             });
+
 
             verifyOTPButton.addEventListener("click", function (e) {
                 e.preventDefault();
+
                 const otp = otpInput.value;
-                console.log(document.getElementById('phoneNumber').value);
+                const phoneNumber = document.querySelector('input[name="phoneNumber"]').value;
+
+                if (!phoneNumber || !otp) {
+                    errSignupOtp.innerHTML = "Phone number and OTP are required."
+                    return;
+                }
 
                 fetch(`/verify_otp?phoneNumber=${phoneNumber}&otp=${otp}`)
                     .then((response) => {
@@ -44,6 +56,109 @@
                         console.error("Error verifying OTP:", error);
                     });
             });
+
+
+
+            const loginForm = document.querySelector('form[action="/signin"]');
+            const loginEmailInput = document.getElementById("loginEmail");
+            const loginPasswordInput = document.getElementById("loginPassword");
+
+            const errEmail = document.getElementById('errEmail')
+            const errPassword = document.getElementById('errPassword')
+
+            loginForm.addEventListener("submit", function (e) {
+                if (!isValidEmail(loginEmailInput.value)) {
+                    e.preventDefault();
+                    errEmail.innerHTML = "Please enter a valid email address"
+                    return;
+                }
+
+                if (loginPasswordInput.value.length < 0) {
+                    e.preventDefault();
+                    errPassword.innerHTML = "Password must be entered."
+                    return;
+                }
+            });
+
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            const registrationForm = document.querySelector('form[action="/register"]');
+            const registrationEmailInput = document.querySelector('input[name="email"]');
+            const registrationPasswordInput = document.querySelector('input[name="signupPassword"]');
+            const registrationConfirmPasswordInput = document.querySelector('input[name="Confirmpassword"]');
+            const registrationPhoneNumberInput = document.getElementById("phoneNumber");
+            const registrationOTPInput = document.getElementById("otp");
+
+            const errSignupEmail = document.getElementById('errSignupEmail');
+            const errSignupPassword = document.getElementById('errSignupPassword');
+            const errSignupConfirmPassword = document.getElementById('errSignupConfirmPassword');
+            const errSignupPhoneNumber = document.getElementById('errSignupPhoneNumber');
+            const errSignupOtp = document.getElementById('errSignupOtp');
+            const errSignupName = document.getElementById('errSignupName')
+
+            registrationForm.addEventListener("submit", function (e) {
+                if (registrationForm.querySelector('input[name="fname"]').value.trim() === "") {
+                    e.preventDefault();
+                    errSignupName.innerHTML = "Please enter your First Name."
+                    return;
+                }
+
+                if (registrationForm.querySelector('input[name="lname"]').value.trim() === "") {
+                    e.preventDefault();
+                    errSignupName.innerHTML = "Please enter your Last Name."
+                    return;
+                }
+
+                if (registrationEmailInput.value.trim() === "") {
+                    e.preventDefault();
+                    errSignupEmail.innerHTML = "Please enter a valid email address."
+                    return;
+                }
+
+                if (registrationPasswordInput.value.length < 6) {
+                    e.preventDefault();
+                    errSignupPassword.innerHTML = "Password must be entered and Must have alteast 6 characters."
+                    return;
+                }
+
+                if (registrationPasswordInput.value !== registrationConfirmPasswordInput.value) {
+                    e.preventDefault();
+                    errSignupConfirmPassword.innerHTML = "Passwords do not match."
+                    return;
+                }
+
+                if (!isValidPhoneNumber(registrationPhoneNumberInput.value)) {
+                    e.preventDefault();
+                    errSignupPhoneNumber.innerHTML = "Please enter a valid phone number."
+                    return;
+                }
+
+                if (!isValidOTP(registrationOTPInput.value)) {
+                    e.preventDefault();
+                    errSignupOtp.innerHTML = "Please enter a valid OTP."
+                    return;
+                }
+            });
+
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            function isValidPhoneNumber(phoneNumber) {
+                const phoneNumberRegex = /^[0-9]{10}$/;
+                return phoneNumberRegex.test(phoneNumber);
+            }
+
+            function isValidOTP(otp) {
+                const otpRegex = /^[0-9]{6}$/;
+                return otpRegex.test(otp);
+            }
+
+
         })
 
     </script>
@@ -68,18 +183,20 @@
                                     <div class="padding_eight_all bg-white">
                                         <div class="heading_s1">
                                             <h3 class="mb-30">Login</h3>
-                                            <h5>
+                                            <h5 class="text-danger">
                                                 <%=locals.errorMsgLogin?errorMsgLogin:""%>
                                             </h5>
                                         </div>
                                         <form method="post" action="/signin">
                                             <div class="form-group">
-                                                <input type="email" required="" name="email" placeholder="Your Email"
+                                                <input type="email" name="email" placeholder="Your Email"
                                                     id="loginEmail" />
+                                                <span id="errEmail" class="text-danger"></span>
                                             </div>
                                             <div class="form-group">
-                                                <input required="" type="password" name="password"
-                                                    placeholder="Password" id="loginPassword" />
+                                                <input type="password" name="password" placeholder="Password"
+                                                    id="loginPassword" />
+                                                <span id="errPassword" class="text-danger"></span>
                                             </div>
                                             <div class="login_footer form-group">
                                                 <div class="chek-form">
@@ -108,44 +225,46 @@
                                             throughout this website, to manage access to your account,
                                             and for other purposes described in our privacy policy
                                         </p>
-                                        <p>
+                                        <p class="text-danger">
                                             <%=locals.errorMsgSignup?errorMsgSignup:""%>
                                         </p>
                                         <form method="post" action="/register">
                                             <div class="form-group">
-                                                <input type="text" required name="fname" placeholder="First Name" />
-                                                <input type="text" required name="lname" placeholder="Last Name" class="mt-2"/>
+                                                <input type="text" name="fname" placeholder="First Name" />
+                                                <input type="text" name="lname" placeholder="Last Name" class="mt-2" />
+                                                <span id="errSignupName" class="text-danger"></span>
                                             </div>
                                             <div class="form-group">
-                                                <input type="email" required name="email" placeholder="Email" />
+                                                <input type="email" name="email" placeholder="Email" />
+                                                <span id="errSignupEmail" class="text-danger"></span>
                                             </div>
                                             <div class="form-group">
-                                                <input required type="password" name="password"
-                                                    placeholder="Password" />
+                                                <input type="password" name="SignupPassword" placeholder="Password" />
+                                                <span id="errSignupPassword" class="text-danger"></span>
                                             </div>
-                                            <p>
-                                                <%=locals.errorMsgPassword?errorMsgPassword:""%>
-                                            </p>
                                             <div class="form-group">
-                                                <input required type="password" name="Confirmpassword"
+                                                <input type="password" name="Confirmpassword"
                                                     placeholder="Confirm password" />
+                                                <span id="errSignupConfirmPassword" class="text-danger"></span>
                                             </div>
                                             <div class="form-group d-flex">
-                                                <input required type="number" name="phoneNumber"
-                                                    placeholder="Phone Number" id="phoneNumber" />
+                                                <input type="number" name="phoneNumber" placeholder="Phone Number"
+                                                    id="phoneNumber" />
                                                 <button class="btn btn-success input-group-text" id="sendOTPButton">
                                                     Send OTP
                                                 </button>
                                             </div>
-                                            <p>
+                                            <span id="errSignupPhoneNumber" class="text-danger"></span>
+                                            <p class="text-danger>
                                                 <%=locals.errorMsgOTP?errorMsgOTP:""%>
                                             </p>
                                             <div class="form-group d-flex">
-                                                <input required type="number" name="otp" placeholder="OTP" id="otp" />
+                                                <input type="number" name="otp" placeholder="OTP" id="otp" />
                                                 <button class="btn btn-success input-group-text" id="verifyOTPButton">
                                                     Verify OTP
                                                 </button>
                                             </div>
+                                            <span id="errSignupOtp" class="text-danger"></span>
                                             <div class="login_footer form-group">
                                                 <div class="chek-form">
                                                     <div class="custome-checkbox">
@@ -156,7 +275,7 @@
                                                     </div>
                                                 </div>
                                                 <a href="page-privacy-policy.html"><i
-                                                        class="fi-rs-book-alt mr-5 text-muted"></i>Lean
+                                                        class="fi-rs-book-alt mr-5 text-muted"></i>Learn
                                                     more</a>
                                             </div>
                                             <div class="form-group">

@@ -1,12 +1,14 @@
-const jwt = require('jsonwebtoken')
-require('dotenv').config()
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const adminModel = require("../Model/adminSchema");
 const categoryModel = require("../Model/categorySchema");
 const customerModel = require("../Model/customerSchema");
 const productsModel = require("../Model/productSchema");
-const middlewares = require("../middlewares/middlewares");
+
+const middlewares = require("../middlewares/adminAuth");
 
 module.exports.getAdminLogin = async (req, res) => {
   res.render("admin-login");
@@ -17,8 +19,8 @@ module.exports.postAdminLogin = async (req, res) => {
     const { email, password } = req.body;
     const admin = await adminModel.findOne({ email: email });
     if (password === admin.password && email === admin.email) {
-      const token = jwt.sign(admin.email,JWT_SECRET)
-      res.cookie('token', token, { maxAge: 24 * 60 * 60 * 1000 })
+      const token = jwt.sign(admin.email, JWT_SECRET);
+      res.cookie("token", token, { maxAge: 24 * 60 * 60 * 1000 });
       res.redirect("/admin/admin_panel");
     } else {
       res.render("admin-login", { errorMsg: "Incorrect Credentials" });
@@ -29,7 +31,7 @@ module.exports.postAdminLogin = async (req, res) => {
 };
 
 module.exports.getAdminPanel = (req, res) => {
-      res.render("admin-dashboard");
+  res.render("admin-dashboard");
 };
 
 module.exports.getProductsPage = async (req, res) => {
@@ -181,13 +183,13 @@ module.exports.postAddProducts = async (req, res) => {
       stock: req.body.stock,
       units: req.body.units,
       productImage: productImages,
-      operatingSystem:req.body.operatingSystem,
-      cellularTechnology:req.body.cellularTechnology,
-      internalMemory:req.body.internalMemory,
-      ram:req.body.ram,
-      screenSize:req.body.screenSize,
-      batteryCapacity:req.body.batteryCapacity,
-      processor:req.body.processor
+      operatingSystem: req.body.operatingSystem,
+      cellularTechnology: req.body.cellularTechnology,
+      internalMemory: req.body.internalMemory,
+      ram: req.body.ram,
+      screenSize: req.body.screenSize,
+      batteryCapacity: req.body.batteryCapacity,
+      processor: req.body.processor,
     });
     res.redirect("/admin/admin_panel/add_products");
   } catch (err) {
@@ -244,13 +246,14 @@ module.exports.postEditProducts = async (req, res) => {
           stock: req.body.stock || product.stock,
           units: req.body.units || product.units,
           productImage: productImages,
-          operatingSystem:req.body.operatingSystem || product.operatingSystem,
-          cellularTechnology:req.body.cellularTechnology || product.cellularTechnology,
-          internalMemory:req.body.internalMemory || product.internalMemory,
-          ram:req.body.ram || product.ram,
-          screenSize:req.body.screenSize || product.screenSize,
-          batteryCapacity:req.body.batteryCapacity || product.batteryCapacity,
-          processor:req.body.processor || product.processor
+          operatingSystem: req.body.operatingSystem || product.operatingSystem,
+          cellularTechnology:
+            req.body.cellularTechnology || product.cellularTechnology,
+          internalMemory: req.body.internalMemory || product.internalMemory,
+          ram: req.body.ram || product.ram,
+          screenSize: req.body.screenSize || product.screenSize,
+          batteryCapacity: req.body.batteryCapacity || product.batteryCapacity,
+          processor: req.body.processor || product.processor,
         },
       }
     );
@@ -293,7 +296,7 @@ module.exports.getUnblockProducts = async (req, res) => {
   }
 };
 
-module.exports.getLogout = (req,res)=>{
-  res.clearCookie('token');
-  res.redirect('/admin')
-}
+module.exports.getLogout = (req, res) => {
+  res.clearCookie("token");
+  res.redirect("/admin");
+};
