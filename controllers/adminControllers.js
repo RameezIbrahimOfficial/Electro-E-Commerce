@@ -7,6 +7,7 @@ const adminModel = require("../Model/adminSchema");
 const categoryModel = require("../Model/categorySchema");
 const customerModel = require("../Model/customerSchema");
 const productsModel = require("../Model/productSchema");
+const brandModel = require('../Model/brandSchema')
 
 const middlewares = require("../middlewares/adminAuth");
 
@@ -295,6 +296,104 @@ module.exports.getUnblockProducts = async (req, res) => {
     console.error(err);
   }
 };
+
+module.exports.getBrands = async(req,res)=>{
+    try{
+      brands = await brandModel.find({})
+      res.render('page-brands',{brands})
+    }
+    catch(err){
+      console.error(err)
+    }
+}
+
+module.exports.postAddBrands =async(req,res)=>{
+  try{
+    const brandLogo = req.file;
+    await brandModel.create({
+      id:req.body.brandId,
+      brandName:req.body.brandName,
+      isBlocked:req.body.isBlocked,
+      brandImage:{
+        fileName:brandLogo.originalname,
+        mimeType:brandLogo.mimetype,
+        buffer:brandLogo.buffer
+      }
+    })
+    res.redirect('/admin/admin_panel/brands')
+  }
+  catch(err){
+    console.error(err)
+  }
+}
+
+module.exports.getBlockBrand = async(req,res)=>{
+  try{
+    const id = req.query.id;
+    await brandModel.updateOne({_id:id},{$set:{isBlocked:true}});
+    res.redirect('/admin/admin_panel/brands')
+  }
+  catch(err){
+    console.error(err)
+  }
+
+}
+
+module.exports.getUnblockBrand = async(req,res)=>{
+  try{
+    const id = req.query.id;
+    await brandModel.updateOne({_id:id},{$set:{isBlocked:false}});
+    res.redirect('/admin/admin_panel/brands')
+  }
+  catch(err){
+    console.error(err)
+  }
+
+}
+
+module.exports.getEditBrand = async(req,res)=>{
+  try{
+    const id = req.query.id;
+    const brands = await brandModel.find({})
+    const brand = await brandModel.findOne({_id:id});
+    res.render('page-edit-brand',{brand,brands}) 
+  }
+  catch(err){
+    console.error(err)
+  }
+
+}
+
+module.exports.postEditBrand = async (req, res) => {
+  try {
+    const id = req.query.id;
+    const brandImage = req.file; 
+    const brand = await brandModel.findOne({ _id: id });
+    const newBrandImage = brandImage
+      ? {
+          fileName: brandImage.originalname,
+          mimeType: brandImage.mimetype,
+          buffer: brandImage.buffer,
+        }
+      : brand.brandImage; 
+
+    await brandModel.updateOne(
+      { _id: id },
+      {
+        $set: {
+          id: req.body.brandId || brand.id,
+          brandName: req.body.brandName || brand.brandName,
+          isBlocked: req.body.isBlocked || brand.isBlocked,
+          brandImage: newBrandImage, 
+        },
+      }
+    );
+    res.redirect('/admin/admin_panel/brands');
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 
 module.exports.getLogout = (req, res) => {
   res.clearCookie("token");

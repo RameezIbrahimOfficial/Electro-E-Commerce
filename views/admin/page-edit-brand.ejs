@@ -18,7 +18,7 @@
     <div class="card-body">
       <div class="row gx-3">
         <div class="col-xl-4 col-lg-6 col-md-8 col-12">
-          <form method="post" action="/admin/admin_panel/brand/add"  enctype="multipart/form-data">
+          <form method="post" action="/admin/admin_panel/brand/update?id=<%=brand._id%>"  enctype="multipart/form-data">
             <div class="mb-4">
               <label for="brandId" class="form-label">#ID</label>
               <input
@@ -27,7 +27,7 @@
                 class="form-control"
                 id="brandId"
                 name="brandId"
-                required
+                value=<%=brand.id%>
               />
             </div>
             <div class="mb-4">
@@ -38,20 +38,25 @@
                 class="form-control"
                 id="brandName"
                 name="brandName"
-                required
+                value=<%=brand.brandName%>
               />
             </div>
             <div class="mb-4">
               <label class="form-label">Block</label>
               <select class="form-select" name="isBlocked">
-                  <option value=true> True </option>
-                  <option value=false> False </option>
+                  <option value=true <%if(brand.isBlocked === true){%> selected <%}%>> True </option>
+                  <option value=false <%if(brand.isBlocked === false){%> selected <%}%>> False </option>
               </select>
           </div>
+          <div class="mb-4">
+            <div class="input-upload">
+              <img src="data:<%= brand.brandImage.contentType %>;base64, <%= brand.brandImage.buffer.toString('base64') %>">
+          </div>
+        </div>
             <div class="mb-4">
                 <div class="input-upload">
                   <img src="admin-assets/imgs/theme/upload.svg" alt="">
-                  <input class="form-control" type="file" name="brandLogo" required>
+                  <input class="form-control" type="file" name="brandLogo">
               </div>
             </div>
             <div class="d-grid">
