@@ -9,7 +9,7 @@ module.exports.isLogin = (req, res, next) => {
     if (err) {
       return res.redirect("/admin");
     }
-    req.user = decoded;
+    req.admin = decoded;
     next();
   });
 };

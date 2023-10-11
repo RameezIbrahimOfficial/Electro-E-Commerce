@@ -1,9 +1,12 @@
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_SERVICE_SID } =
   process.env;
 const twilio = require("twilio")(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, {
   lazyLoading: true,
 });
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const customerModel = require("../Model/customerSchema");
 const productsModel = require("../Model/productSchema");
@@ -45,6 +48,7 @@ module.exports.getVerifyOtp = async (req, res) => {
 
 module.exports.getHome = async (req, res) => {
   try {
+    console.log(req.user)
     let products = await productsModel.find({});
     res.render("home-page", { products });
   } catch (err) {
@@ -90,6 +94,8 @@ module.exports.postUserLogin = async (req, res) => {
         });
       } else {
         if (email === user.email && password === user.password) {
+          const token = jwt.sign(user.email, JWT_SECRET);
+          res.cookie("token", token, { maxAge: 24 * 60 * 60 * 1000 });
           res.redirect("/products");
         } else {
           res.render("page-login-register", {
@@ -126,3 +132,11 @@ module.exports.getProductPage = async (req, res) => {
     console.error(err);
   }
 };
+
+module.exports.getCartPage = async (req, res)=>{
+  try{
+    res.render('cart')
+  } catch(err){
+    console.error(err)
+  }
+}
