@@ -59,14 +59,14 @@
                         </div>
                         <div class="row product-grid-3">  
                             <%if(products){%>
-                                <%for(let i=0;i<products.length;i++){%>
+                                <% products.filter(product => !product.isBlocked).forEach(function(product) { %>
                                 <div class="col-lg-4 col-md-4 col-12 col-sm-6">
                                     <div class="product-cart-wrap mb-30">
                                         <div class="product-img-action-wrap">
                                             <div class="product-img product-img-zoom">
-                                                <a href="/product?id=<%=products[i]._id%>">
-                                                    <img class="default-img" src="data:<%= products[i].productImage[0].contentType %>;base64, <%= products[i].productImage[0].buffer.toString('base64') %>" alt="">
-                                                    <img class="hover-img" src="data:<%= products[i].productImage[0].contentType %>;base64, <%= products[i].productImage[0].buffer.toString('base64') %>" alt="">
+                                                <a href="/product?id=<%=product._id%>">
+                                                    <img class="default-img" src="data:<%= product.productImage[0].contentType %>;base64, <%= product.productImage[0].buffer.toString('base64') %>" alt="">
+                                                    <img class="hover-img" src="data:<%= product.productImage[0].contentType %>;base64, <%= product.productImage[0].buffer.toString('base64') %>" alt="">
                                                 </a>
                                             </div>
                                             <div class="product-action-1">
@@ -81,17 +81,17 @@
                                         </div>
                                         <div class="product-content-wrap">
                                             <div class="product-category">
-                                                <a href="shop-grid-right.html"><%=products[i].brand%></a>
+                                                <a href=""><%=product.brand%></a>
                                             </div>
-                                            <h2><a href="shop-product-right.html"><%=products[i].productName%></a></h2>
+                                            <h2><a href=""><%=product.productName%></a></h2>
                                             <div class="rating-result" title="90%">
                                                 <span>
                                                     <span>90%</span>
                                                 </span>
                                             </div>
                                             <div class="product-price">
-                                                <span><%=products[i].salePrice%></span>
-                                                <span class="old-price"><%=products[i].regularPrice%></span>
+                                                <span><%=product.salePrice%></span>
+                                                <span class="old-price"><%=product.regularPrice%></span>
                                             </div>
                                             <div class="product-action-1 show">
                                                 <a aria-label="Add To Cart" class="action-btn hover-up" href="shop-cart.html"><i class="fi-rs-shopping-bag-add"></i></a>
@@ -99,7 +99,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <%}%>
+                                <%})%>
                             <%}else{%>
                                 <h1>No Products Found</h1>
                             <%}%>  
