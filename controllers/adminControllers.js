@@ -3,11 +3,11 @@ require("dotenv").config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const adminModel = require("../Model/adminSchema");
-const categoryModel = require("../Model/categorySchema");
-const customerModel = require("../Model/customerSchema");
-const productsModel = require("../Model/productSchema");
-const brandModel = require('../Model/brandSchema')
+const adminModel = require("../Model/admin");
+const categoryModel = require("../Model/category");
+const customerModel = require("../Model/customer");
+const productsModel = require("../Model/product");
+const brandModel = require('../Model/brand')
 
 const middlewares = require("../middlewares/adminAuth");
 

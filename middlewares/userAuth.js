@@ -4,7 +4,7 @@ require("dotenv").config();
 const JWT_SECRET = process.env.JWT_SECRET;
 
 module.exports.isUserLogin = (req, res, next) => {
-    const token = req.cookies.token;
+    const token = req.cookies.userToken;
     jwt.verify(token, JWT_SECRET, (err, decoded) => {
       if (err) {
         return res.redirect("/register");

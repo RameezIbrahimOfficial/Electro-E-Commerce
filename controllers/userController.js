@@ -8,10 +8,10 @@ const twilio = require("twilio")(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, {
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const customerModel = require("../Model/customerSchema");
-const productsModel = require("../Model/productSchema");
-const categoryModel = require("../Model/categorySchema");
-const brandsModel = require('../Model/brandSchema')
+const customerModel = require("../Model/customer");
+const productsModel = require("../Model/product");
+const categoryModel = require("../Model/category");
+const brandsModel = require('../Model/brand')
 
 let phoneNumber;
 let isOtpVerified;
@@ -96,8 +96,8 @@ module.exports.postUserLogin = async (req, res) => {
         });
       } else {
         if (email === user.email && password === user.password) {
-          const token = jwt.sign(user.email, JWT_SECRET);
-          res.cookie("token", token, { maxAge: 24 * 60 * 60 * 1000 });
+          const userToken = jwt.sign(user.email, JWT_SECRET);
+          res.cookie("token", userToken, { maxAge: 24 * 60 * 60 * 1000 });
           isLogin = true;
           res.redirect("/products");
         } else {
@@ -120,7 +120,8 @@ module.exports.getProductsPage = async (req, res) => {
   try {
     products = await productsModel.find({});
     categories = await categoryModel.find({});
-    res.render("products-grid-view", { products, categories ,isLogin});
+    brands = await brandsModel.find({})
+    res.render("products-grid-view", { products, categories , brands ,isLogin});
   } catch (err) {
     console.error(err);
   }
@@ -130,7 +131,8 @@ module.exports.getProductPage = async (req, res) => {
   try {
     const id = req.query.id;
     const product = await productsModel.findOne({ _id: id });
-    res.render("shop-product-full", { product ,isLogin});
+    const brand = await brandsModel.findOne({brandName:product.brand})
+    res.render("shop-product-full", { product , brand, isLogin});
   } catch (err) {
     console.error(err);
   }
