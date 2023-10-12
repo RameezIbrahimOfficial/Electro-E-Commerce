@@ -22,9 +22,17 @@
                                     <input type="text" placeholder="Type here" class="form-control" id="product_name" name="product_name">
                                 </div>
                                 <div class="mb-4">
-                                    <label for="product_name" class="form-label">Product Brand</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="product_brand" name="product_brand">
-                                </div>
+                                    <label for="product_brand" class="form-label">Product Brand</label>
+                                    <select class="form-select" name="product_brand">
+                                        <% if (brands.length > 0) { %>
+                                            <% for (let i = 0; i < brands.length; i++) { %>
+                                                <option value="<%= brands[i].brandName %>"><%= brands[i].brandName %></option>
+                                            <% } %>
+                                        <% } else { %>
+                                            <option value="">No Brands</option>
+                                        <% } %>
+                                    </select>
+                                </div>                                
                                 <div class="mb-4">
                                     <label class="form-label">Full description</label>
                                     <textarea placeholder="Type here" class="form-control" rows="4" name="product_description"></textarea>
@@ -120,7 +128,6 @@
                                         <% } else { %>
                                           <option value="">No Category</option>
                                         <% } %>
-                                      </select>
                                         </select>
                                 </div>
                             </div>

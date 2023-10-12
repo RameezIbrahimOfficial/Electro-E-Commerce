@@ -20,5 +20,7 @@ userRouter.post("/signin", userController.postUserLogin);
 userRouter.get("/products", userController.getProductsPage);
 userRouter.get('/product', userController.getProductPage)
 userRouter.get('/cart',userAuth.isUserLogin,userController.getCartPage)
+userRouter.get('/contact',userController.getContactPage)
+userRouter.get('/logout',userAuth.isUserLogin,userController.getUserLogout)
 
 module.exports = userRouter;

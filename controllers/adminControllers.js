@@ -155,7 +155,8 @@ module.exports.getUserManagement = async (req, res) => {
 module.exports.getAddProducts = async (req, res) => {
   try {
     const categories = await categoryModel.find({});
-    res.render("page-form-product-1", { categories });
+    const brands = await brandModel.find({})
+    res.render("page-form-product-1", { categories , brands});
   } catch (err) {
     console.error(err);
   }

@@ -46,7 +46,11 @@
                     <div class="col-xl-3 col-lg-4">
                         <div class="header-info header-info-right">
                             <ul>
-                                <li><i class="fi-rs-user"></i><a href="/register">Log In / Sign Up</a></li>
+                                <%if(isLogin){%>
+                                    <li><i class="fi-rs-user"></i><a href="/logout">Logout</a></li>
+                                    <%} else {%>
+                                    <li><i class="fi-rs-user"></i><a href="/register">Log In / Sign Up</a></li>
+                                <%}%>
                             </ul>
                         </div>
                     </div>
@@ -123,7 +127,7 @@
                                         <a href="/products">Shop</a>
                                     </li>
                                     <li>
-                                        <a href="">Contact</a>
+                                        <a href="/contact">Contact</a>
                                     </li>
                                 </ul>
                             </nav>

@@ -11,9 +11,11 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const customerModel = require("../Model/customerSchema");
 const productsModel = require("../Model/productSchema");
 const categoryModel = require("../Model/categorySchema");
+const brandsModel = require('../Model/brandSchema')
 
 let phoneNumber;
 let isOtpVerified;
+let isLogin = false;
 
 module.exports.getSendOtp = async (req, res) => {
   try {
@@ -48,9 +50,9 @@ module.exports.getVerifyOtp = async (req, res) => {
 
 module.exports.getHome = async (req, res) => {
   try {
-    console.log(req.user)
     let products = await productsModel.find({});
-    res.render("home-page", { products });
+    let brands = await brandsModel.find({})
+    res.render("home-page", { products , brands , isLogin});
   } catch (err) {
     console.error(err);
   }
@@ -72,7 +74,7 @@ module.exports.postUserRegister = async (req, res) => {
         errorMsgSignup: "Account Created Successfully",
       });
     } else {
-      res.redirect("page-login-register", { errorMsgOTP: "Invalid OTP" });
+      res.render("page-login-register", { errorMsgOTP: "Invalid OTP" ,isLogin});
     }
   } catch (err) {
     console.error(err);
@@ -80,7 +82,7 @@ module.exports.postUserRegister = async (req, res) => {
 };
 
 module.exports.getUserLoginRegister = (req, res) => {
-  res.render("page-login-register");
+  res.render("page-login-register",{isLogin});
 };
 
 module.exports.postUserLogin = async (req, res) => {
@@ -96,6 +98,7 @@ module.exports.postUserLogin = async (req, res) => {
         if (email === user.email && password === user.password) {
           const token = jwt.sign(user.email, JWT_SECRET);
           res.cookie("token", token, { maxAge: 24 * 60 * 60 * 1000 });
+          isLogin = true;
           res.redirect("/products");
         } else {
           res.render("page-login-register", {
@@ -105,7 +108,7 @@ module.exports.postUserLogin = async (req, res) => {
       }
     } else {
       res.render("page-login-register", {
-        errorMsgLogin: "No User Found on this Email Please Register",
+        errorMsgLogin: "No User Found on this Email Please Register",isLogin
       });
     }
   } catch (err) {
@@ -117,7 +120,7 @@ module.exports.getProductsPage = async (req, res) => {
   try {
     products = await productsModel.find({});
     categories = await categoryModel.find({});
-    res.render("products-grid-view", { products, categories });
+    res.render("products-grid-view", { products, categories ,isLogin});
   } catch (err) {
     console.error(err);
   }
@@ -127,7 +130,7 @@ module.exports.getProductPage = async (req, res) => {
   try {
     const id = req.query.id;
     const product = await productsModel.findOne({ _id: id });
-    res.render("shop-product-full", { product });
+    res.render("shop-product-full", { product ,isLogin});
   } catch (err) {
     console.error(err);
   }
@@ -135,7 +138,21 @@ module.exports.getProductPage = async (req, res) => {
 
 module.exports.getCartPage = async (req, res)=>{
   try{
-    res.render('cart')
+    res.render('cart',{isLogin})
+  } catch(err){
+    console.error(err)
+  }
+}
+
+module.exports.getContactPage = (req,res)=>{
+  res.render('page-contact',{isLogin})
+}
+
+module.exports.getUserLogout = async(req,res)=>{
+  try{
+    res.clearCookie('token');
+    isLogin = false
+    res.redirect('/')
   } catch(err){
     console.error(err)
   }
