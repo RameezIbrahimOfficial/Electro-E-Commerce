@@ -52,7 +52,7 @@ module.exports.getHome = async (req, res) => {
     const isLogin = req.cookies.isLogin;
     let products = await productsModel.find({});
     let brands = await brandsModel.find({})
-    res.render("home-page", { products , brands , isLogin});
+    res.render("home-page", { products, brands, isLogin });
   } catch (err) {
     console.error(err);
   }
@@ -75,7 +75,7 @@ module.exports.postUserRegister = async (req, res) => {
         errorMsgSignup: "Account Created Successfully",
       });
     } else {
-      res.render("page-login-register", { errorMsgOTP: "Invalid OTP" ,isLogin});
+      res.render("page-login-register", { errorMsgOTP: "Invalid OTP", isLogin });
     }
   } catch (err) {
     console.error(err);
@@ -84,11 +84,11 @@ module.exports.postUserRegister = async (req, res) => {
 
 module.exports.getUserRegister = (req, res) => {
   const isLogin = req.cookies.isLogin;
-  res.render("page-register",{isLogin});
+  res.render("page-register", { isLogin });
 };
 module.exports.getUserLogin = (req, res) => {
   const isLogin = req.cookies.isLogin;
-  res.render("page-login",{isLogin});
+  res.render("page-login", { isLogin });
 };
 
 module.exports.postUserLogin = async (req, res) => {
@@ -105,7 +105,7 @@ module.exports.postUserLogin = async (req, res) => {
         if (email === user.email && password === user.password) {
           const userToken = jwt.sign(user.email, JWT_SECRET);
           res.cookie("token", userToken, { maxAge: 24 * 60 * 60 * 1000 });
-          res.cookie("isLogin",true ,{maxAge: 24 * 60 * 60 * 1000 })
+          res.cookie("isLogin", true, { maxAge: 24 * 60 * 60 * 1000 })
           res.redirect("/products");
         } else {
           res.render("page-login", {
@@ -115,7 +115,7 @@ module.exports.postUserLogin = async (req, res) => {
       }
     } else {
       res.render("page-login", {
-        errorMsgLogin: "No User Found on this Email Please Register",isLogin
+        errorMsgLogin: "No User Found on this Email Please Register", isLogin
       });
     }
   } catch (err) {
@@ -126,10 +126,10 @@ module.exports.postUserLogin = async (req, res) => {
 module.exports.getProductsPage = async (req, res) => {
   try {
     const isLogin = req.cookies.isLogin;
-    products = await productsModel.find({});
-    categories = await categoryModel.find({});
-    brands = await brandsModel.find({})
-    res.render("products-grid-view", { products, categories , brands ,isLogin});
+    const products = await productsModel.find({});
+    const categories = await categoryModel.find({});
+    const brands = await brandsModel.find({})
+    res.render("products-grid-view", { products, categories, brands, isLogin });
   } catch (err) {
     console.error(err);
   }
@@ -140,35 +140,142 @@ module.exports.getProductPage = async (req, res) => {
     const isLogin = req.cookies.isLogin;
     const id = req.query.id;
     const product = await productsModel.findOne({ _id: id });
-    const brand = await brandsModel.findOne({brandName:product.brand})
-    res.render("shop-product-full", { product , brand, isLogin});
+    const brand = await brandsModel.findOne({ brandName: product.brand })
+    res.render("shop-product-full", { product, brand, isLogin });
   } catch (err) {
     console.error(err);
   }
 };
 
-module.exports.getCartPage = async (req, res)=>{
-  try{
+module.exports.getCartPage = async (req, res) => {
+  try {
     const isLogin = req.cookies.isLogin;
-    res.render('cart',{isLogin})
-  } catch(err){
+    res.render('cart', { isLogin })
+  } catch (err) {
     console.error(err)
   }
 }
 
-module.exports.getContactPage = (req,res)=>{
+module.exports.getContactPage = (req, res) => {
   const isLogin = req.cookies.isLogin;
-  res.render('page-contact',{isLogin})
+  res.render('page-contact', { isLogin })
 }
 
-module.exports.getUserLogout = async(req,res)=>{
-  try{
-    console.log(req.cookies.token)
-    console.log(req.cookies.isLogin)
+module.exports.getUserLogout = async (req, res) => {
+  try {
     res.clearCookie('token');
     res.clearCookie('isLogin');
     res.redirect('/')
-  } catch(err){
+  } catch (err) {
     console.error(err)
+  }
+}
+
+module.exports.getSearch = async (req, res) => {
+  try {
+    const product_search = req.query.product_search
+    const search_category = req.query.category;
+    const isLogin = req.cookies.isLogin;
+    const categories = await categoryModel.find({});
+    const brands = await brandsModel.find({})
+    if (search_category) {
+      const products = await productsModel.find({ category: search_category });
+      res.render("products-grid-view", { products, categories, brands, isLogin })
+    }
+    if (product_search) {
+      const products = await productsModel.find({ productName: { $regex: `^${product_search}`, $options: "xi" } });
+      res.render("products-grid-view", { products, categories, brands, isLogin })
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+module.exports.postSearch = async (req, res) => {
+  try {
+    const categories = await categoryModel.find({});
+    const brands = await brandsModel.find({})
+    const isLogin = req.cookies.isLogin;
+    const { ram, price, brand, internal_memory, battery_capacity, operating_system } = req.body;
+    const aggregationStages = [];
+    const orConditions = [];
+    const ramArray = [],priceArray = [], internal_memoryArray =[] ,brandArray = [], battery_capacityArray = [], operating_systemArray = [];
+
+    // Build an array of $or conditions for each field with multiple values
+    if (ram && ram.length > 0) {
+      if( Array.isArray(ram)){
+      orConditions.push({ ram: { $in: ram.map(Number) }});
+      } else {
+        ramArray.push(ram)
+        orConditions.push({ram:{$in:ramArray.map(Number)}})
+      }
+    }
+    
+    if (price && price.length > 0) {
+      if(Array.isArray(price)){
+        orConditions.push({ salePrice: { $in: price.map(Number) }});
+      } else {
+        priceArray.push(price)
+        orConditions.push({salePrice:{$in:priceArray.map(Number)}})
+      }
+    }
+    
+    if (brand && brand.length > 0) {
+      if( Array.isArray(brand)){
+        orConditions.push({ brand: { $in: brand } });
+      } else{
+        brandArray.push(brand)
+        orConditions.push({brand:{$in:brandArray}})
+      }
+    }
+
+    if (internal_memory  && internal_memory.length > 0) {
+      if(Array.isArray(internal_memory)){
+        orConditions.push({ internalMemory: { $in: internal_memory.map(Number) }});
+      } else{
+        internal_memoryArray.push(internal_memory)
+        orConditions.push({ internalMemory: { $in: internal_memoryArray.map(Number) }});
+      }
+    }
+
+    if (battery_capacity && battery_capacity.length > 0) {
+      if(Array.isArray(battery_capacity) ){
+        orConditions.push({ batteryCapacity: { $in: battery_capacity.map(Number) }});
+      } else {
+        battery_capacityArray.push(battery_capacity)
+        orConditions.push({ batteryCapacity: { $in: battery_capacityArray.map(Number) }});
+      }
+    }
+
+    if (operating_system && operating_system.length > 0) {
+      if( Array.isArray(operating_system) ){
+        orConditions.push({ category: { $in: operating_system } });
+      }else{
+        operating_systemArray.push(operating_system)
+        orConditions.push({ category: { $in: operating_systemArray } });
+      }
+    }
+
+    // Check if there are any conditions before adding the $match stage
+    if (orConditions.length > 0) {
+      aggregationStages.push({
+        $match: {
+          $or: orConditions,
+        },
+      });
+    }
+
+    // Check if there are any aggregation stages before attempting the aggregation
+    if (aggregationStages.length > 0) {
+      const products = await productsModel.aggregate(aggregationStages);
+      res.render("products-grid-view", { products, categories, brands, isLogin })
+    } else {
+      const products = await productsModel.find({});
+      res.render("products-grid-view", { products, categories, brands, isLogin })
+    }
+
+
+  } catch (err) {
+    console.error(err);
   }
 }

@@ -23,5 +23,7 @@ userRouter.get('/product', userController.getProductPage)
 userRouter.get('/cart',userAuth.isUserLogin,userController.getCartPage)
 userRouter.get('/contact',userController.getContactPage)
 userRouter.get('/logout',userController.getUserLogout)
+userRouter.get('/search',userController.getSearch)
+userRouter.post('/search',userController.postSearch)
 
 module.exports = userRouter;

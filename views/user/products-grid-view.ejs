@@ -3,7 +3,7 @@
         <div class="page-header breadcrumb-wrap">
             <div class="container">
                 <div class="breadcrumb">
-                    <a href="index.html" rel="nofollow">Home</a>
+                    <a href="/" rel="nofollow">Home</a>
                     <span></span> Shop
                 </div>
             </div>
@@ -99,7 +99,7 @@
                                                     </a></h2>
                                                 <div class="rating-result" title="90%">
                                                     <span>
-                                                        <span>90%</span>
+                                                        <span><%=Math.round(100-((product.salePrice/product.regularPrice)*100))%>%</span>
                                                     </span>
                                                 </div>
                                                 <div class="product-price">
@@ -143,7 +143,7 @@
                             <ul class="categories">
                                 <%if(categories){%>
                                     <%for(let i=0;i<categories.length;i++){%>
-                                        <li><a href="shop-grid-right.html">
+                                        <li><a href="/search?category=<%=categories[i].categoryName%>">
                                                 <%=categories[i].categoryName%>
                                             </a></li>
                                         <%}%>
@@ -158,13 +158,14 @@
                                 <h5 class="widget-title mb-10">Fill by price</h5>
                                 <div class="bt-1 border-color-1"></div>
                             </div>
+                            <form action="/search" method="post">
                             <div class="price-filter">
                                 <div class="price-filter-inner">
                                     <div id="slider-range"></div>
                                     <div class="price_slider_amount">
                                         <div class="label-input">
-                                            <span>Range:</span><input type="text" id="amount" name="price"
-                                                placeholder="Add Your Price" />
+                                            <span>Range:</span><input type="number" id="amount" name="price"
+                                                placeholder="Enter Your Price" class="border-color-1"/>
                                         </div>
                                     </div>
                                 </div>
@@ -187,65 +188,80 @@
                                                         <%}%>
 
                                     </div>
-                                    <label class="fw-900 mt-15">RAM</label>
-                                    <div class="custome-checkbox">
-                                        <input class="form-check-input" type="checkbox" name="ram" id="2" value="2">
-                                        <label class="form-check-label" for="2"><span>2 GB</span></label>
-                                        <br>
-                                        <input class="form-check-input" type="checkbox" name="ram" id="4" value="4">
-                                        <label class="form-check-label" for="4"><span>4 GB</span></label>
-                                        <br>
-                                        <input class="form-check-input" type="checkbox" name="ram" id="6" value="6">
-                                        <label class="form-check-label" for="6"><span>6 GB</span></label>
-                                        <br>
-                                        <input class="form-check-input" type="checkbox" name="ram" id="8" value="8">
-                                        <label class="form-check-label" for="8"><span>8 GB and Above</span></label>
-                                        <br>
+                                    
+                                        <label class="fw-900 mt-15">RAM</label>
+                                        <div class="custome-checkbox">
+                                            <input class="form-check-input" type="checkbox" name="ram" id="2" value="2">
+                                            <label class="form-check-label" for="2"><span>2 GB</span></label>
+                                            <br>
+                                            <input class="form-check-input" type="checkbox" name="ram" id="4" value="4">
+                                            <label class="form-check-label" for="4"><span>4 GB</span></label>
+                                            <br>
+                                            <input class="form-check-input" type="checkbox" name="ram" id="6" value="6">
+                                            <label class="form-check-label" for="6"><span>6 GB</span></label>
+                                            <br>
+                                            <input class="form-check-input" type="checkbox" name="ram" id="8" value="8">
+                                            <label class="form-check-label" for="8"><span>8 GB and Above</span></label>
+                                            <br>
+                                        </div>
+                                        <label class="fw-900 mt-15">INTERNAL MEMORY</label>
+                                        <div class="custome-checkbox">
+                                            <input class="form-check-input" type="checkbox" name="internal_memory"
+                                                id="16" value="16">
+                                            <label class="form-check-label" for="16"><span>16 GB</span></label>
+                                            <br>
+                                            <input class="form-check-input" type="checkbox" name="internal_memory"
+                                                id="32" value="32">
+                                            <label class="form-check-label" for="32"><span>32 GB</span></label>
+                                            <br>
+                                            <input class="form-check-input" type="checkbox" name="internal_memory"
+                                                id="64" value="64">
+                                            <label class="form-check-label" for="64"><span>64 GB</span></label>
+                                            <br>
+                                            <input class="form-check-input" type="checkbox" name="internal_memory"
+                                                id="128" value="128">
+                                            <label class="form-check-label" for="128"><span>128 GB</span></label>
+                                            <br>
+                                            <input class="form-check-input" type="checkbox" name="internal_memory"
+                                                id="256" value="256">
+                                            <label class="form-check-label" for="256"><span>256 GB and
+                                                    Above</span></label>
+                                            <br>
+                                        </div>
+                                        <label class="fw-900 mt-15">BATTERY CAPACITY</label>
+                                        <div class="custome-checkbox">
+                                            <input class="form-check-input" type="checkbox" name="battery_capacity"
+                                                id="Under 5000" value="6000">
+                                            <label class="form-check-label" for="Under 5000"><span>1000 - 5000
+                                                    mAh</span></label>
+                                            <br>
+                                            <input class="form-check-input" type="checkbox" name="battery_capacity"
+                                                id="Under 10000" value="10000">
+                                            <label class="form-check-label" for="Under 10000"><span>5000 - 10000
+                                                    mAh</span></label>
+                                            <br>
+                                        </div>
+                                        <label class="fw-900 mt-15">OPERATING SYSTEM</label>
+                                        <div class="custome-checkbox">
+                                            <input class="form-check-input" type="checkbox" name="operating_system"
+                                                id="android" value="Android">
+                                            <label class="form-check-label" for="android"><span>Android</span></label>
+                                            <br>
+                                            <input class="form-check-input" type="checkbox" name="operating_system"
+                                                id="iOS" value="iOS">
+                                            <label class="form-check-label" for="iOS"><span>iOS</span></label>
+                                            <br>
+                                            <input class="form-check-input" type="checkbox" name="operating_system"
+                                                id="Windows" value="Windows">
+                                            <label class="form-check-label" for="Windows"><span>Windows</span></label>
+                                            <br>
+                                        </div>
                                     </div>
-                                    <label class="fw-900 mt-15">INTERNAL MEMORY</label>
-                                    <div class="custome-checkbox">
-                                        <input class="form-check-input" type="checkbox" name="internal-memory" id="16" value="16">
-                                        <label class="form-check-label" for="16"><span>16 GB</span></label>
-                                        <br>
-                                        <input class="form-check-input" type="checkbox" name="internal-memory" id="32" value="32">
-                                        <label class="form-check-label" for="32"><span>32 GB</span></label>
-                                        <br>
-                                        <input class="form-check-input" type="checkbox" name="internal-memory" id="64" value="64">
-                                        <label class="form-check-label" for="64"><span>64 GB</span></label>
-                                        <br>
-                                        <input class="form-check-input" type="checkbox" name="internal-memory" id="128" value="128">
-                                        <label class="form-check-label" for="128"><span>128 GB</span></label>
-                                        <br>
-                                        <input class="form-check-input" type="checkbox" name="internal-memory" id="256" value="256">
-                                        <label class="form-check-label" for="256"><span>256 GB and Above</span></label>
-                                        <br>
-                                    </div>
-                                    <label class="fw-900 mt-15">BATTERY CAPACITY</label>
-                                    <div class="custome-checkbox">
-                                        <input class="form-check-input" type="checkbox" name="battery-capacity" id="Under 5000" value="5000">
-                                        <label class="form-check-label" for="Under 5000"><span>1000 - 5000 Mah</span></label>
-                                        <br>
-                                        <input class="form-check-input" type="checkbox" name="battery-capacity" id="Under 10000" value="10000">
-                                        <label class="form-check-label" for="Under 10000"><span>5000 - 10000 Mah</span></label>
-                                        <br>
-                                    </div>
-                                    <label class="fw-900 mt-15">OPERATING SYSTEM</label>
-                                    <div class="custome-checkbox">
-                                        <input class="form-check-input" type="checkbox" name="operating-system" id="android" value="Android">
-                                        <label class="form-check-label" for="android"><span>Android</span></label>
-                                        <br>
-                                        <input class="form-check-input" type="checkbox" name="operating-system" id="iOS" value="iOS">
-                                        <label class="form-check-label" for="iOS"><span>iOS</span></label>
-                                        <br>
-                                        <input class="form-check-input" type="checkbox" name="operating-system" id="Windows" value="Windows">
-                                        <label class="form-check-label" for="Windows"><span>Windows</span></label>
-                                        <br>
-                                    </div>
+                                    
                                 </div>
-
-                            </div>
-                            <a href="/products" class="btn btn-sm btn-default"><i
-                                    class="fi-rs-filter mr-5"></i> Fillter</a>
+                                <button class="btn btn-sm btn-defaul" type="submit"><i class="fi-rs-filter mr-5"></i>
+                                    Fillter</button>
+                            </form>
                         </div>
                     </div>
                 </div>

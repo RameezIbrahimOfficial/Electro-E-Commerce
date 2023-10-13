@@ -79,14 +79,14 @@
                     </div>
                     <div class="header-right">
                         <div class="search-style-2">
-                            <form action="#">
-                                <select class="select-active">
+                            <form action="/search">
+                                <!-- <select class="select-active">
                                     <option>All Categories</option>
                                     <option>Android</option>
                                     <option>iOS</option>
                                     <option>Windows Phone</option>
-                                </select>
-                                <input type="text" placeholder="Search for items...">
+                                </select> -->
+                                <input type="text" placeholder="Search for items..." name="product_search">
                             </form>
                         </div>
                         <div class="header-action-right">
@@ -125,9 +125,9 @@
                             <div class="categori-dropdown-wrap categori-dropdown-active-large">
                                 <ul>
                                     <li><a href="/products"><i class="evara-font-desktop"></i>All Categories</a></li>
-                                    <li><a href="/products"><i class="evara-font-cpu"></i>Android</a></li>
-                                    <li><a href="/products"><i class="evara-font-diamond"></i>iOS</a></li>
-                                    <li><a href="/products"><i class="evara-font-home"></i>Windows Phone</a></li>
+                                    <li><a href="/search?category=Android"><i class="evara-font-cpu"></i>Android</a></li>
+                                    <li><a href="/search?category=iOS"><i class="evara-font-desktop"></i>iOS</a></li>
+                                    <li><a href="/search?category=Windows"><i class="evara-font-home"></i>Windows Phone</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -242,10 +242,10 @@
                         </a>
                         <div class="categori-dropdown-wrap categori-dropdown-active-small">
                             <ul>
-                                <li><a href=""><i class="evara-font-dress"></i>All Categories</a></li>
-                                <li><a href=""><i class="evara-font-tshirt"></i>Android</li>
-                                <li> <a href=""><i class="evara-font-smartphone"></i> iOS</a></li>
-                                <li><a href=""><i class="evara-font-desktop"></i>Windows Phone</a></li>
+                                <li><a href="/products"><i class="evara-font-desktop"></i>All Categories</a></li>
+                                <li><a href="/search?category=Android"><i class="evara-font-smartphon"></i>Android</a></li>
+                                <li> <a href="/search?category=iOS"><i class="evara-font-smartphone"></i> iOS</a></li>
+                                <li><a href="/search?category=Windows"><i class="evara-font-desktop"></i>Windows Phone</a></li>
                             </ul>
                         </div>
                     </div>
