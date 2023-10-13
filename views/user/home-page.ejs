@@ -201,8 +201,8 @@
           aria-labelledby="tab-one"
         >
           <div class="row product-grid-4">
-            <%if(products){%> 
-              <% products.filter(product => !product.isBlocked).forEach(function(product) { %>
+            <%if(products){%> <% products.filter(product =>
+            !product.isBlocked).forEach(function(product) { %>
             <div class="col-lg-3 col-md-4 col-12 col-sm-6">
               <div class="product-cart-wrap mb-30">
                 <div class="product-img-action-wrap">
@@ -251,7 +251,9 @@
                   <h2><a href=""><%=product.productName%></a></h2>
                   <div class="rating-result" title="90%">
                     <span>
-                      <span><%=Math.round(100-((product.salePrice/product.regularPrice)*100))%>%</span>
+                      <span
+                        ><%=Math.round(100-((product.salePrice/product.regularPrice)*100))%>%</span
+                      >
                     </span>
                   </div>
                   <div class="product-price">
@@ -282,79 +284,81 @@
           role="tabpanel"
           aria-labelledby="tab-two"
         >
-        <div class="row product-grid-4">
-          <%if(products){%> 
-            <% products.filter(product => !product.isBlocked).forEach(function(product) { %>
-          <div class="col-lg-3 col-md-4 col-12 col-sm-6">
-            <div class="product-cart-wrap mb-30">
-              <div class="product-img-action-wrap">
-                <div class="product-img product-img-zoom">
-                  <a href="/product?id=<%=product._id%>">
-                    <img
-                      class="default-img"
-                      src="data:<%= product.productImage[0].contentType %>;base64, <%= product.productImage[0].buffer.toString('base64') %>"
-                      alt=""
-                    />
-                    <img
-                      class="hover-img"
-                      src="data:<%= product.productImage[0].contentType %>;base64, <%= product.productImage[0].buffer.toString('base64') %>"
-                      alt=""
-                    />
-                  </a>
+          <div class="row product-grid-4">
+            <%if(products){%> <% products.filter(product =>
+            !product.isBlocked).forEach(function(product) { %>
+            <div class="col-lg-3 col-md-4 col-12 col-sm-6">
+              <div class="product-cart-wrap mb-30">
+                <div class="product-img-action-wrap">
+                  <div class="product-img product-img-zoom">
+                    <a href="/product?id=<%=product._id%>">
+                      <img
+                        class="default-img"
+                        src="data:<%= product.productImage[0].contentType %>;base64, <%= product.productImage[0].buffer.toString('base64') %>"
+                        alt=""
+                      />
+                      <img
+                        class="hover-img"
+                        src="data:<%= product.productImage[0].contentType %>;base64, <%= product.productImage[0].buffer.toString('base64') %>"
+                        alt=""
+                      />
+                    </a>
+                  </div>
+                  <div class="product-action-1">
+                    <a
+                      aria-label="Quick view"
+                      class="action-btn hover-up"
+                      data-bs-toggle="modal"
+                      data-bs-target="#quickViewModal"
+                      ><i class="fi-rs-eye"></i
+                    ></a>
+                    <a
+                      aria-label="Add To Wishlist"
+                      class="action-btn hover-up"
+                      href=""
+                      ><i class="fi-rs-heart"></i
+                    ></a>
+                    <a aria-label="Compare" class="action-btn hover-up" href=""
+                      ><i class="fi-rs-shuffle"></i
+                    ></a>
+                  </div>
+                  <div
+                    class="product-badges product-badges-position product-badges-mrg"
+                  >
+                    <span class="hot">Hot</span>
+                  </div>
                 </div>
-                <div class="product-action-1">
-                  <a
-                    aria-label="Quick view"
-                    class="action-btn hover-up"
-                    data-bs-toggle="modal"
-                    data-bs-target="#quickViewModal"
-                    ><i class="fi-rs-eye"></i
-                  ></a>
-                  <a
-                    aria-label="Add To Wishlist"
-                    class="action-btn hover-up"
-                    href=""
-                    ><i class="fi-rs-heart"></i
-                  ></a>
-                  <a aria-label="Compare" class="action-btn hover-up" href=""
-                    ><i class="fi-rs-shuffle"></i
-                  ></a>
-                </div>
-                <div
-                  class="product-badges product-badges-position product-badges-mrg"
-                >
-                  <span class="hot">Hot</span>
-                </div>
-              </div>
-              <div class="product-content-wrap">
-                <div class="product-category">
-                  <a href=""><%=product.brand%></a>
-                </div>
-                <h2><a href=""><%=product.productName%></a></h2>
-                <div class="rating-result" title="90%">
-                  <span>
-                    <span><%=Math.round(100-((product.salePrice/product.regularPrice)*100))%>%</span>
-                  </span>
-                </div>
-                <div class="product-price">
-                  <span><%=product.salePrice%></span>
-                  <span class="old-price"><%=product.regularPrice%></span>
-                </div>
-                <div class="product-action-1 show">
-                  <a
-                    aria-label="Add To Cart"
-                    class="action-btn hover-up"
-                    href=""
-                    ><i class="fi-rs-shopping-bag-add"></i
-                  ></a>
+                <div class="product-content-wrap">
+                  <div class="product-category">
+                    <a href=""><%=product.brand%></a>
+                  </div>
+                  <h2><a href=""><%=product.productName%></a></h2>
+                  <div class="rating-result" title="90%">
+                    <span>
+                      <span
+                        ><%=Math.round(100-((product.salePrice/product.regularPrice)*100))%>%</span
+                      >
+                    </span>
+                  </div>
+                  <div class="product-price">
+                    <span><%=product.salePrice%></span>
+                    <span class="old-price"><%=product.regularPrice%></span>
+                  </div>
+                  <div class="product-action-1 show">
+                    <a
+                      aria-label="Add To Cart"
+                      class="action-btn hover-up"
+                      href=""
+                      ><i class="fi-rs-shopping-bag-add"></i
+                    ></a>
+                  </div>
                 </div>
               </div>
             </div>
+            <%})%> <%}else{%>
+            <h3>No Products Found</h3>
+            <%}%>
           </div>
-          <%})%> <%}else{%>
-          <h3>No Products Found</h3>
-          <%}%>
-        </div>
           <!--End product-grid-4-->
         </div>
         <!--En tab two (Popular)-->
@@ -364,79 +368,81 @@
           role="tabpanel"
           aria-labelledby="tab-three"
         >
-        <div class="row product-grid-4">
-          <%if(products){%> 
-            <% products.filter(product => !product.isBlocked).forEach(function(product) { %>
-          <div class="col-lg-3 col-md-4 col-12 col-sm-6">
-            <div class="product-cart-wrap mb-30">
-              <div class="product-img-action-wrap">
-                <div class="product-img product-img-zoom">
-                  <a href="/product?id=<%=product._id%>">
-                    <img
-                      class="default-img"
-                      src="data:<%= product.productImage[0].contentType %>;base64, <%= product.productImage[0].buffer.toString('base64') %>"
-                      alt=""
-                    />
-                    <img
-                      class="hover-img"
-                      src="data:<%= product.productImage[0].contentType %>;base64, <%= product.productImage[0].buffer.toString('base64') %>"
-                      alt=""
-                    />
-                  </a>
+          <div class="row product-grid-4">
+            <%if(products){%> <% products.filter(product =>
+            !product.isBlocked).forEach(function(product) { %>
+            <div class="col-lg-3 col-md-4 col-12 col-sm-6">
+              <div class="product-cart-wrap mb-30">
+                <div class="product-img-action-wrap">
+                  <div class="product-img product-img-zoom">
+                    <a href="/product?id=<%=product._id%>">
+                      <img
+                        class="default-img"
+                        src="data:<%= product.productImage[0].contentType %>;base64, <%= product.productImage[0].buffer.toString('base64') %>"
+                        alt=""
+                      />
+                      <img
+                        class="hover-img"
+                        src="data:<%= product.productImage[0].contentType %>;base64, <%= product.productImage[0].buffer.toString('base64') %>"
+                        alt=""
+                      />
+                    </a>
+                  </div>
+                  <div class="product-action-1">
+                    <a
+                      aria-label="Quick view"
+                      class="action-btn hover-up"
+                      data-bs-toggle="modal"
+                      data-bs-target="#quickViewModal"
+                      ><i class="fi-rs-eye"></i
+                    ></a>
+                    <a
+                      aria-label="Add To Wishlist"
+                      class="action-btn hover-up"
+                      href=""
+                      ><i class="fi-rs-heart"></i
+                    ></a>
+                    <a aria-label="Compare" class="action-btn hover-up" href=""
+                      ><i class="fi-rs-shuffle"></i
+                    ></a>
+                  </div>
+                  <div
+                    class="product-badges product-badges-position product-badges-mrg"
+                  >
+                    <span class="hot">Hot</span>
+                  </div>
                 </div>
-                <div class="product-action-1">
-                  <a
-                    aria-label="Quick view"
-                    class="action-btn hover-up"
-                    data-bs-toggle="modal"
-                    data-bs-target="#quickViewModal"
-                    ><i class="fi-rs-eye"></i
-                  ></a>
-                  <a
-                    aria-label="Add To Wishlist"
-                    class="action-btn hover-up"
-                    href=""
-                    ><i class="fi-rs-heart"></i
-                  ></a>
-                  <a aria-label="Compare" class="action-btn hover-up" href=""
-                    ><i class="fi-rs-shuffle"></i
-                  ></a>
-                </div>
-                <div
-                  class="product-badges product-badges-position product-badges-mrg"
-                >
-                  <span class="hot">Hot</span>
-                </div>
-              </div>
-              <div class="product-content-wrap">
-                <div class="product-category">
-                  <a href=""><%=product.brand%></a>
-                </div>
-                <h2><a href=""><%=product.productName%></a></h2>
-                <div class="rating-result" title="90%">
-                  <span>
-                    <span><%=Math.round(100-((product.salePrice/product.regularPrice)*100))%>%</span>
-                  </span>
-                </div>
-                <div class="product-price">
-                  <span><%=product.salePrice%></span>
-                  <span class="old-price"><%=product.regularPrice%></span>
-                </div>
-                <div class="product-action-1 show">
-                  <a
-                    aria-label="Add To Cart"
-                    class="action-btn hover-up"
-                    href=""
-                    ><i class="fi-rs-shopping-bag-add"></i
-                  ></a>
+                <div class="product-content-wrap">
+                  <div class="product-category">
+                    <a href=""><%=product.brand%></a>
+                  </div>
+                  <h2><a href=""><%=product.productName%></a></h2>
+                  <div class="rating-result" title="90%">
+                    <span>
+                      <span
+                        ><%=Math.round(100-((product.salePrice/product.regularPrice)*100))%>%</span
+                      >
+                    </span>
+                  </div>
+                  <div class="product-price">
+                    <span><%=product.salePrice%></span>
+                    <span class="old-price"><%=product.regularPrice%></span>
+                  </div>
+                  <div class="product-action-1 show">
+                    <a
+                      aria-label="Add To Cart"
+                      class="action-btn hover-up"
+                      href=""
+                      ><i class="fi-rs-shopping-bag-add"></i
+                    ></a>
+                  </div>
                 </div>
               </div>
             </div>
+            <%})%> <%}else{%>
+            <h3>No Products Found</h3>
+            <%}%>
           </div>
-          <%})%> <%}else{%>
-          <h3>No Products Found</h3>
-          <%}%>
-        </div>  
           <!--End product-grid-4-->
         </div>
         <!--En tab three (New added)-->
@@ -515,20 +521,18 @@
           id="carausel-6-columns-3-arrows"
         ></div>
         <div class="carausel-6-columns text-center" id="carausel-6-columns-3">
-          <%if(brands){%>
-            <%brands.forEach((brand)=>{%>
-              <div class="brand-logo">
-                <img
-                  src="data:<%= brand.brandImage.contentType %>;base64, <%= brand.brandImage.buffer.toString('base64') %>"
-                  alt="brand-logo"
-                  height="72"
-                />
-              </div>
-            <%})%>
-          <%} else {%>
-            <div class="brand-logo">
-                <h4>No Brands</h4>
-            </div>
+          <%if(brands){%> <%brands.forEach((brand)=>{%>
+          <div class="brand-logo">
+            <img
+              src="data:<%= brand.brandImage.contentType %>;base64, <%= brand.brandImage.buffer.toString('base64') %>"
+              alt="brand-logo"
+              height="72"
+            />
+          </div>
+          <%})%> <%} else {%>
+          <div class="brand-logo">
+            <h4>No Brands</h4>
+          </div>
           <%}%>
         </div>
       </div>

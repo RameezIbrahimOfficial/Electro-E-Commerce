@@ -199,58 +199,58 @@ module.exports.postSearch = async (req, res) => {
     const { ram, price, brand, internal_memory, battery_capacity, operating_system } = req.body;
     const aggregationStages = [];
     const orConditions = [];
-    const ramArray = [],priceArray = [], internal_memoryArray =[] ,brandArray = [], battery_capacityArray = [], operating_systemArray = [];
+    const ramArray = [], priceArray = [], internal_memoryArray = [], brandArray = [], battery_capacityArray = [], operating_systemArray = [];
 
     // Build an array of $or conditions for each field with multiple values
     if (ram && ram.length > 0) {
-      if( Array.isArray(ram)){
-      orConditions.push({ ram: { $in: ram.map(Number) }});
+      if (Array.isArray(ram)) {
+        orConditions.push({ ram: { $in: ram.map(Number) } });
       } else {
         ramArray.push(ram)
-        orConditions.push({ram:{$in:ramArray.map(Number)}})
-      }
-    }
-    
-    if (price && price.length > 0) {
-      if(Array.isArray(price)){
-        orConditions.push({ salePrice: { $in: price.map(Number) }});
-      } else {
-        priceArray.push(price)
-        orConditions.push({salePrice:{$in:priceArray.map(Number)}})
-      }
-    }
-    
-    if (brand && brand.length > 0) {
-      if( Array.isArray(brand)){
-        orConditions.push({ brand: { $in: brand } });
-      } else{
-        brandArray.push(brand)
-        orConditions.push({brand:{$in:brandArray}})
+        orConditions.push({ ram: { $in: ramArray.map(Number) } })
       }
     }
 
-    if (internal_memory  && internal_memory.length > 0) {
-      if(Array.isArray(internal_memory)){
-        orConditions.push({ internalMemory: { $in: internal_memory.map(Number) }});
-      } else{
+    if (price && price.length > 0) {
+      if (Array.isArray(price)) {
+        orConditions.push({ salePrice: { $in: price.map(Number) } });
+      } else {
+        priceArray.push(price)
+        orConditions.push({ salePrice: { $in: priceArray.map(Number) } })
+      }
+    }
+
+    if (brand && brand.length > 0) {
+      if (Array.isArray(brand)) {
+        orConditions.push({ brand: { $in: brand } });
+      } else {
+        brandArray.push(brand)
+        orConditions.push({ brand: { $in: brandArray } })
+      }
+    }
+
+    if (internal_memory && internal_memory.length > 0) {
+      if (Array.isArray(internal_memory)) {
+        orConditions.push({ internalMemory: { $in: internal_memory.map(Number) } });
+      } else {
         internal_memoryArray.push(internal_memory)
-        orConditions.push({ internalMemory: { $in: internal_memoryArray.map(Number) }});
+        orConditions.push({ internalMemory: { $in: internal_memoryArray.map(Number) } });
       }
     }
 
     if (battery_capacity && battery_capacity.length > 0) {
-      if(Array.isArray(battery_capacity) ){
-        orConditions.push({ batteryCapacity: { $in: battery_capacity.map(Number) }});
+      if (Array.isArray(battery_capacity)) {
+        orConditions.push({ batteryCapacity: { $in: battery_capacity.map(Number) } });
       } else {
         battery_capacityArray.push(battery_capacity)
-        orConditions.push({ batteryCapacity: { $in: battery_capacityArray.map(Number) }});
+        orConditions.push({ batteryCapacity: { $in: battery_capacityArray.map(Number) } });
       }
     }
 
     if (operating_system && operating_system.length > 0) {
-      if( Array.isArray(operating_system) ){
+      if (Array.isArray(operating_system)) {
         orConditions.push({ category: { $in: operating_system } });
-      }else{
+      } else {
         operating_systemArray.push(operating_system)
         orConditions.push({ category: { $in: operating_systemArray } });
       }

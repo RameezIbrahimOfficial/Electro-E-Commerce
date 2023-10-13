@@ -1,26 +1,26 @@
 const mongoose = require('mongoose');
 
 const brandSchema = mongoose.Schema({
-    id:{
-        type:Number,
-        required:true,
-        unique:true
+    id: {
+        type: Number,
+        required: true,
+        unique: true
     },
-    brandName:{
-        type:String,
-        required:true
+    brandName: {
+        type: String,
+        required: true
     },
     brandImage: {
-          fileName: String,
-          mimeType: String,
-          buffer: Buffer,
+        fileName: String,
+        mimeType: String,
+        buffer: Buffer,
     },
-    isBlocked:{
-        type:Boolean,
-        required:true
+    isBlocked: {
+        type: Boolean,
+        required: true
     }
 })
 
-const brandModel = mongoose.model('Brand',brandSchema);
+const brandModel = mongoose.model('Brand', brandSchema);
 
 module.exports = brandModel

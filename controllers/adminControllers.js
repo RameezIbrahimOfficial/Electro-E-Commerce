@@ -78,7 +78,7 @@ module.exports.postEditCategory = async (req, res) => {
         },
       }
     );
-        res.redirect("/admin/admin_panel/categories");
+    res.redirect("/admin/admin_panel/categories");
   } catch (err) {
     console.error(err);
   }
@@ -156,7 +156,7 @@ module.exports.getAddProducts = async (req, res) => {
   try {
     const categories = await categoryModel.find({});
     const brands = await brandModel.find({})
-    res.render("page-form-product-1", { categories , brands});
+    res.render("page-form-product-1", { categories, brands });
   } catch (err) {
     console.error(err);
   }
@@ -298,68 +298,68 @@ module.exports.getUnblockProducts = async (req, res) => {
   }
 };
 
-module.exports.getBrands = async(req,res)=>{
-    try{
-      brands = await brandModel.find({})
-      res.render('page-brands',{brands})
-    }
-    catch(err){
-      console.error(err)
-    }
+module.exports.getBrands = async (req, res) => {
+  try {
+    brands = await brandModel.find({})
+    res.render('page-brands', { brands })
+  }
+  catch (err) {
+    console.error(err)
+  }
 }
 
-module.exports.postAddBrands =async(req,res)=>{
-  try{
+module.exports.postAddBrands = async (req, res) => {
+  try {
     const brandLogo = req.file;
     await brandModel.create({
-      id:req.body.brandId,
-      brandName:req.body.brandName,
-      isBlocked:req.body.isBlocked,
-      brandImage:{
-        fileName:brandLogo.originalname,
-        mimeType:brandLogo.mimetype,
-        buffer:brandLogo.buffer
+      id: req.body.brandId,
+      brandName: req.body.brandName,
+      isBlocked: req.body.isBlocked,
+      brandImage: {
+        fileName: brandLogo.originalname,
+        mimeType: brandLogo.mimetype,
+        buffer: brandLogo.buffer
       }
     })
     res.redirect('/admin/admin_panel/brands')
   }
-  catch(err){
+  catch (err) {
     console.error(err)
   }
 }
 
-module.exports.getBlockBrand = async(req,res)=>{
-  try{
+module.exports.getBlockBrand = async (req, res) => {
+  try {
     const id = req.query.id;
-    await brandModel.updateOne({_id:id},{$set:{isBlocked:true}});
+    await brandModel.updateOne({ _id: id }, { $set: { isBlocked: true } });
     res.redirect('/admin/admin_panel/brands')
   }
-  catch(err){
+  catch (err) {
     console.error(err)
   }
 
 }
 
-module.exports.getUnblockBrand = async(req,res)=>{
-  try{
+module.exports.getUnblockBrand = async (req, res) => {
+  try {
     const id = req.query.id;
-    await brandModel.updateOne({_id:id},{$set:{isBlocked:false}});
+    await brandModel.updateOne({ _id: id }, { $set: { isBlocked: false } });
     res.redirect('/admin/admin_panel/brands')
   }
-  catch(err){
+  catch (err) {
     console.error(err)
   }
 
 }
 
-module.exports.getEditBrand = async(req,res)=>{
-  try{
+module.exports.getEditBrand = async (req, res) => {
+  try {
     const id = req.query.id;
     const brands = await brandModel.find({})
-    const brand = await brandModel.findOne({_id:id});
-    res.render('page-edit-brand',{brand,brands}) 
+    const brand = await brandModel.findOne({ _id: id });
+    res.render('page-edit-brand', { brand, brands })
   }
-  catch(err){
+  catch (err) {
     console.error(err)
   }
 
@@ -368,15 +368,15 @@ module.exports.getEditBrand = async(req,res)=>{
 module.exports.postEditBrand = async (req, res) => {
   try {
     const id = req.query.id;
-    const brandImage = req.file; 
+    const brandImage = req.file;
     const brand = await brandModel.findOne({ _id: id });
     const newBrandImage = brandImage
       ? {
-          fileName: brandImage.originalname,
-          mimeType: brandImage.mimetype,
-          buffer: brandImage.buffer,
-        }
-      : brand.brandImage; 
+        fileName: brandImage.originalname,
+        mimeType: brandImage.mimetype,
+        buffer: brandImage.buffer,
+      }
+      : brand.brandImage;
 
     await brandModel.updateOne(
       { _id: id },
@@ -385,7 +385,7 @@ module.exports.postEditBrand = async (req, res) => {
           id: req.body.brandId || brand.id,
           brandName: req.body.brandName || brand.brandName,
           isBlocked: req.body.isBlocked || brand.isBlocked,
-          brandImage: newBrandImage, 
+          brandImage: newBrandImage,
         },
       }
     );
