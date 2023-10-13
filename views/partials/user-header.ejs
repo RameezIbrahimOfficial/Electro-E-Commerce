@@ -28,7 +28,7 @@
                         <div class="header-info">
                             <ul>
                                 <li><i class="fi-rs-smartphone"></i> <a href="#">(+01) - 2345 - 6789</a></li>
-                                <li><i class="fi-rs-marker"></i><a  href="page-contact.html">Our location</a></li>
+                                <li><i class="fi-rs-marker"></i><a  href="/contacts">Our location</a></li>
                             </ul>
                         </div>
                     </div>
@@ -36,9 +36,9 @@
                         <div class="text-center">
                             <div id="news-flash" class="d-inline-block">
                                 <ul>
-                                    <li>Get great devices up to 50% off <a href="shop-grid-left.html">View details</a></li>
+                                    <li>Get great devices up to 50% off <a href="/products">View details</a></li>
                                     <li>Supper Value Deals - Save more with coupons</li>
-                                    <li>Iphone 15, save up 35% off today <a href="shop-grid-left.html">Shop now</a></li>
+                                    <li>Iphone 15, save up 35% off today <a href="/products">Shop now</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -46,11 +46,25 @@
                     <div class="col-xl-3 col-lg-4">
                         <div class="header-info header-info-right">
                             <ul>
-                                <%if(isLogin){%>
-                                    <li><i class="fi-rs-user"></i><a href="/logout">Logout</a></li>
-                                    <%} else {%>
-                                    <li><i class="fi-rs-user"></i><a href="/register">Log In / Sign Up</a></li>
-                                <%}%>
+                               
+                                    <%if(isLogin == "true"){%>
+                                        
+                                        <li>
+                                            <i class="fi-rs-user"></i>
+                                            <a href="/logout">Logout</a>  
+                                        </li>
+                                    <%}else{%>
+                                        <li>
+                                            <i class="fi-rs-user"></i>
+                                            <a href="/register">Sign Up</a>
+                                        </li>
+                                        <li>
+                                            <i class="fi-rs-user"></i>
+                                            <a href="/signin">Log In </a>
+                                        </li>
+
+                                    <%}%>
+                                   
                             </ul>
                         </div>
                     </div>
@@ -251,7 +265,12 @@
                         <a  href=""> Our location </a>
                     </div>
                     <div class="single-mobile-header-info">
-                        <a href="/register">Log In / Sign Up </a>
+                        <a href="/register"> Sign Up </a>
+                        <%if(isLogin){%>
+                            <a href="/logout">Logout</a>
+                        <%} else {%>
+                            <a href="/signin">Log In </a>
+                        <%}%>
                     </div>
                     <div class="single-mobile-header-info">
                         <a href="#">(+01) - 2345 - 6789 </a>

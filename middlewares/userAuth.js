@@ -7,7 +7,7 @@ module.exports.isUserLogin = (req, res, next) => {
     const token = req.cookies.userToken;
     jwt.verify(token, JWT_SECRET, (err, decoded) => {
       if (err) {
-        return res.redirect("/register");
+        return res.redirect("/");
       } else {
         req.user = decoded;
       }

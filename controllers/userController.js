@@ -15,7 +15,6 @@ const brandsModel = require('../Model/brand')
 
 let phoneNumber;
 let isOtpVerified;
-let isLogin = false;
 
 module.exports.getSendOtp = async (req, res) => {
   try {
@@ -50,6 +49,7 @@ module.exports.getVerifyOtp = async (req, res) => {
 
 module.exports.getHome = async (req, res) => {
   try {
+    const isLogin = req.cookies.isLogin;
     let products = await productsModel.find({});
     let brands = await brandsModel.find({})
     res.render("home-page", { products , brands , isLogin});
@@ -61,6 +61,7 @@ module.exports.getHome = async (req, res) => {
 module.exports.postUserRegister = async (req, res) => {
   try {
     const { fname, lname, email, SignupPassword, phoneNumber } = req.body;
+    const isLogin = req.cookies.isLogin;
     if (isOtpVerified) {
       await customerModel.create({
         firstName: fname,
@@ -70,7 +71,7 @@ module.exports.postUserRegister = async (req, res) => {
         phoneNumber: phoneNumber,
         createdOn: new Date(),
       });
-      res.render("page-login-register", {
+      res.render("page-register", {
         errorMsgSignup: "Account Created Successfully",
       });
     } else {
@@ -81,33 +82,39 @@ module.exports.postUserRegister = async (req, res) => {
   }
 };
 
-module.exports.getUserLoginRegister = (req, res) => {
-  res.render("page-login-register",{isLogin});
+module.exports.getUserRegister = (req, res) => {
+  const isLogin = req.cookies.isLogin;
+  res.render("page-register",{isLogin});
+};
+module.exports.getUserLogin = (req, res) => {
+  const isLogin = req.cookies.isLogin;
+  res.render("page-login",{isLogin});
 };
 
 module.exports.postUserLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
     user = await customerModel.findOne({ email: email });
+    const isLogin = req.cookies.isLogin;
     if (user) {
       if (user.isBlocked) {
-        res.render("page-login-register", {
+        res.render("page-login", {
           errorMsgLogin: "You Have Been Blocked by Admin",
         });
       } else {
         if (email === user.email && password === user.password) {
           const userToken = jwt.sign(user.email, JWT_SECRET);
           res.cookie("token", userToken, { maxAge: 24 * 60 * 60 * 1000 });
-          isLogin = true;
+          res.cookie("isLogin",true ,{maxAge: 24 * 60 * 60 * 1000 })
           res.redirect("/products");
         } else {
-          res.render("page-login-register", {
+          res.render("page-login", {
             errorMsgLogin: "Invalid Credentials",
           });
         }
       }
     } else {
-      res.render("page-login-register", {
+      res.render("page-login", {
         errorMsgLogin: "No User Found on this Email Please Register",isLogin
       });
     }
@@ -118,6 +125,7 @@ module.exports.postUserLogin = async (req, res) => {
 
 module.exports.getProductsPage = async (req, res) => {
   try {
+    const isLogin = req.cookies.isLogin;
     products = await productsModel.find({});
     categories = await categoryModel.find({});
     brands = await brandsModel.find({})
@@ -129,6 +137,7 @@ module.exports.getProductsPage = async (req, res) => {
 
 module.exports.getProductPage = async (req, res) => {
   try {
+    const isLogin = req.cookies.isLogin;
     const id = req.query.id;
     const product = await productsModel.findOne({ _id: id });
     const brand = await brandsModel.findOne({brandName:product.brand})
@@ -140,6 +149,7 @@ module.exports.getProductPage = async (req, res) => {
 
 module.exports.getCartPage = async (req, res)=>{
   try{
+    const isLogin = req.cookies.isLogin;
     res.render('cart',{isLogin})
   } catch(err){
     console.error(err)
@@ -147,13 +157,16 @@ module.exports.getCartPage = async (req, res)=>{
 }
 
 module.exports.getContactPage = (req,res)=>{
+  const isLogin = req.cookies.isLogin;
   res.render('page-contact',{isLogin})
 }
 
 module.exports.getUserLogout = async(req,res)=>{
   try{
+    console.log(req.cookies.token)
+    console.log(req.cookies.isLogin)
     res.clearCookie('token');
-    isLogin = false
+    res.clearCookie('isLogin');
     res.redirect('/')
   } catch(err){
     console.error(err)

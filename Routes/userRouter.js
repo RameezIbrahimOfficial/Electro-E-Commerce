@@ -14,13 +14,14 @@ userRouter.use(cookieParser())
 userRouter.get("/send_otp", userController.getSendOtp);
 userRouter.get("/verify_otp", userController.getVerifyOtp);
 userRouter.get("/", userController.getHome);
-userRouter.get("/register", userController.getUserLoginRegister);
+userRouter.get("/register", userController.getUserRegister);
 userRouter.post("/register", userController.postUserRegister);
+userRouter.get('/signin', userController.getUserLogin)
 userRouter.post("/signin", userController.postUserLogin);
 userRouter.get("/products", userController.getProductsPage);
 userRouter.get('/product', userController.getProductPage)
 userRouter.get('/cart',userAuth.isUserLogin,userController.getCartPage)
 userRouter.get('/contact',userController.getContactPage)
-userRouter.get('/logout',userAuth.isUserLogin,userController.getUserLogout)
+userRouter.get('/logout',userController.getUserLogout)
 
 module.exports = userRouter;

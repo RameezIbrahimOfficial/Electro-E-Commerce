@@ -78,7 +78,7 @@ module.exports.postEditCategory = async (req, res) => {
         },
       }
     );
-    res.redirect("/admin/admin_panel/categories");
+        res.redirect("/admin/admin_panel/categories");
   } catch (err) {
     console.error(err);
   }

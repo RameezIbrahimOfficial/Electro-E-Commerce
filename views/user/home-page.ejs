@@ -251,7 +251,7 @@
                   <h2><a href=""><%=product.productName%></a></h2>
                   <div class="rating-result" title="90%">
                     <span>
-                      <span>80%</span>
+                      <span><%=Math.round(100-((product.salePrice/product.regularPrice)*100))%>%</span>
                     </span>
                   </div>
                   <div class="product-price">
@@ -333,7 +333,7 @@
                 <h2><a href=""><%=product.productName%></a></h2>
                 <div class="rating-result" title="90%">
                   <span>
-                    <span>80%</span>
+                    <span><%=Math.round(100-((product.salePrice/product.regularPrice)*100))%>%</span>
                   </span>
                 </div>
                 <div class="product-price">
@@ -415,7 +415,7 @@
                 <h2><a href=""><%=product.productName%></a></h2>
                 <div class="rating-result" title="90%">
                   <span>
-                    <span>80%</span>
+                    <span><%=Math.round(100-((product.salePrice/product.regularPrice)*100))%>%</span>
                   </span>
                 </div>
                 <div class="product-price">
