@@ -20,10 +20,11 @@ userRouter.get('/signin', userController.getUserLogin)
 userRouter.post("/signin", userController.postUserLogin);
 userRouter.get("/products", userController.getProductsPage);
 userRouter.get('/product', userController.getProductPage)
-userRouter.get('/cart', userAuth.isUserLogin, userController.getCartPage)
 userRouter.get('/contact', userController.getContactPage)
 userRouter.get('/search', userController.getSearch)
 userRouter.post('/search', userController.postSearch)
+userRouter.get('/cart', userAuth.isUserLogin, userController.getCartPage)
+userRouter.get('/profile',userAuth.isUserLogin, userController.getPorfile)
 userRouter.get('/logout', userController.getUserLogout)
 
 module.exports = userRouter;

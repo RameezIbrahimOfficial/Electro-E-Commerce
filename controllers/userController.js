@@ -12,6 +12,7 @@ const customerModel = require("../Model/customer");
 const productsModel = require("../Model/product");
 const categoryModel = require("../Model/category");
 const brandsModel = require('../Model/brand')
+const cartModel = require("../Model/cart")
 
 let phoneNumber;
 let isOtpVerified;
@@ -103,8 +104,8 @@ module.exports.postUserLogin = async (req, res) => {
         });
       } else {
         if (email === user.email && password === user.password) {
-          const userToken = jwt.sign(user.email, JWT_SECRET);
-          res.cookie("token", userToken, { maxAge: 24 * 60 * 60 * 1000 });
+          const token = jwt.sign(user.email, JWT_SECRET);
+          res.cookie("userToken", token, { maxAge: 24 * 60 * 60 * 1000 });
           res.cookie("isLogin", true, { maxAge: 24 * 60 * 60 * 1000 })
           res.redirect("/products");
         } else {
@@ -147,14 +148,65 @@ module.exports.getProductPage = async (req, res) => {
   }
 };
 
+
+
 module.exports.getCartPage = async (req, res) => {
   try {
+    const productId = req.query.productId;
     const isLogin = req.cookies.isLogin;
-    res.render('cart', { isLogin })
-  } catch (err) {
-    console.error(err)
+    if (productId) {
+      const currentUser = await customerModel.findOne({ email: req.user });
+      if (!currentUser) {
+        return res.redirect('/signin')
+      }
+      const userCart = await cartModel.findOne({ userId: currentUser._id });
+      if (userCart) {
+        let productIndex = -1;
+        for (let i = 0; i < userCart.products.length; i++) {
+          if (productId == userCart.products[i].productId) {
+            productIndex = i;
+            break;
+          }
+        }
+
+        if (productIndex !== -1) {
+          userCart.products[productIndex].quantity += 1;
+        } else {
+          userCart.products.push({ productId, quantity: 1 });
+        }
+
+        await userCart.save();
+      } else {
+        const newCart = new cartModel({
+          userId: currentUser._id,
+          products: [{ productId, quantity: 1 }],
+        });
+        await newCart.save();
+      }
+      res.redirect('/cart')
+    } else {
+      const userCart = await cartModel.findOne({})
+  .populate({
+    path: 'products.productId', 
+    model: 'Product' 
+  });
+  let grandTotal = 0
+  for(let i=0;i<userCart.products.length;i++){
+    grandTotal = grandTotal + userCart.products[i].productId.salePrice * userCart.products[i].quantity
   }
-}
+
+
+      res.render('cart', { userCart, isLogin , grandTotal})
+    }
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+
 
 module.exports.getContactPage = (req, res) => {
   const isLogin = req.cookies.isLogin;
@@ -163,7 +215,7 @@ module.exports.getContactPage = (req, res) => {
 
 module.exports.getUserLogout = async (req, res) => {
   try {
-    res.clearCookie('token');
+    res.clearCookie('userToken');
     res.clearCookie('isLogin');
     res.redirect('/')
   } catch (err) {
@@ -277,5 +329,14 @@ module.exports.postSearch = async (req, res) => {
 
   } catch (err) {
     console.error(err);
+  }
+}
+
+module.exports.getPorfile = async(req,res)=>{
+  try {
+    console.log(req.user)
+    res.send('Welcome to Profile user :-  '+req.user)
+  } catch (error) {
+    console.error(error)
   }
 }

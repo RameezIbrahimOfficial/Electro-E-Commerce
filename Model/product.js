@@ -83,6 +83,6 @@ const productSchema = new mongoose.Schema({
   },
 });
 
-const productsModel = mongoose.model("Product", productSchema);
+const product = mongoose.model("Product", productSchema);
 
-module.exports = productsModel;
+module.exports = product;
