@@ -154,6 +154,7 @@ module.exports.getCartPage = async (req, res) => {
   try {
     const productId = req.query.productId;
     const isLogin = req.cookies.isLogin;
+    const quantity = Number(req.query.quantity);
     if (productId) {
       const currentUser = await customerModel.findOne({ email: req.user });
       if (!currentUser) {
@@ -170,9 +171,9 @@ module.exports.getCartPage = async (req, res) => {
         }
 
         if (productIndex !== -1) {
-          userCart.products[productIndex].quantity += 1;
+          userCart.products[productIndex].quantity += quantity;
         } else {
-          userCart.products.push({ productId, quantity: 1 });
+          userCart.products.push({ productId, quantity: quantity });
         }
 
         await userCart.save();

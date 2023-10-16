@@ -115,4 +115,29 @@
     </section>
 
   </main>
+
+  <script>
+    document.querySelector('.qty-up').addEventListener('click', (event) => {
+        event.preventDefault()
+        var qtyValElement = document.querySelector('.qty-val');
+        var currentQuantity = parseInt(qtyValElement.textContent);
+        qtyValElement.textContent = currentQuantity + 1;
+        console.log(qtyValElement.textContent)
+    })
+    document.querySelector('.qty-down').addEventListener('click', (event) => {
+        event.preventDefault()
+        var qtyValElement = document.querySelector('.qty-val');
+        var currentQuantity = parseInt(qtyValElement.textContent);
+        if (currentQuantity > 1) {
+            qtyValElement.textContent = currentQuantity - 1;
+        }
+    })
+    document.querySelector('.update-cart').addEventListener('click',(event)=>{
+        event.preventDefault()
+        var quantity = document.querySelector('.qty-val').textContent
+        console.log(quantity)
+    })
+
+</script>
+
   <%-include('../partials/user-footer')%>
