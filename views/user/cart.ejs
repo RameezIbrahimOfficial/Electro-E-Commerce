@@ -71,7 +71,7 @@
               </div>
               <div class="cart-action text-end">
                 <a class="btn mr-10 mb-sm-15 update-cart"><i class="fi-rs-shuffle mr-10"></i>Update Cart</a>
-                <a class="btn"><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
+                <a class="btn" href="/products"><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
               </div>
               <div class="divider center_icon mt-50 mb-50">
                 <i class="fi-rs-fingerprint"></i>
@@ -172,11 +172,11 @@
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
-                    return response.json() // Parse the response as JSON
+                    return response.json() 
                 })
                     .then(data => {
-                        // Handle the response data after the update is successful
                         console.log('Data updated successfully:', data);
+                        window.location.href='/cart'
                     })
                     .catch(error => {
                         console.error('Error:'+ error);

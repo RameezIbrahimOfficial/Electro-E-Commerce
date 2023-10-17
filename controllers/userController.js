@@ -239,48 +239,6 @@ module.exports.getDeleteCart = async (req, res) => {
   }
 };
 
-// module.exports.postCartUpdate = async (req, res) => {
-//   try {
-//     const productId = req.body.productId;
-//     const quantity = Number(req.body.quantity);
-//     if (productId) {
-//       const currentUser = await customerModel.findOne({ email: req.user });
-//       if (!currentUser) {
-//         return res.redirect("/signin");
-//       }
-//       const userCart = await cartModel.findOne({ userId: currentUser._id });
-//       if (userCart) {
-//         let productIndex = -1;
-//         for (let i = 0; i < userCart.products.length; i++) {
-//           if (productId == userCart.products[i].productId) {
-//             productIndex = i;
-//             break;
-//           }
-//         }
-
-//         if (productIndex !== -1) {
-//           userCart.products[productIndex].quantity += quantity;
-//         } else {
-//           userCart.products.push({ productId, quantity: quantity });
-//         }
-
-//         await userCart.save();
-//       } else {
-//         const newCart = new cartModel({
-//           userId: currentUser._id,
-//           products: [{ productId, quantity: 1 }],
-//         });
-//         await newCart.save();
-//       }
-//       res.status(200).json({ message: "Added to Cart" });
-//     }
-//     console.log(productId, quantity);
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };
-
-
 module.exports.postCartUpdate = async (req, res) => {
   try {
     const productId = req.body.productId;
@@ -301,13 +259,13 @@ module.exports.postCartUpdate = async (req, res) => {
           products: [{ productId, quantity }],
         });
       } else {
-        const productIndex = userCart.products.findIndex(product => product.productId == productId);
+        const productIndex = userCart.products.findIndex(
+          (product) => product.productId == productId
+        );
 
         if (productIndex !== -1) {
-          // Update the quantity of an existing product
           userCart.products[productIndex].quantity = quantity;
         } else {
-          // Add a new product to the cart
           userCart.products.push({ productId, quantity });
         }
       }
@@ -322,7 +280,6 @@ module.exports.postCartUpdate = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
 
 module.exports.getContactPage = (req, res) => {
   const isLogin = req.cookies.isLogin;
