@@ -91,15 +91,13 @@
                                         <div class="bt-1 border-color-1 mt-30 mb-30"></div>
                                         <div class="detail-extralink">
                                             <div class="detail-qty border radius">
-                                                <a href="#" class="qty-down" ><i
-                                                        class="fi-rs-angle-small-down"></i></a>
+                                                <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
                                                 <span class="qty-val">1</span>
-                                                <a href="#" class="qty-up"><i
-                                                        class="fi-rs-angle-small-up"></i></a>
+                                                <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
                                             </div>
                                             <div class="product-extra-link2">
-                                                <button type="submit" class="button button-add-to-cart"
-                                                    onclick="window.location.href = '/cart?productId=<%= product._id %>'">Add
+                                                <button type="submit" class="button button-add-to-cart add-to-cart"
+                                                    data-productId="<%=product._id%>">Add
                                                     to cart</button>
                                                 <a aria-label="Add To Wishlist" class="action-btn hover-up" href="/"><i
                                                         class="fi-rs-heart"></i></a>
@@ -412,4 +410,55 @@
         </section>
 
     </main>
+
+    <script>
+        document.querySelector('.qty-up').addEventListener('click', (event) => {
+            event.preventDefault();
+            var quantityElement = document.querySelector('.qty-val');
+            var quantity = parseInt(quantityElement.textContent, 10);
+            quantity += 1;
+            quantityElement.textContent = quantity; 
+        });
+
+        document.querySelector('.qty-down').addEventListener('click', (event) => {
+            event.preventDefault();
+            var quantityElement = document.querySelector('.qty-val');
+            var quantity = parseInt(quantityElement.textContent, 10);
+            if (quantity > 1) {
+                quantity -= 1;
+                quantityElement.textContent = quantity; 
+            }
+        });
+
+        document.querySelectorAll('.add-to-cart').forEach(element => {
+            element.addEventListener('click', (event) => {
+                event.preventDefault();
+                var productId = element.getAttribute('data-productId')
+                var quantity = document.querySelector('.qty-val').textContent;
+                fetch(`/cart`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        productId: productId,
+                        quantity: Number(quantity)
+                    })
+                }).then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json() // Parse the response as JSON
+                })
+                    .then(data => {
+                        // Handle the response data after the update is successful
+                        console.log('Data updated successfully:', data);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            })
+        });
+
+    </script>
     <%-include('../partials/user-footer')%>
