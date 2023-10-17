@@ -111,8 +111,8 @@
                                                     </span>
                                                 </div>
                                                 <div class="product-action-1 show">
-                                                    <a aria-label="Add To Cart" class="action-btn hover-up"
-                                                    href="/cart?productId=<%=product._id%>&quantity=1"><i class="fi-rs-shopping-bag-add"></i></a>
+                                                    <a aria-label="Add To Cart" class="action-btn hover-up add-to-cart"
+                                                    data-productId="<%=product._id%"><i class="fi-rs-shopping-bag-add"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -268,4 +268,37 @@
             </div>
         </section>
     </main>
+
+    <script>
+        document.querySelectorAll('.add-to-cart').forEach(element => {
+          element.addEventListener('click', (event) => {
+            event.preventDefault();
+            var productId = element.getAttribute('data-productId')
+            fetch(`/cart`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                productId: productId,
+                quantity: 1
+              })
+            }).then(response => {
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              return response.json() // Parse the response as JSON
+            })
+              .then(data => {
+                // Handle the response data after the update is successful
+                console.log('Data updated successfully:', data);
+              })
+              .catch(error => {
+                console.error('Error:', error);
+              });
+          })
+        });
+    
+      </script>
+
     <%-include('../partials/user-footer')%>
