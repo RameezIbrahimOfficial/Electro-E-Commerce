@@ -25,6 +25,7 @@ userRouter.get('/search', userController.getSearch)
 userRouter.post('/search', userController.postSearch)
 userRouter.get('/cart', userAuth.isUserLogin, userController.getCartPage)
 userRouter.post('/cart', userAuth.isUserLogin, userController.postAddToCart)
+userRouter.get('/cart/update', userAuth.isUserLogin, userController.getUpdateCart)
 userRouter.get('/profile',userAuth.isUserLogin, userController.getPorfile)
 userRouter.get('/logout', userController.getUserLogout)
 

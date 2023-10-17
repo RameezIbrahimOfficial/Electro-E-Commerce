@@ -154,14 +154,17 @@ module.exports.getCartPage = async (req, res) => {
   try {
     const productId = req.query.productId;
     const isLogin = req.cookies.isLogin;
-    const userCart = await cartModel.findOne({})
+    const user = req.user;
+    const userId = await customerModel.findOne({email:user},{_id:1})
+    const userCart = await cartModel.findOne({userId:userId._id})
       .populate({
         path: 'products.productId',
         model: 'Product'
       });
-    let grandTotal = 0
-    for (let i = 0; i < userCart.products.length; i++) {
+      let grandTotal = 0
+      for (let i = 0; i < userCart.products.length; i++) {
       grandTotal = grandTotal + userCart.products[i].productId.salePrice * userCart.products[i].quantity
+      
     }
     res.render('cart', { userCart, isLogin, grandTotal })
 
@@ -211,6 +214,56 @@ module.exports.postAddToCart = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 }
+
+// module.exports.getUpdateCart = async(req, res)=>{
+//   try{
+//     const isLogin = req.cookies.isLogin;
+//     const user = req.user;
+//     const productId = req.query.productId;
+//     const userId = await customerModel.findOne({email:user},{_id:1})
+//     const userCart = await cartModel.findOne({userId : userId._id})
+//     for(let i=0;i<userCart.products.length;i++){
+//       if(userCart.products[i].productId == productId){
+//         await cartModel.updateOne({userId:userId._id},{
+//           products:{$pull:{productId:userCart.products[i].productId}}
+//         })
+//         break;
+//         console.log('removed')
+//       } else {
+//         console.log("No Product found");
+//       }
+//     }
+//     res.send("DELETE THE PRODUCT"+ " "+productId)
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }
+module.exports.getUpdateCart = async (req, res) => {
+  try {
+    const isLogin = req.cookies.isLogin;
+    const user = req.user;
+    const productId = req.query.productId;
+
+    // You should find the user's _id based on their email.
+    const userDocument = await customerModel.findOne({ email: user });
+
+    if (!userDocument) {
+      return res.status(404).send("User not found");
+    }
+
+    const userId = userDocument._id;
+
+    // Use $pull to remove the product with the given productId.
+    await cartModel.updateOne({ userId }, {
+      $pull: { products: { productId: productId } }
+    });
+
+    res.redirect('/cart')
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
 
 
 module.exports.getContactPage = (req, res) => {

@@ -55,7 +55,7 @@
                         <span> <%=userCart.products[i].productId.salePrice%> </span>
                       </td>
                       <td class="action" data-title="Remove">
-                        <a href="#" class="text-muted"><i class="fi-rs-trash"></i></a>
+                        <a href="/cart/update?productId=<%=userCart.products[i].productId._id%>" class="text-muted"><i class="fi-rs-trash"></i></a>
                       </td>
                     </tr>
                     <%}%>
