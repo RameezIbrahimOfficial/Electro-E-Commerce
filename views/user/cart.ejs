@@ -27,43 +27,50 @@
                   </thead>
                   <tbody>
                     <%for(let i=0;i<userCart.products.length;i++){%>
-                    <tr>
-                      <td class="image product-thumbnail">
-                        <img
-                        class="thumbnail"
-                        src="data:<%= userCart.products[i].productId.productImage[0].contentType %>;base64, <%= userCart.products[i].productId.productImage[0].buffer.toString('base64') %>"
-                        alt=""
-                      />
-                      </td>
-                      <td class="product-des product-name">
-                        <h5 class="product-name">
-                          <a href="/product?id=<%=userCart.products[i].productId._id%>"><%=userCart.products[i].productId.productName%></a>
-                        </h5>
-                        <p class="font-xs">
-                          <%=userCart.products[i].productId.brand%>
-                        </p>
-                      </td>
-                      <td class="price" data-title="Price"><span><%=userCart.products[i].productId.salePrice%></span></td>
-                      <td class="text-center" data-title="Stock">
-                        <div class="detail-qty border radius m-auto">
-                          <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
-                          <span class="qty-val"><%=userCart.products[i].quantity%></span>
-                          <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
-                        </div>
-                      </td>
-                      <td class="text-right" data-title="Cart">
-                        <span> <%=userCart.products[i].productId.salePrice%> </span>
-                      </td>
-                      <td class="action" data-title="Remove">
-                        <a href="/cart/update?productId=<%=userCart.products[i].productId._id%>" class="text-muted"><i class="fi-rs-trash"></i></a>
-                      </td>
-                    </tr>
-                    <%}%>
+                      <tr>
+                        <td class="image product-thumbnail">
+                          <img class="thumbnail"
+                            src="data:<%= userCart.products[i].productId.productImage[0].contentType %>;base64, <%= userCart.products[i].productId.productImage[0].buffer.toString('base64') %>"
+                            alt="" />
+                        </td>
+                        <td class="product-des product-name">
+                          <h5 class="product-name">
+                            <a href="/product?id=<%=userCart.products[i].productId._id%>">
+                              <%=userCart.products[i].productId.productName%>
+                            </a>
+                          </h5>
+                          <p class="font-xs">
+                            <%=userCart.products[i].productId.brand%>
+                          </p>
+                        </td>
+                        <td class="price" data-title="Price"><span>
+                            <%=userCart.products[i].productId.salePrice%>
+                          </span></td>
+                        <td class="text-center" data-title="Stock">
+                          <div class="detail-qty border radius m-auto">
+                            <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
+                            <span class="qty-val" data-productId="<%=userCart.products[i].productId._id%>">
+                              <%=userCart.products[i].quantity%>
+                            </span>
+                            <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
+                          </div>
+                        </td>
+                        <td class="text-right" data-title="Cart">
+                          <span>
+                            <%=userCart.products[i].productId.salePrice%>
+                          </span>
+                        </td>
+                        <td class="action" data-title="Remove">
+                          <a href="/cart/delete?productId=<%=userCart.products[i].productId._id%>" class="text-muted"><i
+                              class="fi-rs-trash"></i></a>
+                        </td>
+                      </tr>
+                      <%}%>
                   </tbody>
                 </table>
               </div>
               <div class="cart-action text-end">
-                <a class="btn mr-10 mb-sm-15"><i class="fi-rs-shuffle mr-10"></i>Update Cart</a>
+                <a class="btn mr-10 mb-sm-15 update-cart"><i class="fi-rs-shuffle mr-10"></i>Update Cart</a>
                 <a class="btn"><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
               </div>
               <div class="divider center_icon mt-50 mb-50">
@@ -83,7 +90,9 @@
                           <tr>
                             <td class="cart_total_label">Cart Subtotal</td>
                             <td class="cart_total_amount">
-                              <span class="font-lg fw-900 text-brand"><%=grandTotal%></span>
+                              <span class="font-lg fw-900 text-brand">
+                                <%=grandTotal%>
+                              </span>
                             </td>
                           </tr>
                           <tr>
@@ -95,7 +104,9 @@
                           <tr>
                             <td class="cart_total_label">Total</td>
                             <td class="cart_total_amount">
-                              <strong><span class="font-xl fw-900 text-brand"><%=grandTotal%></span></strong>
+                              <strong><span class="font-xl fw-900 text-brand">
+                                  <%=grandTotal%>
+                                </span></strong>
                             </td>
                           </tr>
                         </tbody>
@@ -107,7 +118,7 @@
                 </div>
               </div>
               <%}else{%>
-                  <h3>No items in cart</h3>
+                <h3>No items in cart</h3>
                 <%}%>
           </div>
         </div>
@@ -117,27 +128,65 @@
   </main>
 
   <script>
-    document.querySelector('.qty-up').addEventListener('click', (event) => {
-        event.preventDefault()
-        var qtyValElement = document.querySelector('.qty-val');
-        var currentQuantity = parseInt(qtyValElement.textContent);
-        qtyValElement.textContent = currentQuantity + 1;
-        console.log(qtyValElement.textContent)
-    })
-    document.querySelector('.qty-down').addEventListener('click', (event) => {
-        event.preventDefault()
-        var qtyValElement = document.querySelector('.qty-val');
-        var currentQuantity = parseInt(qtyValElement.textContent);
-        if (currentQuantity > 1) {
-            qtyValElement.textContent = currentQuantity - 1;
-        }
-    })
-    document.querySelector('.update-cart').addEventListener('click',(event)=>{
-        event.preventDefault()
-        var quantity = document.querySelector('.qty-val').textContent
-        console.log(quantity)
-    })
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('.qty-up').forEach(element => {
+        element.addEventListener('click', (event) => {
+          event.preventDefault();
+          var quantityElement = element.closest('.detail-qty').querySelector('.qty-val');
+          var quantity = parseInt(quantityElement.textContent, 10);
+          console.log(quantity);
+          quantity += 1;
+          quantityElement.textContent = quantity;
+        });
+      });
 
-</script>
+      document.querySelectorAll('.qty-down').forEach(element => {
+        element.addEventListener('click', (event) => {
+          event.preventDefault();
+          var quantityElement = element.closest('.detail-qty').querySelector('.qty-val');
+          var quantity = parseInt(quantityElement.textContent, 10);
+          console.log(quantity);
+          if (quantity > 1) {
+            quantity -= 1;
+            quantityElement.textContent = quantity;
+          }
+        });
+      });
+
+      const qtyValElements = document.querySelectorAll('.qty-val');
+      document.querySelector('.update-cart').addEventListener('click',(event)=>{
+        event.preventDefault();
+        document.querySelectorAll('.qty-val').forEach(element=>{
+          const productId = element.getAttribute('data-productId');
+          var quantity = element.closest('.detail-qty').querySelector('.qty-val').textContent;
+          fetch(`/cart/update?productId=${productId}&quantity=${quantity}`,{
+            method : 'POST',
+            headers : {
+              'Content-Type' : 'application/json'
+            },
+            body : JSON.stringify({
+              productId : productId,
+              quantity : Number(quantity)
+            })
+          }).then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json() // Parse the response as JSON
+                })
+                    .then(data => {
+                        // Handle the response data after the update is successful
+                        console.log('Data updated successfully:', data);
+                    })
+                    .catch(error => {
+                        console.error('Error:'+ error);
+                    })
+          
+        })
+      })
+    });
+
+
+  </script>
 
   <%-include('../partials/user-footer')%>
