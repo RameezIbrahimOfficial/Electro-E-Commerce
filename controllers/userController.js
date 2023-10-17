@@ -154,7 +154,27 @@ module.exports.getCartPage = async (req, res) => {
   try {
     const productId = req.query.productId;
     const isLogin = req.cookies.isLogin;
-    const quantity = Number(req.query.quantity);
+    const userCart = await cartModel.findOne({})
+      .populate({
+        path: 'products.productId',
+        model: 'Product'
+      });
+    let grandTotal = 0
+    for (let i = 0; i < userCart.products.length; i++) {
+      grandTotal = grandTotal + userCart.products[i].productId.salePrice * userCart.products[i].quantity
+    }
+    res.render('cart', { userCart, isLogin, grandTotal })
+
+  } catch (err) {
+  console.error(err);
+  res.status(500).json({ message: 'Server error' });
+}
+};
+
+module.exports.postAddToCart = async (req, res) => {
+  try {
+    const productId = req.body.productId;
+    const quantity = Number(req.body.quantity);
     if (productId) {
       const currentUser = await customerModel.findOne({ email: req.user });
       if (!currentUser) {
@@ -184,29 +204,13 @@ module.exports.getCartPage = async (req, res) => {
         });
         await newCart.save();
       }
-      res.redirect('/cart')
-    } else {
-      const userCart = await cartModel.findOne({})
-  .populate({
-    path: 'products.productId', 
-    model: 'Product' 
-  });
-  let grandTotal = 0
-  for(let i=0;i<userCart.products.length;i++){
-    grandTotal = grandTotal + userCart.products[i].productId.salePrice * userCart.products[i].quantity
-  }
-
-
-      res.render('cart', { userCart, isLogin , grandTotal})
+      res.status(200).json({ message : "Added to Cart" })
     }
-
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error)
     res.status(500).json({ message: 'Server error' });
   }
-};
-
-
+}
 
 
 module.exports.getContactPage = (req, res) => {
@@ -333,10 +337,10 @@ module.exports.postSearch = async (req, res) => {
   }
 }
 
-module.exports.getPorfile = async(req,res)=>{
+module.exports.getPorfile = async (req, res) => {
   try {
     console.log(req.user)
-    res.send('Welcome to Profile user :-  '+req.user)
+    res.send('Welcome to Profile user :-  ' + req.user)
   } catch (error) {
     console.error(error)
   }
