@@ -745,11 +745,10 @@ module.exports.getPlaceOrder = async(req, res)=>{
     cart.products.forEach((product)=>{
       totalAmount += product.quantity * product.productId.salePrice;
     })
-    // console.log(totalAmount);
     await orderModel.create({
       customerId : user._id,
       products: productArray,
-      addresss : {
+      address : {
         addressType : address.address[0].addressType,
         name : address.address[0].name,
         city :address.address[0].city,
@@ -770,9 +769,23 @@ module.exports.getPlaceOrder = async(req, res)=>{
     }).then(async()=>{
        await cartModel.deleteOne({userId:user._id})
     })
-    // console.log(req.query)
-    res.send("ORDER PLACED")
+    res.render('order-placed')
   } catch (error){
     console.error(error);
+  }
+}
+
+module.exports.getInvoice = async(req, res)=>{
+  try{
+    const orderId = req.query.orderId;
+    const order = await orderModel.findOne({_id: orderId})
+    .populate({
+      path: 'products.productId', 
+      model: 'Product'
+    });
+    const isLogin = req.cookies.isLogin;
+    res.render('invoice', {isLogin, order})
+  } catch(error){
+    console.error(error)
   }
 }

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Electro Invoice</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="container mt-3">
+        <div class="row mt-4">
+            <div class="col-12">
+                <button id="printButton" class="btn btn-primary">
+                    Print Invoice
+                </button>
+                <a href="/profile"><button class="btn btn-success">Go Back</button></a>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-12">
+                <h1>Invoice</h1>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6">
+                <h5>From:</h5>
+                <p>Electro E-Commerce</p>
+                <p>123 Main Street</p>
+                <p>Ernakulam, Kerala, 765423</p>
+                <p>Email: electro@gmai.com</p>
+            </div>
+            <div class="col-6">
+                <h5>To:</h5>
+                <p><%=order.address.name%></p>
+                <p><%=order.address.landMark%></p>
+                <p><%=order.address.city%>, <%=order.address.state%>, <%=order.address.pincode%></p>
+                <p><%=order.address.phone%></p>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">Item</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <%if(order){%>
+                            <%order.products.forEach((product)=>{%>
+                                <tr>
+                                    <td><%=product.productId.productName%></td>
+                                    <td><%=product.productId.description%></td>
+                                    <td><%=product.quantity%></td>
+                                    <td><%=product.productId.salePrice%></td>
+                                    <td><%= product.productId.salePrice * product.quantity %></td>
+                                </tr>
+                            <%})%>
+                        <%}else{%>
+                            <tr>
+                                <h3>No Order Found</h3>
+                            </tr>
+                        <%}%>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row mt-4 mb-5">
+            <div class="col-12">
+                <h4>TOTAL AMOUNT</h4>
+                <h4>RS <%=order.totalAmount%></h4>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    document
+        .getElementById("printButton")
+        .addEventListener("click", function () {
+            window.print();
+        });
+</script>
+
+</html>

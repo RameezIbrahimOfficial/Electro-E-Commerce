@@ -21,7 +21,7 @@ const orderModel = mongoose.Schema({
        addressType : String,
        name : String,
        city : String,
-       landMark : String,
+       landMark : String,   
        state : String,
        pincode : Number,
        phone : Number,

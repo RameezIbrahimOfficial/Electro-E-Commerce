@@ -39,7 +39,8 @@ userRouter.get('/wishlist',userAuth.isUserLogin, userController.getWishlistPage)
 userRouter.post('/wishlist',userAuth.isUserLogin, userController.postAddToWishlist)
 userRouter.get('/wishlist/delete',userAuth.isUserLogin, userController.getDeleteWishlist)
 userRouter.get('/checkout', userAuth.isUserLogin, userController.getCheckoutPage)
-
 userRouter.get('/placeorder', userAuth.isUserLogin, userController.getPlaceOrder)
+
+userRouter.get('/invoice',userAuth.isUserLogin, userController.getInvoice)
 
 module.exports = userRouter;
