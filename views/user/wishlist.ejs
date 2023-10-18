@@ -1,0 +1,108 @@
+﻿<%- include('../partials/user-header')%>
+<main class="main">
+  <div class="page-header breadcrumb-wrap">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="/" rel="nofollow">Home</a>
+        <span></span> Wishlist
+      </div>
+    </div>
+  </div>
+  <section class="mt-50 mb-50">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="table-responsive">
+            <table class="table shopping-summery text-center">
+              <thead>
+                <tr class="main-heading">
+                  <th scope="col" colspan="2">Product</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Stock Status</th>
+                  <th scope="col">Action</th>
+                  <th scope="col">Remove</th>
+                </tr>
+              </thead>
+              <tbody>
+                <%if(userWishlist){%>
+                  <% userWishlist.products.forEach((product) => { %>
+                  <tr>
+                    <td class="image product-thumbnail">
+                      <img 
+                      src="data:<%= product.productId.productImage[0].contentType %>;base64, <%=  product.productId.productImage[0].buffer.toString('base64') %>"
+                      alt="" />
+                    </td>
+                    <td class="product-des product-name">
+                      <h5 class="product-name">
+                        <a href="/product?id=<%=product.productId._id%>"
+                          ><%=product.productId.productName%></a
+                        >
+                      </h5>
+                      <p class="font-xs">
+                       <%=product.productId.brand%><br />
+                      </p>
+                    </td>
+                    <td class="price" data-title="Price"><span><%=product.productId.salePrice%></span></td>
+                    <td class="text-center" data-title="Stock">
+                      <%if(product.productId.isBlocked){%>
+                        <span class=" font-weight-bold" style="color: red;">Out of Stock</span>
+                      <%}else{%>
+                        <span class="color3 font-weight-bold">In Stock</span>
+                      <%}%>
+                    </td>
+                    <td class="text-right" data-title="Cart">
+                      <a href="" data-productId="<%=product.productId._id%>" class="add-to-cart">
+                      <button class="btn btn-sm">
+                        <i class="fi-rs-shopping-bag mr-5"></i>Add to cart
+                      </button>
+                    </a>
+                    </td>
+                    <td class="action" data-title="Remove">
+                      <a href="/wishlist/delete?productId=<%=product.productId._id%>"><i class="fi-rs-trash"></i></a>
+                    </td>
+                  </tr>
+                  <%})%>
+                <%} else {%>
+                  <tr>
+                    <h3>Wishlist Empty</h3>
+                  </tr>
+                <%}%>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+   document.querySelectorAll('.add-to-cart').forEach(element => {
+      element.addEventListener('click', (event) => {
+        event.preventDefault();
+        var productId = element.getAttribute('data-productId')
+        fetch(`/cart`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            productId: productId,
+            quantity: 1
+          })
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json()
+        })
+          .then(data => {
+            console.log('Data updated successfully:', data);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      })
+    });
+</script>
+<%-include('../partials/user-footer')%>

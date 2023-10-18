@@ -79,8 +79,8 @@
                                                     <a aria-label="Quick view" class="action-btn hover-up"
                                                         data-bs-toggle="modal" data-bs-target="#quickViewModal">
                                                         <i class="fi-rs-search"></i></a>
-                                                    <a aria-label="Add To Wishlist" class="action-btn hover-up"
-                                                        href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
+                                                    <a aria-label="Add To Wishlist" class="action-btn hover-up add-to-wishlist"
+                                                        href="" data-productId="<%=product._id%>"><i class="fi-rs-heart"></i></a>
                                                     <a aria-label="Compare" class="action-btn hover-up"
                                                         href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
                                                 </div>
@@ -298,6 +298,35 @@
               });
           })
         });
+
+        
+    document.querySelectorAll('.add-to-wishlist').forEach(element => {
+      element.addEventListener('click', (event) => {
+        event.preventDefault();
+        var productId = element.getAttribute('data-productId')
+        fetch(`/wishlist`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            productId: productId,
+          })
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json() // Parse the response as JSON
+        })
+          .then(data => {
+            // Handle the response data after the update is successful
+            console.log('Data updated successfully:', data);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      })
+    });
     
       </script>
 

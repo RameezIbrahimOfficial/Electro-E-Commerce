@@ -12,7 +12,7 @@
                   <h2 class="animated fw-900">Supper value deals</h2>
                   <h1 class="animated fw-900 text-brand">On all products</h1>
                   <p class="animated">Save more with coupons & up to 70% off</p>
-                  <a class="animated btn btn-brush btn-brush-3" href="shop-product-left.html">
+                  <a class="animated btn btn-brush btn-brush-3" href="/products">
                     Shop Now
                   </a>
                 </div>
@@ -37,7 +37,7 @@
                   <h2 class="animated fw-900">iPhone 15</h2>
                   <h1 class="animated fw-900 text-7">Great Choice</h1>
                   <p class="animated">Save more with coupons & up to 20% off</p>
-                  <a class="animated btn btn-brush btn-brush-2" href="shop-product-left.html">
+                  <a class="animated btn btn-brush btn-brush-2" href="/products">
                     Discover Now
                   </a>
                 </div>
@@ -62,7 +62,7 @@
                   <h2 class="animated fw-900">Big Deals From</h2>
                   <h1 class="animated fw-900 text-8">Manufacturer</h1>
                   <p class="animated">Xiaomi</p>
-                  <a class="animated btn btn-brush btn-brush-1" href="shop-product-left.html">
+                  <a class="animated btn btn-brush btn-brush-1" href="/products">
                     Shop Now
                   </a>
                 </div>
@@ -173,7 +173,7 @@
                         <div class="product-action-1">
                           <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal"
                             data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
-                          <a aria-label="Add To Wishlist" class="action-btn hover-up" href=""><i
+                          <a aria-label="Add To Wishlist" class="action-btn hover-up add-to-wishlist" href="" data-productId="<%=product._id%>"><i
                               class="fi-rs-heart"></i></a>
                           <a aria-label="Compare" class="action-btn hover-up" href=""><i class="fi-rs-shuffle"></i></a>
                         </div>
@@ -239,7 +239,7 @@
                         <div class="product-action-1">
                           <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal"
                             data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
-                          <a aria-label="Add To Wishlist" class="action-btn hover-up" href=""><i
+                          <a aria-label="Add To Wishlist" class="action-btn hover-up add-to-wishlist" href="" data-productId="<%=product._id%>"><i
                               class="fi-rs-heart"></i></a>
                           <a aria-label="Compare" class="action-btn hover-up" href=""><i class="fi-rs-shuffle"></i></a>
                         </div>
@@ -305,7 +305,7 @@
                         <div class="product-action-1">
                           <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal"
                             data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
-                          <a aria-label="Add To Wishlist" class="action-btn hover-up" href=""><i
+                          <a aria-label="Add To Wishlist" class="action-btn hover-up add-to-wishlist" href="" data-productId="<%=product._id%>"><i
                               class="fi-rs-heart"></i></a>
                           <a aria-label="Compare" class="action-btn hover-up" href=""><i class="fi-rs-shuffle"></i></a>
                         </div>
@@ -457,10 +457,37 @@
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }
-          return response.json() // Parse the response as JSON
+          return response.json()
         })
           .then(data => {
-            // Handle the response data after the update is successful
+            console.log('Data updated successfully:', data);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      })
+    });
+
+
+    document.querySelectorAll('.add-to-wishlist').forEach(element => {
+      element.addEventListener('click', (event) => {
+        event.preventDefault();
+        var productId = element.getAttribute('data-productId')
+        fetch(`/wishlist`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            productId: productId,
+          })
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json() 
+        })
+          .then(data => {
             console.log('Data updated successfully:', data);
           })
           .catch(error => {

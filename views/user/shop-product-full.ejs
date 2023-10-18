@@ -99,7 +99,7 @@
                                                 <button type="submit" class="button button-add-to-cart add-to-cart"
                                                     data-productId="<%=product._id%>">Add
                                                     to cart</button>
-                                                <a aria-label="Add To Wishlist" class="action-btn hover-up" href="/"><i
+                                                <a aria-label="Add To Wishlist" class="action-btn hover-up add-to-wishlist" href="/" data-productId="<%=product._id%>"><i
                                                         class="fi-rs-heart"></i></a>
                                                 <a aria-label="Compare" class="action-btn hover-up" href="/"><i
                                                         class="fi-rs-shuffle"></i></a>
@@ -448,10 +448,9 @@
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
-                    return response.json() // Parse the response as JSON
+                    return response.json() 
                 })
                     .then(data => {
-                        // Handle the response data after the update is successful
                         console.log('Data updated successfully:', data);
                     })
                     .catch(error => {
@@ -459,6 +458,34 @@
                     });
             })
         });
+
+        document.querySelectorAll('.add-to-wishlist').forEach(element => {
+      element.addEventListener('click', (event) => {
+        event.preventDefault();
+        var productId = element.getAttribute('data-productId')
+        fetch(`/wishlist`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            productId: productId,
+          })
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json() // Parse the response as JSON
+        })
+          .then(data => {
+            // Handle the response data after the update is successful
+            console.log('Data updated successfully:', data);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      })
+    });
 
     </script>
     <%-include('../partials/user-footer')%>

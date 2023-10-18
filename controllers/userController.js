@@ -14,6 +14,7 @@ const categoryModel = require("../Model/category");
 const brandsModel = require("../Model/brand");
 const cartModel = require("../Model/cart");
 const addressModel = require("../Model/address");
+const wishlistModel = require("../Model/wishlist");
 
 let phoneNumber;
 let isOtpVerified;
@@ -164,6 +165,7 @@ module.exports.getCartPage = async (req, res) => {
       model: "Product",
     });
     let grandTotal = 0;
+    console.log(userCart)
     for (let i = 0; i < userCart.products.length; i++) {
       grandTotal =
         grandTotal +
@@ -568,7 +570,16 @@ module.exports.getAddressEdit = async (req, res) => {
 
 module.exports.postAddressEdit = async (req, res) => {
   try {
-    const {addressType, name, city, landMark, state, pincode, phone, altPhone} =  req.body;
+    const {
+      addressType,
+      name,
+      city,
+      landMark,
+      state,
+      pincode,
+      phone,
+      altPhone,
+    } = req.body;
     const addressId = req.query.id;
     const currAddress = await addressModel.findOne({
       "address._id": addressId,
@@ -582,16 +593,104 @@ module.exports.postAddressEdit = async (req, res) => {
       if (matchingAddress) {
         await addressModel.updateOne(
           { "address._id": addressId },
-          { $set: { "address.$": {addressType,name,city,landMark,state,pincode,phone,altPhone} } }
+          {
+            $set: {
+              "address.$": {
+                addressType,
+                name,
+                city,
+                landMark,
+                state,
+                pincode,
+                phone,
+                altPhone,
+              },
+            },
+          }
         );
 
         res.redirect("/profile");
-        res.redirect("/profile"); 
+        res.redirect("/profile");
       }
     } else {
-      res.redirect("/profile"); 
+      res.redirect("/profile");
     }
   } catch (error) {
     console.error(error);
+  }
+};
+
+module.exports.getWishlistPage = async (req, res) => {
+  try {
+    const user = await customerModel.findOne({email:req.user},{_id:1})
+    const userWishlist = await wishlistModel.findOne({ userId: user._id }).populate({
+      path: "products.productId",
+      model: "Product",
+    });
+    const isLogin = req.cookies.isLogin;
+    res.render("wishlist", { isLogin, userWishlist });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+module.exports.postAddToWishlist = async (req, res) => {
+  try {
+    const productId = req.body.productId;
+    if (productId) {
+      const currentUser = await customerModel.findOne({ email: req.user });
+      if (!currentUser) {
+        return res.redirect("/signin");
+      }
+      const userWishlist = await wishlistModel.findOne({
+        userId: currentUser._id,
+      });
+      if (userWishlist) {
+        let productIndex = -1;
+        for (let i = 0; i < userWishlist.products.length; i++) {
+          if (productId == userWishlist.products[i].productId) {
+            productIndex = i;
+            break;
+          }
+        }
+
+        if (productIndex === -1) {
+          userWishlist.products.push({ productId });
+          await userWishlist.save();
+        }
+      } else {
+        const newWishlist = new wishlistModel({
+          userId: currentUser._id,
+        });
+        await newWishlist.save();
+      }
+      res.status(200).json({ message: "Added to Wishlist" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+module.exports.getDeleteWishlist = async (req, res) => {
+  try {
+    const user = req.user;
+    const productId = req.query.productId;
+    console.log(productId)
+    const userDocument = await customerModel.findOne({ email: user });
+    if (!userDocument) {
+      return res.status(404).send("User not found");
+    }
+    const userId = userDocument._id;
+    await wishlistModel.updateOne(
+      { userId },
+      {
+        $pull: { products: { productId: productId } },
+      }
+    );
+    res.redirect("/wishlist");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
   }
 };
