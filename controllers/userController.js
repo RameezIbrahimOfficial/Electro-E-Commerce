@@ -13,6 +13,7 @@ const productsModel = require("../Model/product");
 const categoryModel = require("../Model/category");
 const brandsModel = require("../Model/brand");
 const cartModel = require("../Model/cart");
+const addressModel = require("../Model/address");
 
 let phoneNumber;
 let isOtpVerified;
@@ -76,7 +77,7 @@ module.exports.postUserRegister = async (req, res) => {
         errorMsgSignup: "Account Created Successfully",
       });
     } else {
-      res.render("page-login-register", {
+      res.render("page-register", {
         errorMsgOTP: "Invalid OTP",
         isLogin,
       });
@@ -413,7 +414,6 @@ module.exports.postSearch = async (req, res) => {
       }
     }
 
-    // Check if there are any conditions before adding the $match stage
     if (orConditions.length > 0) {
       aggregationStages.push({
         $match: {
@@ -422,7 +422,6 @@ module.exports.postSearch = async (req, res) => {
       });
     }
 
-    // Check if there are any aggregation stages before attempting the aggregation
     if (aggregationStages.length > 0) {
       const products = await productsModel.aggregate(aggregationStages);
       res.render("products-grid-view", {
@@ -447,8 +446,151 @@ module.exports.postSearch = async (req, res) => {
 
 module.exports.getPorfile = async (req, res) => {
   try {
-    console.log(req.user);
-    res.send("Welcome to Profile user :-  " + req.user);
+    const isLogin = req.cookies.isLogin;
+    const userEmail = req.user;
+    const user = await customerModel.findOne({ email: userEmail }, { _id: 1 });
+    const userAddress = await addressModel.findOne({ userId: user._id });
+    const { firstName, lastName } = await customerModel.findOne(
+      { email: userEmail },
+      { firstName: 1, lastName: 1 }
+    );
+    res.render("page-account", {
+      userName: firstName + " " + lastName,
+      userAddress,
+      isLogin,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+module.exports.getAddAddressPage = async (req, res) => {
+  try {
+    const isLogin = req.cookies.isLogin;
+    res.render("page-address", { isLogin });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports.postAddAddress = async (req, res) => {
+  try {
+    const user = await customerModel.findOne({ email: req.user }, { _id: 1 });
+    const {
+      addressType,
+      name,
+      city,
+      landMark,
+      state,
+      pincode,
+      phone,
+      altPhone,
+    } = req.body;
+    const userAddress = await addressModel.findOne({ userId: user._id });
+    if (!userAddress) {
+      const newAddress = new addressModel({
+        userId: user._id,
+        address: [
+          {
+            addressType,
+            name,
+            city,
+            landMark,
+            state,
+            pincode,
+            phone,
+            altPhone,
+          },
+        ],
+      });
+      await newAddress.save();
+    } else {
+      userAddress.address.push({
+        addressType,
+        name,
+        city,
+        landMark,
+        state,
+        pincode,
+        phone,
+        altPhone,
+      });
+    }
+    await userAddress.save();
+    res.redirect("/profile");
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+module.exports.getAddressDelete = async (req, res) => {
+  try {
+    addressId = req.query.id;
+    const user = await customerModel.findOne({ email: req.user }, { _id: 1 });
+    const currAddress = await addressModel.findOne({
+      "address._id": addressId,
+    });
+    console.log(currAddress);
+    if (currAddress) {
+      await addressModel.updateOne(
+        { userId: user._id },
+        {
+          $pull: { address: { _id: addressId } },
+        }
+      );
+    }
+    res.redirect("/profile");
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+module.exports.getAddressEdit = async (req, res) => {
+  try {
+    const isLogin = req.cookies.isLogin;
+    const addressId = req.query.id;
+    const currAddress = await addressModel.findOne({
+      "address._id": addressId,
+    });
+
+    if (currAddress && currAddress.address) {
+      const matchingAddress = currAddress.address.find(
+        (item) => item._id == addressId
+      );
+      res.render("page-edit-address", { isLogin, matchingAddress });
+    } else {
+      res.redirect("/profile");
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+module.exports.postAddressEdit = async (req, res) => {
+  try {
+    const {addressType, name, city, landMark, state, pincode, phone, altPhone} =  req.body;
+    const addressId = req.query.id;
+    const currAddress = await addressModel.findOne({
+      "address._id": addressId,
+    });
+
+    if (currAddress && currAddress.address) {
+      const matchingAddress = currAddress.address.find(
+        (item) => item._id == addressId
+      );
+
+      if (matchingAddress) {
+        await addressModel.updateOne(
+          { "address._id": addressId },
+          { $set: { "address.$": {addressType,name,city,landMark,state,pincode,phone,altPhone} } }
+        );
+
+        res.redirect("/profile");
+        res.redirect("/profile"); 
+      }
+    } else {
+      res.redirect("/profile"); 
+    }
   } catch (error) {
     console.error(error);
   }

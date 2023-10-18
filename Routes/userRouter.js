@@ -7,6 +7,7 @@ const userAuth = require('../middlewares/userAuth');
 const cookieParser = require("cookie-parser");
 
 userRouter.use(express.static("Public"));
+userRouter.use('/address', express.static('Public'));
 userRouter.use(express.json());
 userRouter.use(express.urlencoded({ extended: true }));
 userRouter.use(cookieParser())
@@ -29,5 +30,11 @@ userRouter.get('/cart/delete', userAuth.isUserLogin, userController.getDeleteCar
 userRouter.post('/cart/update', userAuth.isUserLogin, userController.postCartUpdate)
 userRouter.get('/profile',userAuth.isUserLogin, userController.getPorfile)
 userRouter.get('/logout', userController.getUserLogout)
+userRouter.get('/address/add', userAuth.isUserLogin, userController.getAddAddressPage)
+userRouter.post('/address/add', userAuth.isUserLogin, userController.postAddAddress)
+userRouter.get('/address/delete',userAuth.isUserLogin, userController.getAddressDelete)
+userRouter.get('/address/edit',userAuth.isUserLogin, userController.getAddressEdit)
+
+userRouter.post('/address/edit',userAuth.isUserLogin, userController.postAddressEdit)
 
 module.exports = userRouter;

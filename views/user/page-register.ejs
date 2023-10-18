@@ -92,11 +92,11 @@
                     return;
                 }
 
-                // if (registrationEmailInput.value.trim() === "") {
-                //     e.preventDefault();
-                //     errSignupEmail.innerHTML = "Please enter a valid email address."
-                //     return;
-                // }
+                if (registrationEmailInput.value.trim() === "") {
+                    e.preventDefault();
+                    errSignupEmail.innerHTML = "Please enter a valid email address."
+                    return;
+                }
 
                 if (registrationPasswordInput.value.length < 6) {
                     e.preventDefault();
