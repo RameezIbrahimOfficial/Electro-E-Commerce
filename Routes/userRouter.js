@@ -35,7 +35,6 @@ userRouter.post('/address/add', userAuth.isUserLogin, userController.postAddAddr
 userRouter.get('/address/delete',userAuth.isUserLogin, userController.getAddressDelete)
 userRouter.get('/address/edit',userAuth.isUserLogin, userController.getAddressEdit)
 userRouter.post('/address/edit',userAuth.isUserLogin, userController.postAddressEdit)
-
 userRouter.get('/wishlist',userAuth.isUserLogin, userController.getWishlistPage)
 userRouter.post('/wishlist',userAuth.isUserLogin, userController.postAddToWishlist)
 userRouter.get('/wishlist/delete',userAuth.isUserLogin, userController.getDeleteWishlist)

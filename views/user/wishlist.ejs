@@ -98,6 +98,9 @@
         })
           .then(data => {
             console.log('Data updated successfully:', data);
+            var ProductId = data.data
+
+            window.location.href=`/wishlist/delete?productId=${ProductId}`
           })
           .catch(error => {
             console.error('Error:', error);

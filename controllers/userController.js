@@ -212,7 +212,7 @@ module.exports.postAddToCart = async (req, res) => {
         });
         await newCart.save();
       }
-      res.status(200).json({ message: "Added to Cart" });
+      res.status(200).json({ data: productId });
     }
   } catch (error) {
     console.error(error);
