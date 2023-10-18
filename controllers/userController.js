@@ -15,6 +15,7 @@ const brandsModel = require("../Model/brand");
 const cartModel = require("../Model/cart");
 const addressModel = require("../Model/address");
 const wishlistModel = require("../Model/wishlist");
+const orderModel = require("../Model/order")
 
 let phoneNumber;
 let isOtpVerified;
@@ -166,11 +167,13 @@ module.exports.getCartPage = async (req, res) => {
     });
     let grandTotal = 0;
     console.log(userCart)
-    for (let i = 0; i < userCart.products.length; i++) {
-      grandTotal =
-        grandTotal +
-        userCart.products[i].productId.salePrice *
-          userCart.products[i].quantity;
+    if(userCart){
+      for (let i = 0; i < userCart.products.length; i++) {
+        grandTotal =
+          grandTotal +
+          userCart.products[i].productId.salePrice *
+            userCart.products[i].quantity;
+      }
     }
     res.render("cart", { userCart, isLogin, grandTotal });
   } catch (err) {
@@ -452,6 +455,10 @@ module.exports.getPorfile = async (req, res) => {
     const userEmail = req.user;
     const user = await customerModel.findOne({ email: userEmail }, { _id: 1 });
     const userAddress = await addressModel.findOne({ userId: user._id });
+    const orders = await orderModel.find({customerId:user._id})
+    // orders.forEach((order)=>{
+    //   console.log(order);
+    // })
     const { firstName, lastName } = await customerModel.findOne(
       { email: userEmail },
       { firstName: 1, lastName: 1 }
@@ -460,6 +467,7 @@ module.exports.getPorfile = async (req, res) => {
       userName: firstName + " " + lastName,
       userAddress,
       isLogin,
+      orders
     });
   } catch (error) {
     console.error(error);
@@ -694,3 +702,77 @@ module.exports.getDeleteWishlist = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+
+module.exports.getCheckoutPage = async (req, res) => {
+  try{
+    const isLogin = req.cookies.isLogin;
+    const user = await customerModel.findOne({email:req.user});
+    const userAddress = await addressModel.findOne({userId : user._id})
+    const userCart = await cartModel.findOne({ userId: user._id }).populate({
+      path: "products.productId",
+      model: "Product",
+    });
+    let grandTotal = 0;
+    for (let i = 0; i < userCart.products.length; i++) {
+      grandTotal =
+        grandTotal +
+        userCart.products[i].productId.salePrice *
+          userCart.products[i].quantity;
+    }
+    res.render('checkout',{ isLogin, userAddress, userCart, grandTotal })
+  } catch (error){
+    console.error(error);
+  }
+}
+
+module.exports.getPlaceOrder = async(req, res)=>{
+  try{
+    let totalAmount = 0;
+    const user = await customerModel.findOne({email:req.user});
+    const cart = await cartModel.findOne({userId:user._id}).populate({
+      path : 'products.productId',
+      model : 'Product'
+    })
+    const address = await addressModel.findOne({"address._id":req.query.addressId},{"address.$":1});
+    const productArray = [];
+    cart.products.forEach((product)=>{
+      productArray.push({
+        productId : product.productId._id,
+        quantity : product.quantity,
+        price:product.productId.salePrice
+      })
+    })
+    cart.products.forEach((product)=>{
+      totalAmount += product.quantity * product.productId.salePrice;
+    })
+    // console.log(totalAmount);
+    await orderModel.create({
+      customerId : user._id,
+      products: productArray,
+      addresss : {
+        addressType : address.address[0].addressType,
+        name : address.address[0].name,
+        city :address.address[0].city,
+        landMark :address.address[0].landMark,
+        state : address.address[0].state,
+        pincode : address.address[0].pincode,
+        phone : address.address[0].phone,
+        altPhone : address.address[0].altPhone
+      },
+      payementMethod : "COD",
+      refernceId : "12hffhfhfhhhh",
+      shippingCharge : 0,
+      discount : 0,
+      totalAmount : totalAmount,
+      CreatedOn : new Date(),
+      status : "Delivered",
+      deliveredOn : new Date(),
+    }).then(async()=>{
+       await cartModel.deleteOne({userId:user._id})
+    })
+    // console.log(req.query)
+    res.send("ORDER PLACED")
+  } catch (error){
+    console.error(error);
+  }
+}
