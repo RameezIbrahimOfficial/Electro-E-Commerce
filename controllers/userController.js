@@ -696,27 +696,62 @@ module.exports.getDeleteWishlist = async (req, res) => {
   }
 };
 
+// module.exports.getCheckoutPage = async (req, res) => {
+//   try{
+//     const isLogin = req.cookies.isLogin;
+//     const user = await customerModel.findOne({email:req.user});
+//     const userAddress = await addressModel.findOne({userId : user._id})
+//     const userCart = await cartModel.findOne({ userId: user._id }).populate({
+//       path: "products.productId",
+//       model: "Product",
+//     });
+//     let grandTotal = 0;
+//     const stockCheck = []; 
+//     for (let i = 0; i < userCart.products.length; i++) {
+//       grandTotal =
+//         grandTotal +
+//         userCart.products[i].productId.salePrice *
+//           userCart.products[i].quantity;
+//     }
+//     res.render('checkout',{ isLogin, userAddress, userCart, grandTotal })
+//   } catch (error){
+//     console.error(error);
+//   }
+// }
+
 module.exports.getCheckoutPage = async (req, res) => {
-  try{
+  try {
     const isLogin = req.cookies.isLogin;
-    const user = await customerModel.findOne({email:req.user});
-    const userAddress = await addressModel.findOne({userId : user._id})
-    const userCart = await cartModel.findOne({ userId: user._id }).populate({
-      path: "products.productId",
-      model: "Product",
-    });
+    const user = await customerModel.findOne({ email: req.user });
+    const userAddress = await addressModel.findOne({ userId: user._id });
+    const userCart = await cartModel
+      .findOne({ userId: user._id })
+      .populate({
+        path: "products.productId",
+        model: "Product",
+      });
     let grandTotal = 0;
+    const stockCheck = []; // An array to store stock check messages.
+
     for (let i = 0; i < userCart.products.length; i++) {
-      grandTotal =
-        grandTotal +
-        userCart.products[i].productId.salePrice *
-          userCart.products[i].quantity;
+      const product = userCart.products[i].productId;
+      const quantityInCart = userCart.products[i].quantity;
+
+      if (quantityInCart > product.units ) {
+        stockCheck.push(
+          `Product "${product.productName}" has only ${product.units} units available.`
+        );
+      }
+
+      grandTotal += product.salePrice * quantityInCart;
     }
-    res.render('checkout',{ isLogin, userAddress, userCart, grandTotal })
-  } catch (error){
+
+    res.render('checkout', { isLogin, userAddress, userCart, grandTotal, stockCheck });
+  } catch (error) {
     console.error(error);
   }
-}
+};
+
 
 module.exports.getPlaceOrder = async(req, res)=>{
   try{
@@ -729,9 +764,6 @@ module.exports.getPlaceOrder = async(req, res)=>{
     const address = await addressModel.findOne({"address._id":req.query.addressId},{"address.$":1});
     const productArray = [];
     cart.products.forEach((product)=>{
-      if(product.quantity > product.productId.units){
-
-      }
       productArray.push({
         productId : product.productId._id,
         quantity : product.quantity,
@@ -763,7 +795,13 @@ module.exports.getPlaceOrder = async(req, res)=>{
         status : "Delivered",
         deliveredOn : new Date(),
       }).then(async()=>{
-         await cartModel.deleteOne({userId:user._id})
+        for (const product of cart.products) {
+          await productsModel.updateOne(
+            { _id: product.productId._id },
+            { $inc: { units: -product.quantity } }
+          );
+        }
+        await cartModel.deleteOne({ userId: user._id });
       })
       res.render('order-placed')
   } catch (error){
