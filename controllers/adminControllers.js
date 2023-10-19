@@ -3,8 +3,6 @@ require("dotenv").config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const Swal = require('sweetalert2')
-
 const adminModel = require("../Model/admin");
 const categoryModel = require("../Model/category");
 const customerModel = require("../Model/customer");
@@ -34,8 +32,20 @@ module.exports.postAdminLogin = async (req, res) => {
   }
 };
 
-module.exports.getAdminPanel = (req, res) => {
-  res.render("admin-dashboard");
+module.exports.getAdminPanel = async (req, res) => {
+  const orders = await orderModel.find({});
+  const products = await productsModel.find({})
+  const categories = await categoryModel.find({})
+
+  const cancelledOrder = await orderModel.find({status:"Canceled"})
+  const returnedOrder = await orderModel.find({status:"Returned"})
+  const deliveredOrder = await orderModel.find({status:"Delivered"})
+
+  let revenue = 0
+  orders.forEach((order)=>{
+    revenue += order.totalAmount
+  })
+  res.render("admin-dashboard",{orders, products, categories, revenue, cancelledOrder, returnedOrder, deliveredOrder});
 };
 
 module.exports.getProductsPage = async (req, res) => {
