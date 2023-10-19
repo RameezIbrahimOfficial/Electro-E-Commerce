@@ -92,15 +92,15 @@
               <span class="text">Brands</span>
             </a>
           </li>
-          <li class="menu-item has-submenu">
-            <a class="menu-link" href="page-orders-1.html">
+          <%if(currentRoute === '/order_management' || currentRoute === '/order/edit'){%>
+            <li class="menu-item active">
+          <%}else{%>
+            <li class="menu-item">
+          <%}%>
+            <a class="menu-link" href="/admin/order_management">
               <i class="icon material-icons md-shopping_cart"></i>
               <span class="text">Orders</span>
             </a>
-            <div class="submenu">
-              <a href="page-orders-1.html">Order list 1</a>
-              <a href="page-orders-detail.html">Order detail</a>
-            </div>
           </li>
           <!-- <li class="menu-item has-submenu">
             <a class="menu-link" href="page-form-product-1.html">

@@ -29,7 +29,7 @@
                 <p>Electro E-Commerce</p>
                 <p>123 Main Street</p>
                 <p>Ernakulam, Kerala, 765423</p>
-                <p>Email: electro@gmai.com</p>
+                <p>Email: electro@gmail.com</p>
             </div>
             <div class="col-6">
                 <h5>To:</h5>
@@ -37,6 +37,17 @@
                 <p><%=order.address.landMark%></p>
                 <p><%=order.address.city%>, <%=order.address.state%>, <%=order.address.pincode%></p>
                 <p><%=order.address.phone%></p>
+                <p> Order Status : 
+                    <% if (order.status === "Delivered") { %>
+                        <span class="badge rounded-pill alert-success"><%=order.status%></span>
+                        <%}else if(order.status === "Canceled"){%>
+                          <span class="badge rounded-pill alert-danger"><%=order.status%></span>
+                        <%}else if(order.status === "Returned"){%>
+                          <span class="badge rounded-pill alert-success"><%=order.status%></span>
+                        <%}else{%>
+                          <span class="badge rounded-pill alert-warning"><%=order.status%></span>
+                        <%}%>
+                </p>
             </div>
         </div>
         <div class="row mt-4">

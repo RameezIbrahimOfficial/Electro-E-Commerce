@@ -1,29 +1,4 @@
 ﻿<%-include('../partials/user-header')%>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const loginForm = document.querySelector('form[action="/signin"]');
-    const loginEmailInput = document.getElementById("loginEmail");
-    const loginPasswordInput = document.getElementById("loginPassword");
-
-    const errEmail = document.getElementById("errEmail");
-    const errPassword = document.getElementById("errPassword");
-
-    loginForm.addEventListener("submit", function (e) {
-      if (loginEmailInput.value.trim() === "") {
-        e.preventDefault(); // Prevent the default form submission
-        errEmail.innerHTML = "Please enter a valid email address";
-        return;
-      }
-
-      if (loginPasswordInput.value.trim() === "") {
-        e.preventDefault(); // Prevent the default form submission
-        errPassword.innerHTML = "Password must be entered.";
-        return;
-      }
-    });
-  });
-</script>
-
 <main class="main">
   <div class="page-header breadcrumb-wrap">
     <div class="container">
@@ -91,4 +66,30 @@
     </div>
   </section>
 </main>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const loginForm = document.querySelector('form[action="/signin"]');
+    const loginEmailInput = document.getElementById("loginEmail");
+    const loginPasswordInput = document.getElementById("loginPassword");
+
+    const errEmail = document.getElementById("errEmail");
+    const errPassword = document.getElementById("errPassword");
+
+    loginForm.addEventListener("submit", function (e) {
+      if (loginEmailInput.value.trim() === "") {
+        e.preventDefault(); 
+        errEmail.innerHTML = "Please enter a valid email address";
+        return;
+      }
+
+      if (loginPasswordInput.value.trim() === "") {
+        e.preventDefault(); 
+        errPassword.innerHTML = "Password must be entered.";
+        return;
+      }
+    });
+  });
+</script>
+
 <% -include('../partials/user-footer')%>

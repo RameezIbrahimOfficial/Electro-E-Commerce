@@ -155,11 +155,23 @@
             <input class="form-control" type="file" name="product_images" multiple>
           </div>
         </div>
-        <button class="btn btn-md rounded font-sm hover-up" type="submit">Publish</button>
+        <button class="btn btn-md rounded font-sm hover-up submit" type="submit">Publish</button>
       </div> <!-- card end// -->
     </div>
 </div>
   </form>
 </div>
 </section> <!-- content-main end// -->
+<script>
+  document.querySelector('.submit').addEventListener('click',()=>{
+    Swal.fire({
+  position: 'top-end',
+  icon: 'success',
+  title: 'Your work has been saved',
+  showConfirmButton: false,
+  timer: 1500
+})
+
+  })
+</script>
 <%- include('../partials/admin-footer')%>

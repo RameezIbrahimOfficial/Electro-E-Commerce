@@ -3,11 +3,14 @@ require("dotenv").config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
+const Swal = require('sweetalert2')
+
 const adminModel = require("../Model/admin");
 const categoryModel = require("../Model/category");
 const customerModel = require("../Model/customer");
 const productsModel = require("../Model/product");
-const brandModel = require('../Model/brand')
+const brandModel = require('../Model/brand');
+const orderModel = require("../Model/order")
 
 const middlewares = require("../middlewares/adminAuth");
 
@@ -195,7 +198,7 @@ module.exports.postAddProducts = async (req, res) => {
     });
     res.redirect("/admin/admin_panel/add_products");
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -396,7 +399,44 @@ module.exports.postEditBrand = async (req, res) => {
 };
 
 
-module.exports.getLogout = (req, res) => {
+module.exports.getLogout = (req, res ) => {
   res.clearCookie("token");
   res.redirect("/admin");
 };
+
+module.exports.getOrderManagementPage = async(req,res)=>{
+  try{
+    const orders = await orderModel.find({}) 
+    res.render('page-orders' ,{ orders })
+  } catch(error){
+    console.error(error);
+  }
+}
+
+module.exports.getOrderEditPage = async(req,res)=>{
+  try{
+    const orderId = req.query.orderId;
+    const order = await orderModel.findOne({_id:orderId}).populate({
+      path : "products.productId",
+      model : 'Product'
+    });
+    res.render('page-orders-detail', {order})
+  } catch(error){
+    console.error(error);
+  }
+}
+
+module.exports.postOrderEdit = async(req, res)=>{
+  try{
+    const orderStatus = req.body.orderStatus;
+    const orderId = req.body.orderId;
+    const order = await orderModel.findOne({_id:orderId});
+    if(orderStatus){
+      await orderModel.updateOne({_id:orderId},{$set:{status:orderStatus}});
+      res.redirect('/admin/order_management')
+    }
+    console.log(order);
+  } catch(error){
+    console.error(error)
+  }
+}

@@ -166,7 +166,6 @@ module.exports.getCartPage = async (req, res) => {
       model: "Product",
     });
     let grandTotal = 0;
-    console.log(userCart)
     if(userCart){
       for (let i = 0; i < userCart.products.length; i++) {
         grandTotal =
@@ -258,7 +257,6 @@ module.exports.postCartUpdate = async (req, res) => {
       }
 
       let userCart = await cartModel.findOne({ userId: currentUser._id });
-
       if (!userCart) {
         userCart = new cartModel({
           userId: currentUser._id,
@@ -456,9 +454,6 @@ module.exports.getPorfile = async (req, res) => {
     const user = await customerModel.findOne({ email: userEmail }, { _id: 1 });
     const userAddress = await addressModel.findOne({ userId: user._id });
     const orders = await orderModel.find({customerId:user._id})
-    // orders.forEach((order)=>{
-    //   console.log(order);
-    // })
     const { firstName, lastName } = await customerModel.findOne(
       { email: userEmail },
       { firstName: 1, lastName: 1 }
@@ -479,7 +474,7 @@ module.exports.getAddAddressPage = async (req, res) => {
     const isLogin = req.cookies.isLogin;
     res.render("page-address", { isLogin });
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -540,7 +535,6 @@ module.exports.getAddressDelete = async (req, res) => {
     const currAddress = await addressModel.findOne({
       "address._id": addressId,
     });
-    console.log(currAddress);
     if (currAddress) {
       await addressModel.updateOne(
         { userId: user._id },
@@ -684,7 +678,6 @@ module.exports.getDeleteWishlist = async (req, res) => {
   try {
     const user = req.user;
     const productId = req.query.productId;
-    console.log(productId)
     const userDocument = await customerModel.findOne({ email: user });
     if (!userDocument) {
       return res.status(404).send("User not found");
@@ -736,6 +729,9 @@ module.exports.getPlaceOrder = async(req, res)=>{
     const address = await addressModel.findOne({"address._id":req.query.addressId},{"address.$":1});
     const productArray = [];
     cart.products.forEach((product)=>{
+      if(product.quantity > product.productId.units){
+
+      }
       productArray.push({
         productId : product.productId._id,
         quantity : product.quantity,
@@ -745,35 +741,36 @@ module.exports.getPlaceOrder = async(req, res)=>{
     cart.products.forEach((product)=>{
       totalAmount += product.quantity * product.productId.salePrice;
     })
-    await orderModel.create({
-      customerId : user._id,
-      products: productArray,
-      address : {
-        addressType : address.address[0].addressType,
-        name : address.address[0].name,
-        city :address.address[0].city,
-        landMark :address.address[0].landMark,
-        state : address.address[0].state,
-        pincode : address.address[0].pincode,
-        phone : address.address[0].phone,
-        altPhone : address.address[0].altPhone
-      },
-      payementMethod : "COD",
-      refernceId : "12hffhfhfhhhh",
-      shippingCharge : 0,
-      discount : 0,
-      totalAmount : totalAmount,
-      CreatedOn : new Date(),
-      status : "Delivered",
-      deliveredOn : new Date(),
-    }).then(async()=>{
-       await cartModel.deleteOne({userId:user._id})
-    })
-    res.render('order-placed')
+      await orderModel.create({
+        customerId : user._id,
+        products: productArray,
+        address : {
+          addressType : address.address[0].addressType,
+          name : address.address[0].name,
+          city :address.address[0].city,
+          landMark :address.address[0].landMark,
+          state : address.address[0].state,
+          pincode : address.address[0].pincode,
+          phone : address.address[0].phone,
+          altPhone : address.address[0].altPhone
+        },
+        payementMethod : "COD",
+        refernceId : "ref4337fgh37747",
+        shippingCharge : 0,
+        discount : 0,
+        totalAmount : totalAmount,
+        CreatedOn : new Date(),
+        status : "Delivered",
+        deliveredOn : new Date(),
+      }).then(async()=>{
+         await cartModel.deleteOne({userId:user._id})
+      })
+      res.render('order-placed')
   } catch (error){
     console.error(error);
   }
 }
+
 
 module.exports.getInvoice = async(req, res)=>{
   try{
@@ -785,6 +782,36 @@ module.exports.getInvoice = async(req, res)=>{
     });
     const isLogin = req.cookies.isLogin;
     res.render('invoice', {isLogin, order})
+  } catch(error){
+    console.error(error)
+  }
+}
+
+module.exports.getOrderCancel = async(req,res)=>{
+  try{
+    const user = await customerModel.findOne({email:req.user});
+    const orderId = req.query.orderId;
+    if(user){
+      await orderModel.updateOne({_id : orderId},{$set:{status:"Canceled"}})
+      res.redirect('/profile')
+    } else {
+      res.redirect('/')
+    }
+  } catch(error){
+    console.error(error)
+  }
+}
+
+module.exports.getOrderReturn = async(req,res)=>{
+  try{
+    const user = await customerModel.findOne({email:req.user});
+    const orderId = req.query.orderId;
+    if(user){
+      await orderModel.updateOne({_id : orderId},{$set:{status:"Returned"}})
+      res.redirect('/profile')
+    } else {
+      res.redirect('/')
+    }
   } catch(error){
     console.error(error)
   }

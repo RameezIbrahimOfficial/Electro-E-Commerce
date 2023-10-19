@@ -93,12 +93,27 @@
                               <%if(orders){%>
                                 <%orders.forEach((order)=>{%>
                                   <tr>
-                                    <td>#1357</td>
+                                    <td><%=order._id%></td>
                                     <td><%=order.CreatedOn%></td>
-                                    <td><%=order.status%></td>
+                                    <%if(order.status==='Delivered'){%>
+                                      <td><span class="badge rounded-pill alert-success"><%=order.status%></span></td>
+                                      <%}else if(order.status==="Canceled"){%>
+                                        <td><span class="badge rounded-pill alert-danger"><%=order.status%></span></td>
+                                      <%}else{%>
+                                        <td><span class="badge rounded-pill alert-warning"><%=order.status%></span></td>
+                                      <%}%>
                                     <td><%=order.totalAmount%></td>
                                     <td>
-                                      <a href="/invoice?orderId=<%=order._id%>" class="btn-small d-block">View</a>
+                                      <a href="/invoice?orderId=<%=order._id%>" class="btn-small d-block btn mb-2">View</a>
+                                      <%if(order.status==="AwaitingPayment" || order.status === "Confirmed" || order.status === "Shipped"){%>
+                                        <a  href="/order/cancel?orderId=<%=order._id%>" class="btn btn-small d-block mb-2 btn-danger">CANCEL</a>
+                                      <%} else if(order.status === "Canceled") {%>
+                                        <button class="btn btn-danger" disabled>CANCELED</button>
+                                      <%} else if(order.status === "Returned") {%>
+                                        <button class="btn btn-warning" disabled>RETURNED</button>
+                                      <%}else{%>
+                                        <a href="/order/return?orderId=<%=order._id%>" class="btn btn-small d-block mb-2 btn-warning">RETURN</a>
+                                      <%}%>
                                     </td>
                                   </tr>
                                 <%})%>

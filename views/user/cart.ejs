@@ -57,7 +57,7 @@
                         </td>
                         <td class="text-right" data-title="Cart">
                           <span>
-                            <%=userCart.products[i].productId.salePrice%>
+                            <%=userCart.products[i].productId.salePrice*userCart.products[i].quantity%>
                           </span>
                         </td>
                         <td class="action" data-title="Remove">
@@ -134,7 +134,6 @@
           event.preventDefault();
           var quantityElement = element.closest('.detail-qty').querySelector('.qty-val');
           var quantity = parseInt(quantityElement.textContent, 10);
-          console.log(quantity);
           quantity += 1;
           quantityElement.textContent = quantity;
         });
@@ -145,7 +144,6 @@
           event.preventDefault();
           var quantityElement = element.closest('.detail-qty').querySelector('.qty-val');
           var quantity = parseInt(quantityElement.textContent, 10);
-          console.log(quantity);
           if (quantity > 1) {
             quantity -= 1;
             quantityElement.textContent = quantity;

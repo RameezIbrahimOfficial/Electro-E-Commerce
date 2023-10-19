@@ -12,6 +12,7 @@ const adminRouter = express.Router();
 
 adminRouter.use(express.static('Public'))
 adminRouter.use('/admin_panel', express.static('Public'));
+adminRouter.use('/order', express.static('Public'));
 adminRouter.use(express.json());
 adminRouter.use(express.urlencoded({ extended: true }));
 adminRouter.use(cookieParser())
@@ -41,5 +42,8 @@ adminRouter.get('/admin_panel/edit_brand', adminAuth.isLogin, adminMiddleware.cu
 adminRouter.post('/admin_panel/brand/update', upload.single('brandLogo'), adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.postEditBrand)
 adminRouter.get('/logout', adminControllers.getLogout)
 
+adminRouter.get('/order_management', adminAuth.isLogin, adminMiddleware.currentRouter , adminControllers.getOrderManagementPage)
+adminRouter.get('/order/edit', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getOrderEditPage)
+adminRouter.post('/order/edit', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.postOrderEdit)
 
 module.exports = adminRouter
