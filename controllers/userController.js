@@ -838,7 +838,12 @@ module.exports.getOrderCancel = async(req,res)=>{
     const user = await customerModel.findOne({email:req.user});
     const orderId = req.query.orderId;
     if(user){
-      await orderModel.updateOne({_id : orderId},{$set:{status:"Canceled"}})
+      await orderModel.updateOne({_id : orderId},{$set:{status:"Canceled"}});
+      const order = await orderModel.findOne({_id: orderId});
+      order.products.forEach(async(product)=>{
+        await productsModel.updateOne({_id:product.productId},{ $inc: { units: product.quantity }})
+      })
+      
       res.redirect('/profile')
     } else {
       res.redirect('/')
@@ -854,6 +859,10 @@ module.exports.getOrderReturn = async(req,res)=>{
     const orderId = req.query.orderId;
     if(user){
       await orderModel.updateOne({_id : orderId},{$set:{status:"Returned"}})
+      const order = await orderModel.findOne({_id: orderId});
+      order.products.forEach(async(product)=>{
+        await productsModel.updateOne({_id:product.productId},{ $inc: { units: product.quantity }})
+      })
       res.redirect('/profile')
     } else {
       res.redirect('/')

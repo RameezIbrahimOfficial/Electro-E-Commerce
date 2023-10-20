@@ -20,7 +20,7 @@ app.use(express.static('public'))
 
 app.listen(PORT, async (req, res) => {
     try {
-        await mongoose.connect(MONGO_CON_STR)
+        await mongoose.connect(MONGO_CON_STR,{useNewUrlParser: true, useUnifiedTopology: true})
         console.log("SERVER STARTED")
         console.log(`http://127.0.0.1:${PORT}`)
     } catch (error) {
