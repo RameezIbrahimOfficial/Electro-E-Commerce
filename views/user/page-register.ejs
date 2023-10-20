@@ -23,9 +23,23 @@
                         return response.json();
                     })
                     .then((data) => {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'OTP Have Been Send To Registered Phone Number',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
                         console.log("Response from server:", data);
                     })
                     .catch((error) => {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Error Sending OTP',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
                         console.error("Error sending OTP:", error);
                     });
             });
@@ -50,10 +64,21 @@
                         return response.json();
                     })
                     .then((data) => {
-                        console.log("OTP verified:", data);
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'OTP verified, Account Created Successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
                     })
                     .catch((error) => {
-                        console.error("Error verifying OTP:", error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Error verifying OTP!',
+                            footer: '<a href="">Why do I have this issue?</a>'
+                        })
                     });
             });
 
@@ -92,7 +117,7 @@
                     return;
                 }
 
-                if (registrationEmailInput.value.trim() === "") {
+                if (isValidEmail(registrationEmailInput.value)) {
                     e.preventDefault();
                     errSignupEmail.innerHTML = "Please enter a valid email address."
                     return;

@@ -204,10 +204,14 @@
         if (selectedAddressValue !== null) {
           console.log("Selected Address ID:", selectedAddressValue);
         } else {
-          console.log("No address is selected.");
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'No Address is Selected!',
+            footer: '<a href="">Why do I have this issue?</a>'
+          })
         }
 
-        console.log("Clicked");
       });
   });
 </script>

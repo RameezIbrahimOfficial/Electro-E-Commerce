@@ -451,6 +451,13 @@
                     return response.json() 
                 })
                     .then(data => {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Added to Cart',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
                         console.log('Data updated successfully:', data);
                     })
                     .catch(error => {
@@ -475,10 +482,16 @@
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }
-          return response.json() // Parse the response as JSON
+          return response.json() 
         })
           .then(data => {
-            // Handle the response data after the update is successful
+            Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Added to Wishlist',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             console.log('Data updated successfully:', data);
           })
           .catch(error => {

@@ -54,11 +54,11 @@
                             
                             <%if(users[i].isBlocked){%>
                             <td class="text-end">
-                                <a href="/admin/admin_panel/user_management?id=<%= users[i]._id %>" class="btn btn-md rounded font-sm">Unblock</a>
+                                <a href="/admin/admin_panel/user_management?id=<%= users[i]._id %>" class="btn btn-md rounded font-sm unblock">Unblock</a>
                             </td>
                             <%}else{%>
                                 <td class="text-end">
-                                    <a href="/admin/admin_panel/user_management?id=<%= users[i]._id %>" class="btn  rounded font-sm btn-danger">Block</a>
+                                    <a href="/admin/admin_panel/user_management?id=<%= users[i]._id %>" class="btn  rounded font-sm btn-danger block">Block</a>
                                 </td>
                             <%}%>
                         </tr>
@@ -73,4 +73,24 @@
         <!-- card-body end// -->
     </div>
 </section>
+<script>
+    document.querySelector('.block').addEventListener('click',()=>{
+        Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'User Blocked',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+    })
+    document.querySelector('.unblock').addEventListener('click',()=>{
+        Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'User UnBlocked',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+    })
+</script>
 <%- include('../partials/admin-footer')%>

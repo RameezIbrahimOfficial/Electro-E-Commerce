@@ -174,8 +174,15 @@
                 })
                     .then(data => {
                         console.log('Data updated successfully:', data);
-                        
-                        window.location.href='/cart'
+                        Swal.fire({
+                          position: 'top-end',
+                          icon: 'success',
+                          title: 'Cart Updated',
+                          showConfirmButton: false,
+                          timer: 1500
+                        }).then(()=>{
+                          window.location.href='/cart'
+                        })
                     })
                     .catch(error => {
                         console.error('Error:'+ error);

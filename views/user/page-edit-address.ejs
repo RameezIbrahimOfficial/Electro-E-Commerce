@@ -57,7 +57,12 @@
         requiredFields.forEach(function(field) {
             const input = document.getElementById(field);
             if (input.value.trim() === "") {
-                alert(`Please fill in the "${field}" field.`);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Enter all the fields!',
+                    footer: '<a href="">Why do I have this issue?</a>'
+                })
                 isValid = false;
             }
         });

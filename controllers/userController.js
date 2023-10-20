@@ -617,11 +617,11 @@ module.exports.postAddressEdit = async (req, res) => {
               },
             },
           }
-        );
-
-        res.redirect("/profile");
-        res.redirect("/profile");
+        ).then(()=>{
+          res.redirect("/profile");
+        })
       }
+      res.redirect("/profile");
     } else {
       res.redirect("/profile");
     }

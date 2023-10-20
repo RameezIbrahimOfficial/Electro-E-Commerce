@@ -460,6 +460,13 @@
           return response.json()
         })
           .then(data => {
+            Swal.fire({
+              position: 'top-end',
+              icon: 'success',
+              title: 'Added to Cart',
+              showConfirmButton: false,
+              timer: 1500
+            })
             console.log('Data updated successfully:', data);
           })
           .catch(error => {
@@ -488,6 +495,13 @@
           return response.json() 
         })
           .then(data => {
+            Swal.fire({
+              position: 'top-end',
+              icon: 'success',
+              title: 'Added to Wishlist',
+              showConfirmButton: false,
+              timer: 1500
+            })
             console.log('Data updated successfully:', data);
           })
           .catch(error => {
