@@ -27,7 +27,10 @@ module.exports.getSendOtp = async (req, res) => {
     await twilio.verify.v2.services(TWILIO_SERVICE_SID).verifications.create({
       to: `+91${phoneNumber}`,
       channel: "sms",
-    });
+    }).then(()=>{
+      res.status(200).json({ data: "Send" });
+    })
+
   } catch (err) {
     console.error(err);
   }
@@ -79,7 +82,7 @@ module.exports.postUserRegister = async (req, res) => {
         }).then((data)=>{
           if(data){
             res.render("page-register", {
-              errorMsgSignup: "Account Created Successfully",
+              errorMsgSignup: "Account Created Successfully",isLogin
             });
           }
         })

@@ -445,7 +445,6 @@ module.exports.postOrderEdit = async(req, res)=>{
       await orderModel.updateOne({_id:orderId},{$set:{status:orderStatus}});
       res.redirect('/admin/order_management')
     }
-    console.log(order);
   } catch(error){
     console.error(error)
   }
