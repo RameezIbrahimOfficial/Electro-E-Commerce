@@ -5,6 +5,7 @@ const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_SERVICE_SID } =
 const twilio = require("twilio")(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, {
   lazyLoading: true,
 });
+const bcrypt = require('bcrypt');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -66,24 +67,30 @@ module.exports.postUserRegister = async (req, res) => {
   try {
     const { fname, lname, email, SignupPassword, phoneNumber } = req.body;
     const isLogin = req.cookies.isLogin;
-    if (isOtpVerified) {
-      await customerModel.create({
-        firstName: fname,
-        lastName: lname,
-        email: email,
-        password: SignupPassword,
-        phoneNumber: phoneNumber,
-        createdOn: new Date(),
-      });
-      res.render("page-register", {
-        errorMsgSignup: "Account Created Successfully",
-      });
-    } else {
-      res.render("page-register", {
-        errorMsgOTP: "Invalid OTP",
-        isLogin,
-      });
-    }
+    bcrypt.hash(SignupPassword,10,async(err,hash)=>{
+      if (isOtpVerified) {
+        await customerModel.create({
+          firstName: fname,
+          lastName: lname,
+          email: email,
+          password: hash,
+          phoneNumber: phoneNumber,
+          createdOn: new Date(),
+        }).then((data)=>{
+          if(data){
+            res.render("page-register", {
+              errorMsgSignup: "Account Created Successfully",
+            });
+          }
+        })
+      } else {
+        res.render("page-register", {
+          errorMsgOTP: "Invalid OTP",
+          isLogin,
+        });
+      }
+    })
+    
   } catch (err) {
     console.error(err);
   }
@@ -109,16 +116,17 @@ module.exports.postUserLogin = async (req, res) => {
           errorMsgLogin: "You Have Been Blocked by Admin",
         });
       } else {
-        if (email === user.email && password === user.password) {
-          const token = jwt.sign(user.email, JWT_SECRET);
-          res.cookie("userToken", token, { maxAge: 24 * 60 * 60 * 1000 });
-          res.cookie("isLogin", true, { maxAge: 24 * 60 * 60 * 1000 });
-          res.redirect("/products");
-        } else {
-          res.render("page-login", {
-            errorMsgLogin: "Invalid Credentials",
-          });
-        }
+        bcrypt.compare(password,user.password,(err,result)=>{
+          if (email === user.email && result == true) {
+            const token = jwt.sign(user.email, JWT_SECRET);
+            res.cookie("userToken", token, { maxAge: 24 * 60 * 60 * 1000 });
+            res.cookie("isLogin", true, { maxAge: 24 * 60 * 60 * 1000 });
+            res.redirect("/products");
+          } else {
+            res.render("page-login", {
+              errorMsgLogin: "Invalid Credentials",isLogin});
+          }
+        })
       }
     } else {
       res.render("page-login", {
