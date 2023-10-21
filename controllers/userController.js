@@ -19,7 +19,7 @@ const wishlistModel = require("../Model/wishlist");
 const orderModel = require("../Model/order")
 
 let phoneNumber;
-let isOtpVerified;
+let isOtpVerified = false;
 
 module.exports.getSendOtp = async (req, res) => {
   try {

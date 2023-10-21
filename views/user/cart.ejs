@@ -70,7 +70,6 @@
                 </table>
               </div>
               <div class="cart-action text-end">
-                <a class="btn mr-10 mb-sm-15 update-cart"><i class="fi-rs-shuffle mr-10"></i>Update Cart</a>
                 <a class="btn" href="/products"><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
               </div>
               <div class="divider center_icon mt-50 mb-50">
@@ -129,69 +128,66 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      document.querySelectorAll('.qty-up').forEach(element => {
-        element.addEventListener('click', (event) => {
-          event.preventDefault();
-          var quantityElement = element.closest('.detail-qty').querySelector('.qty-val');
-          var quantity = parseInt(quantityElement.textContent, 10);
-          quantity += 1;
-          quantityElement.textContent = quantity;
-        });
-      });
+  document.querySelectorAll('.qty-up').forEach(element => {
+    element.addEventListener('click', (event) => {
+      event.preventDefault();
+      var quantityElement = element.closest('.detail-qty').querySelector('.qty-val');
+      var quantity = parseInt(quantityElement.textContent, 10);
+      quantity += 1;
+      quantityElement.textContent = quantity;
 
-      document.querySelectorAll('.qty-down').forEach(element => {
-        element.addEventListener('click', (event) => {
-          event.preventDefault();
-          var quantityElement = element.closest('.detail-qty').querySelector('.qty-val');
-          var quantity = parseInt(quantityElement.textContent, 10);
-          if (quantity > 1) {
-            quantity -= 1;
-            quantityElement.textContent = quantity;
-          }
-        });
-      });
+      updateServerQuantity(quantityElement);
+    });
+  });
 
-      const qtyValElements = document.querySelectorAll('.qty-val');
-      document.querySelector('.update-cart').addEventListener('click',(event)=>{
-        event.preventDefault();
-        document.querySelectorAll('.qty-val').forEach(element=>{
-          const productId = element.getAttribute('data-productId');
-          var quantity = element.closest('.detail-qty').querySelector('.qty-val').textContent;
-          fetch(`/cart/update?productId=${productId}&quantity=${quantity}`,{
-            method : 'POST',
-            headers : {
-              'Content-Type' : 'application/json'
-            },
-            body : JSON.stringify({
-              productId : productId,
-              quantity : Number(quantity)
-            })
-          }).then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json() 
-                })
-                    .then(data => {
-                        console.log('Data updated successfully:', data);
-                        Swal.fire({
-                          position: 'top-end',
-                          icon: 'success',
-                          title: 'Cart Updated',
-                          showConfirmButton: false,
-                          timer: 1500
-                        }).then(()=>{
-                          window.location.href='/cart'
-                        })
-                    })
-                    .catch(error => {
-                        console.error('Error:'+ error);
-                    })
-          
+  document.querySelectorAll('.qty-down').forEach(element => {
+    element.addEventListener('click', (event) => {
+      event.preventDefault();
+      var quantityElement = element.closest('.detail-qty').querySelector('.qty-val');
+      var quantity = parseInt(quantityElement.textContent, 10);
+      if (quantity > 1) {
+        quantity -= 1;
+        quantityElement.textContent = quantity;
+
+        updateServerQuantity(quantityElement);
+      }
+    });
+  });
+
+  function updateServerQuantity(quantityElement) {
+    const productId = quantityElement.getAttribute('data-productId');
+    var quantity = quantityElement.textContent;
+    fetch(`/cart/update?productId=${productId}&quantity=${quantity}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        productId: productId,
+        quantity: Number(quantity),
+      }),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Data updated successfully:', data);
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: 'Cart Updated',
+          showConfirmButton: false,
+          timer: 1500,
         })
       })
-    });
-
+      .catch(error => {
+        console.error('Error:' + error);
+      });
+  }
+});
 
   </script>
 
