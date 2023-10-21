@@ -30,7 +30,7 @@
                       <tr>
                         <td class="image product-thumbnail">
                           <img class="thumbnail"
-                            src="data:<%= userCart.products[i].productId.productImage[0].contentType %>;base64, <%= userCart.products[i].productId.productImage[0].buffer.toString('base64') %>"
+                            src="<%= userCart.products[i].productId.productImage[0].path %>"
                             alt="" />
                         </td>
                         <td class="product-des product-name">

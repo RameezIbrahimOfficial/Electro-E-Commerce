@@ -232,17 +232,17 @@ module.exports.postEditProducts = async (req, res) => {
     if (images.length > 0) {
       for (let i = 0; i < images.length; i++) {
         productImages.push({
-          fileName: images[i].originalname,
-          mimeType: images[i].mimetype,
-          buffer: images[i].buffer,
+          fileName: images[i].filename,
+          originalname: images[i].originalname,
+          path: images[i].path,
         });
       }
     } else {
       for (let i = 0; i < product.productImage.length; i++) {
         productImages.push({
           fileName: product.productImage[i].fileName,
-          mimeType: product.productImage[i].mimetype,
-          buffer: product.productImage[i].buffer,
+          originalname: product.productImage[i].originalname,
+          path: product.productImage[i].path,
         });
       }
     }
@@ -329,9 +329,9 @@ module.exports.postAddBrands = async (req, res) => {
       brandName: req.body.brandName,
       isBlocked: req.body.isBlocked,
       brandImage: {
-        fileName: brandLogo.originalname,
-        mimeType: brandLogo.mimetype,
-        buffer: brandLogo.buffer
+        fileName: brandLogo.filename,
+        originalname: brandLogo.originalname,
+        path: brandLogo.path
       }
     })
     res.redirect('/admin/admin_panel/brands')

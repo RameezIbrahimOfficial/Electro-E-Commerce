@@ -16,6 +16,7 @@ app.set('views', [path.join(__dirname, "views/user"), path.join(__dirname, "view
 app.use('/', userRouter)
 app.use('/admin', adminRouter)
 app.use(express.static('public'))
+app.use('/Public', express.static('Public'));
 
 
 app.listen(PORT, async (req, res) => {

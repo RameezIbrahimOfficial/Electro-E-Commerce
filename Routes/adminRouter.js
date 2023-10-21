@@ -5,11 +5,20 @@ const adminControllers = require('../controllers/adminControllers');
 const adminAuth = require('../middlewares/adminAuth')
 const adminMiddleware = require('../middlewares/adminMiddleware')
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage })
-
 const adminRouter = express.Router();
 
+const storage = multer.diskStorage({
+    destination : (req, file, cb) => {
+        cb(null, 'Public/uploads')
+    },
+    filename : (req, file, cb) => {
+        cb(null, file.originalname)
+    }
+})
+
+const upload = multer({storage : storage})
+
+adminRouter.use('/uploads', express.static('uploads'));
 adminRouter.use(express.static('Public'))
 adminRouter.use('/admin_panel', express.static('Public'));
 adminRouter.use('/order', express.static('Public'));

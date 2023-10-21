@@ -51,7 +51,7 @@
           </div>
           <div class="mb-4">
             <div class="input-upload">
-              <img src="data:<%= brand.brandImage.contentType %>;base64, <%= brand.brandImage.buffer.toString('base64') %>">
+              <img src="<%= brand.brandImage.path %>">
           </div>
         </div>
             <div class="mb-4">
@@ -74,7 +74,7 @@
                 <div class="card-header bg-white text-center">
                   <img
                     height="76p"
-                    src="data:<%= brands[i].brandImage.contentType %>;base64, <%= brands[i].brandImage.buffer.toString('base64') %>"
+                    src="<%= brands[i].brandImage.path %>"
                     alt="Logo"
                   />
                 </div>

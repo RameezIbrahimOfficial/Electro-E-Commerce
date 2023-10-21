@@ -163,10 +163,10 @@
                         <div class="product-img product-img-zoom">
                           <a href="/product?id=<%=product._id%>">
                             <img class="default-img"
-                              src="data:<%= product.productImage[0].contentType %>;base64, <%= product.productImage[0].buffer.toString('base64') %>"
+                              src="<%= product.productImage[0].path%>"
                               alt="" />
                             <img class="hover-img"
-                              src="data:<%= product.productImage[0].contentType %>;base64, <%= product.productImage[0].buffer.toString('base64') %>"
+                              src="<%= product.productImage[0].path %>"
                               alt="" />
                           </a>
                         </div>
@@ -229,10 +229,10 @@
                         <div class="product-img product-img-zoom">
                           <a href="/product?id=<%=product._id%>">
                             <img class="default-img"
-                              src="data:<%= product.productImage[0].contentType %>;base64, <%= product.productImage[0].buffer.toString('base64') %>"
+                              src="<%= product.productImage[0].path %>"
                               alt="" />
                             <img class="hover-img"
-                              src="data:<%= product.productImage[0].contentType %>;base64, <%= product.productImage[0].buffer.toString('base64') %>"
+                              src="<%= product.productImage[0].path %>"
                               alt="" />
                           </a>
                         </div>
@@ -295,10 +295,10 @@
                         <div class="product-img product-img-zoom">
                           <a href="/product?id=<%=product._id%>">
                             <img class="default-img"
-                              src="data:<%= product.productImage[0].contentType %>;base64, <%= product.productImage[0].buffer.toString('base64') %>"
+                              src="<%= product.productImage[0].path %>"
                               alt="" />
                             <img class="hover-img"
-                              src="data:<%= product.productImage[0].contentType %>;base64, <%= product.productImage[0].buffer.toString('base64') %>"
+                              src="<%= product.productImage[0].path %>"
                               alt="" />
                           </a>
                         </div>
@@ -424,7 +424,7 @@
               <%brands.forEach((brand)=>{%>
                 <div class="brand-logo">
                   <img
-                    src="data:<%= brand.brandImage.contentType %>;base64, <%= brand.brandImage.buffer.toString('base64') %>"
+                    src="<%= brand.brandImage.path %>"
                     alt="brand-logo" height="72" />
                 </div>
                 <%})%>

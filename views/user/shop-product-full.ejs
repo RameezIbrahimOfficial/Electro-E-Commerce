@@ -23,7 +23,7 @@
                                         <div class="product-image-slider">
                                             <% for(let i=0;i<product.productImage.length;i++){ %>
                                                 <figure class="border-radius-10">
-                                                    <img src="data:<%= product.productImage[i].contentType %>;base64, <%=product.productImage[i].buffer.toString('base64') %>"
+                                                    <img src="<%= product.productImage[i].path%>"
                                                         alt="product-image" class="img-fluid">
                                                 </figure>
                                                 <%}%>
@@ -31,7 +31,7 @@
                                         <div class="slider-nav-thumbnails pl-15 pr-15">
                                             <% for(let i=0;i<product.productImage.length;i++){ %>
                                                 <div><img
-                                                        src="data:<%= product.productImage[i].contentType %>;base64, <%= product.productImage[i].buffer.toString('base64') %>"
+                                                        src="<%= product.productImage[i].path %>"
                                                         alt="product-image" class="img-fluid"></div>
                                                 <%}%>
                                         </div>
@@ -48,7 +48,7 @@
                                                         class="d-flex ms-2 justify-content-center">
                                                         <%=product.brand%>
                                                             <%if(brand){%>
-                                                                <img src="data:<%= brand.brandImage.contentType %>;base64, <%= brand.brandImage.buffer.toString('base64') %>"
+                                                                <img src="<%= brand.brandImage.path %>"
                                                                     alt="brand-logo" height="32" class="ms-3">
                                                                 <%}%>
                                                     </a>

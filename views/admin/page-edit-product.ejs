@@ -135,7 +135,7 @@
         <% if (product[0].productImage && product[0].productImage.length > 0) { %>
             <% product[0].productImage.forEach(function(image) { %>
                 <div class="card-body">
-                <img src="data:<%= image.contentType %>;base64, <%= image.buffer.toString('base64') %>" alt="Product Image">
+                <img src="<%= image.path %>" alt="Product Image">
             </div>
               <% }); %>
             <% } else { %>

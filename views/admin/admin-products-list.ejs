@@ -73,8 +73,9 @@
               <td>
                 <% if (products[i].productImage &&
                 products[i].productImage.length > 0) { %>
+                  <%console.log(products[i].productImage[0].path)%>
                 <img
-                  src="data:<%= products[i].productImage[0].contentType %>;base64, <%= products[i].productImage[0].buffer.toString('base64') %>"
+                  src="/<%= products[i].productImage[0].path %>"
                   class="img-sm img-thumbnail"
                   alt="product Image"
                 />
