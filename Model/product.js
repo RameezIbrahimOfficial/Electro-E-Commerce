@@ -48,9 +48,9 @@ const productSchema = new mongoose.Schema({
   },
   productImage: [
     {
-      fileName: String,
-      mimeType: String,
-      buffer: Buffer,
+      fileName : String,
+      originalname : String,
+      path: String,
     },
   ],
   operatingSystem: {

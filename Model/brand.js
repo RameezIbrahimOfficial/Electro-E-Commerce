@@ -12,8 +12,8 @@ const brandSchema = mongoose.Schema({
     },
     brandImage: {
         fileName: String,
-        mimeType: String,
-        buffer: Buffer,
+        originalname: String,
+        path: String,
     },
     isBlocked: {
         type: Boolean,
