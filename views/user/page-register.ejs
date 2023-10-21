@@ -1,11 +1,65 @@
 <%-include('../partials/user-header')%>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            var timeLeft = 30;
+            var elem = document.getElementById('some_div');
+
+            var timerId = setInterval(countdown, 1000);
+
+            function countdown() {
+                if (timeLeft == -1) {
+                    clearTimeout(timerId);
+                    document.querySelector('.resend-otp').disabled = false
+                } else {
+                    elem.innerHTML = timeLeft + ' seconds remaining';
+                    timeLeft--;
+                }
+            }
             const sendOTPButton = document.getElementById("sendOTPButton");
+            const reSendButton = document.getElementById("reSendOTPButton")
             const verifyOTPButton = document.getElementById("verifyOTPButton");
             const otpInput = document.getElementById("otp");
 
             sendOTPButton.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                const phoneNumber = document.querySelector('input[name="phoneNumber"]').value;
+
+                if (!phoneNumber) {
+                    errSignupPhoneNumber.innerHTML = "Phone number is required."
+                    return;
+                }
+
+                fetch(`/send_otp?phoneNumber=${phoneNumber}`)
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then((data) => {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'OTP Have Been Send To Registered Phone Number',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        console.log("Response from server:", data);
+                    })
+                    .catch((error) => {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Error Sending OTP',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        console.error("Error sending OTP:", error);
+                    });
+            });
+            
+            reSendButton.addEventListener("click", function (e) {
                 e.preventDefault();
 
                 const phoneNumber = document.querySelector('input[name="phoneNumber"]').value;
@@ -179,89 +233,93 @@
         <section class="pt-50 pb-150">
             <div class="container">
                 <div class="row justify-content-center">
-                            <div class="col-lg-6">
-                                <div class="login_wrap widget-taber-content p-30 background-white border-radius-5">
-                                    <div class="padding_eight_all bg-white">
-                                        <div class="heading_s1">
-                                            <h3 class="mb-30">Create an Account</h3>
-                                        </div>
-                                        <p class="mb-50 font-sm">
-                                            Your personal data will be used to support your experience
-                                            throughout this website, to manage access to your account,
-                                            and for other purposes described in our privacy policy
-                                        </p>
-                                        <p class="text-success">
-                                            <%=locals.errorMsgSignup?errorMsgSignup:""%>
-                                        </p>
-                                        <form method="post" action="/register">
-                                            <div class="form-group">
-                                                <input type="text" name="fname" placeholder="First Name" />
-                                                <input type="text" name="lname" placeholder="Last Name" class="mt-2" />
-                                                <span id="errSignupName" class="text-danger"></span>
-                                            </div>
-                                            <div class="form-group">
-                                                <input type="email" name="email" placeholder="Email" />
-                                                <span id="errSignupEmail" class="text-danger"></span>
-                                            </div>
-                                            <div class="form-group">
-                                                <input type="password" name="SignupPassword" placeholder="Password" />
-                                                <span id="errSignupPassword" class="text-danger"></span>
-                                            </div>
-                                            <div class="form-group">
-                                                <input type="password" name="Confirmpassword"
-                                                    placeholder="Confirm password" />
-                                                <span id="errSignupConfirmPassword" class="text-danger"></span>
-                                            </div>
-                                            <div class="form-group d-flex">
-                                                <input type="number" name="phoneNumber" placeholder="Phone Number"
-                                                    id="phoneNumber" />
-                                                <button class="btn btn-success input-group-text" id="sendOTPButton">
-                                                    Send OTP
-                                                </button>
-                                            </div>
-                                            <span id="errSignupPhoneNumber" class="text-danger"></span>
-                                            <p class="text-danger>
+                    <div class="col-lg-6">
+                        <div class="login_wrap widget-taber-content p-30 background-white border-radius-5">
+                            <div class="padding_eight_all bg-white">
+                                <div class="heading_s1">
+                                    <h3 class="mb-30">Create an Account</h3>
+                                </div>
+                                <p class="mb-50 font-sm">
+                                    Your personal data will be used to support your experience
+                                    throughout this website, to manage access to your account,
+                                    and for other purposes described in our privacy policy
+                                </p>
+                                <p class="text-success">
+                                    <%=locals.errorMsgSignup?errorMsgSignup:""%>
+                                </p>
+                                <form method="post" action="/register">
+                                    <div class="form-group d-flex">
+                                        <input type="text" name="fname" placeholder="First Name" />
+                                        <input type="text" name="lname" placeholder="Last Name" class="ms-2" /><br>
+                                        <span id="errSignupName" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="email" name="email" placeholder="Email" />
+                                        <span id="errSignupEmail" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group d-flex">
+                                        <input type="password" name="SignupPassword" placeholder="Password" />
+                                        <span id="errSignupPassword" class="text-danger"></span>
+                                        <input type="password" name="Confirmpassword" placeholder="Confirm password"
+                                            class="ms-2" />
+                                        <span id="errSignupConfirmPassword" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                    </div>
+                                    <div class="form-group d-flex">
+                                        <input type="number" name="phoneNumber" placeholder="Phone Number"
+                                            id="phoneNumber" />
+                                        <button class="btn btn-success input-group-text" id="sendOTPButton">
+                                            Send OTP
+                                        </button>
+                                    </div>
+                                    <div class="d-flex justify-content-end align-items-center mb-2">
+                                        <div id="some_div"></div>
+                                        <button disabled class="ms-2 btn btn-success input-group-text resend-otp" id="reSendOTPButton">
+                                            ResendOTP
+                                        </button>
+                                    </div>
+                                    <span id="errSignupPhoneNumber" class="text-danger"></span>
+                                    <p class="text-danger>
                                                 <%=locals.errorMsgOTP?errorMsgOTP:""%>
                                             </p>
-                                            <div class="form-group d-flex">
-                                                <input type="number" name="otp" placeholder="OTP" id="otp" />
-                                                <button class="btn btn-success input-group-text" id="verifyOTPButton">
-                                                    Verify OTP
-                                                </button>
-                                            </div>
-                                            <span id="errSignupOtp" class="text-danger"></span>
-                                            <div class="login_footer form-group">
-                                                <div class="chek-form">
-                                                    <div class="custome-checkbox">
-                                                        <input class="form-check-input" type="checkbox" name="checkbox"
-                                                            id="exampleCheckbox12" value="" />
-                                                        <label class="form-check-label" for="exampleCheckbox12"><span>I
-                                                                agree to terms &amp; Policy.</span></label>
-                                                    </div>
-                                                </div>
-                                                <a href="/"><i
-                                                        class="fi-rs-book-alt mr-5 text-muted"></i>Learn
-                                                    more</a>
-                                            </div>
-                                            <div class="form-group">
-                                                <button type="submit" class="btn btn-fill-out btn-block hover-up"
-                                                    name="login">
-                                                    Submit &amp; Register
-                                                </button>
-                                            </div>
-                                        </form>
-                                        <div class="divider-text-center mt-15 mb-15">
-                                            <span> or</span>
-                                        </div>
-                                        <div class="text-muted text-center">
-                                            Already have an account? <a href="/sigin">Sign in now</a>
-                                        </div>
+                                            <div class=" form-group d-flex">
+                                        <input type="number" name="otp" placeholder="OTP" id="otp" />
+                                        <button class="btn btn-success input-group-text" id="verifyOTPButton">
+                                            Verify OTP
+                                        </button>
+                            </div>
+                            <span id="errSignupOtp" class="text-danger"></span>
+                            <div class="login_footer form-group">
+                                <div class="chek-form">
+                                    <div class="custome-checkbox">
+                                        <input class="form-check-input" type="checkbox" name="checkbox"
+                                            id="exampleCheckbox12" value="" />
+                                        <label class="form-check-label" for="exampleCheckbox12"><span>I
+                                                agree to terms &amp; Policy.</span></label>
                                     </div>
                                 </div>
+                                <a href="/"><i class="fi-rs-book-alt mr-5 text-muted"></i>Learn
+                                    more</a>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-fill-out btn-block hover-up" name="login">
+                                    Submit &amp; Register
+                                </button>
+                            </div>
+                            </form>
+                            <div class="divider-text-center mt-15 mb-15">
+                                <span> or</span>
+                            </div>
+                            <div class="text-muted text-center">
+                                Already have an account? <a href="/sigin">Sign in now</a>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+            </div>
+            </div>
             </div>
         </section>
     </main>
