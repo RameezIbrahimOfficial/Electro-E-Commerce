@@ -107,9 +107,9 @@
                       <a class="itemside" href="#">
                         <div class="left">
                           <img
-                            src="data:<%= product.productId.productImage[0].contentType %>;base64, <%= product.productId.productImage[0].buffer.toString('base64') %>"
-                            width="40"
-                            height="40"
+                            src="/<%= product.productId.productImage[0].path%>"
+                            
+                            height="50"
                             class="s"
                             alt="Item"
                           />
