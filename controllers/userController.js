@@ -6,6 +6,7 @@ const twilio = require("twilio")(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, {
   lazyLoading: true,
 });
 const bcrypt = require('bcrypt');
+const moment = require('moment');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -458,7 +459,7 @@ module.exports.postSearch = async (req, res) => {
   }
 };
 
-module.exports.getPorfile = async (req, res) => {
+module.exports.getProfile = async (req, res) => {
   try {
     const isLogin = req.cookies.isLogin;
     const userEmail = req.user;
@@ -473,7 +474,8 @@ module.exports.getPorfile = async (req, res) => {
       userName: firstName + " " + lastName,
       userAddress,
       isLogin,
-      orders
+      orders,
+      moment
     });
   } catch (error) {
     console.error(error);

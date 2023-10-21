@@ -94,7 +94,7 @@
                                 <%orders.forEach((order)=>{%>
                                   <tr>
                                     <td><%=order._id%></td>
-                                    <td><%=order.CreatedOn%></td>
+                                    <td><%=moment(order.CreatedOn).format('MMMM Do YYYY, h:mm:ss a')%></td>
                                     <%if(order.status==='Delivered'){%>
                                       <td><span class="badge rounded-pill alert-success"><%=order.status%></span></td>
                                       <%}else if(order.status==="Canceled"){%>
