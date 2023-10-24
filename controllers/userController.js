@@ -1,14 +1,20 @@
 const jwt = require("jsonwebtoken");
+const bcrypt = require('bcrypt');
+const moment = require('moment');
+const Razorpay = require('razorpay')
+const { v4: uuidv4 } = require('uuid');
+
 require("dotenv").config();
+
 const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_SERVICE_SID } =
   process.env;
 const twilio = require("twilio")(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, {
   lazyLoading: true,
 });
-const bcrypt = require('bcrypt');
-const moment = require('moment');
 
 const JWT_SECRET = process.env.JWT_SECRET;
+const RAZOR_PAY_key_id = process.env.RAZOR_PAY_key_id;
+const RAZOR_PAY_key_secret = process.env.RAZOR_PAY_key_secret;
 
 const customerModel = require("../Model/customer");
 const productsModel = require("../Model/product");
@@ -22,6 +28,13 @@ const orderModel = require("../Model/order")
 let phoneNumber;
 let isOtpVerified = false;
 
+const razorpay = new Razorpay ({
+  key_id : RAZOR_PAY_key_id,
+  key_secret : RAZOR_PAY_key_secret
+})
+
+
+// Send OTP While New User SignUp
 module.exports.getSendOtp = async (req, res) => {
   try {
     phoneNumber = req.query.phoneNumber;
@@ -37,6 +50,7 @@ module.exports.getSendOtp = async (req, res) => {
   }
 };
 
+// Verify the OTP that have been send and entered by user is Same 
 module.exports.getVerifyOtp = async (req, res) => {
   try {
     const otp = req.query.otp;
@@ -56,6 +70,7 @@ module.exports.getVerifyOtp = async (req, res) => {
   }
 };
 
+// Display Home Page
 module.exports.getHome = async (req, res) => {
   try {
     const isLogin = req.cookies.isLogin;
@@ -67,6 +82,8 @@ module.exports.getHome = async (req, res) => {
   }
 };
 
+
+// POST Account Regsiter 
 module.exports.postUserRegister = async (req, res) => {
   try {
     const { fname, lname, email, SignupPassword, phoneNumber } = req.body;
@@ -100,15 +117,20 @@ module.exports.postUserRegister = async (req, res) => {
   }
 };
 
+
+// Display User Registration Page
 module.exports.getUserRegister = (req, res) => {
   const isLogin = req.cookies.isLogin;
   res.render("page-register", { isLogin });
 };
+
+// Display User Login Page
 module.exports.getUserLogin = (req, res) => {
   const isLogin = req.cookies.isLogin;
   res.render("page-login", { isLogin });
 };
 
+// POST User Login ( Authenticate user )
 module.exports.postUserLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -143,6 +165,8 @@ module.exports.postUserLogin = async (req, res) => {
   }
 };
 
+
+// Display products Page
 module.exports.getProductsPage = async (req, res) => {
   try {
     const isLogin = req.cookies.isLogin;
@@ -155,6 +179,7 @@ module.exports.getProductsPage = async (req, res) => {
   }
 };
 
+// Display Indivitual Product page
 module.exports.getProductPage = async (req, res) => {
   try {
     const isLogin = req.cookies.isLogin;
@@ -167,6 +192,8 @@ module.exports.getProductPage = async (req, res) => {
   }
 };
 
+
+// Display Cart Page
 module.exports.getCartPage = async (req, res) => {
   try {
     const productId = req.query.productId;
@@ -193,6 +220,8 @@ module.exports.getCartPage = async (req, res) => {
   }
 };
 
+
+// Add products to CART ( POST )
 module.exports.postAddToCart = async (req, res) => {
   try {
     const productId = req.body.productId;
@@ -234,6 +263,8 @@ module.exports.postAddToCart = async (req, res) => {
   }
 };
 
+
+// Delete products from CART 
 module.exports.getDeleteCart = async (req, res) => {
   try {
     const user = req.user;
@@ -256,6 +287,7 @@ module.exports.getDeleteCart = async (req, res) => {
   }
 };
 
+// Update Cart Quanity on Cart Quantity Increment
 module.exports.postCartUpdate = async (req, res) => {
   try {
     const productId = req.body.productId;
@@ -297,11 +329,15 @@ module.exports.postCartUpdate = async (req, res) => {
   }
 };
 
+
+// Display Contact Page
 module.exports.getContactPage = (req, res) => {
   const isLogin = req.cookies.isLogin;
   res.render("page-contact", { isLogin });
 };
 
+
+//  User Logout 
 module.exports.getUserLogout = async (req, res) => {
   try {
     res.clearCookie("userToken");
@@ -312,6 +348,7 @@ module.exports.getUserLogout = async (req, res) => {
   }
 };
 
+// User Product Search 
 module.exports.getSearch = async (req, res) => {
   try {
     const product_search = req.query.product_search;
@@ -344,6 +381,8 @@ module.exports.getSearch = async (req, res) => {
   }
 };
 
+
+// Filter Products in Products Page
 module.exports.postSearch = async (req, res) => {
   try {
     const categories = await categoryModel.find({});
@@ -459,6 +498,7 @@ module.exports.postSearch = async (req, res) => {
   }
 };
 
+// Display user Profile Page
 module.exports.getProfile = async (req, res) => {
   try {
     const isLogin = req.cookies.isLogin;
@@ -482,6 +522,8 @@ module.exports.getProfile = async (req, res) => {
   }
 };
 
+
+// Display Add address Page
 module.exports.getAddAddressPage = async (req, res) => {
   try {
     const isLogin = req.cookies.isLogin;
@@ -491,6 +533,7 @@ module.exports.getAddAddressPage = async (req, res) => {
   }
 };
 
+// Add User Address to DB 
 module.exports.postAddAddress = async (req, res) => {
   try {
     const user = await customerModel.findOne({ email: req.user }, { _id: 1 });
@@ -541,6 +584,7 @@ module.exports.postAddAddress = async (req, res) => {
   }
 };
 
+// Delete User Address 
 module.exports.getAddressDelete = async (req, res) => {
   try {
     addressId = req.query.id;
@@ -562,6 +606,7 @@ module.exports.getAddressDelete = async (req, res) => {
   }
 };
 
+// Display user Address Edit Page
 module.exports.getAddressEdit = async (req, res) => {
   try {
     const isLogin = req.cookies.isLogin;
@@ -583,6 +628,7 @@ module.exports.getAddressEdit = async (req, res) => {
   }
 };
 
+// Update DB with updated Address Details
 module.exports.postAddressEdit = async (req, res) => {
   try {
     const {
@@ -635,6 +681,7 @@ module.exports.postAddressEdit = async (req, res) => {
   }
 };
 
+// Display Wishlist Page
 module.exports.getWishlistPage = async (req, res) => {
   try {
     const user = await customerModel.findOne({email:req.user},{_id:1})
@@ -649,6 +696,8 @@ module.exports.getWishlistPage = async (req, res) => {
   }
 };
 
+
+// Add products to Wishlist
 module.exports.postAddToWishlist = async (req, res) => {
   try {
     const productId = req.body.productId;
@@ -687,6 +736,7 @@ module.exports.postAddToWishlist = async (req, res) => {
   }
 };
 
+// Delete Product from Wishlist
 module.exports.getDeleteWishlist = async (req, res) => {
   try {
     const user = req.user;
@@ -709,29 +759,7 @@ module.exports.getDeleteWishlist = async (req, res) => {
   }
 };
 
-// module.exports.getCheckoutPage = async (req, res) => {
-//   try{
-//     const isLogin = req.cookies.isLogin;
-//     const user = await customerModel.findOne({email:req.user});
-//     const userAddress = await addressModel.findOne({userId : user._id})
-//     const userCart = await cartModel.findOne({ userId: user._id }).populate({
-//       path: "products.productId",
-//       model: "Product",
-//     });
-//     let grandTotal = 0;
-//     const stockCheck = []; 
-//     for (let i = 0; i < userCart.products.length; i++) {
-//       grandTotal =
-//         grandTotal +
-//         userCart.products[i].productId.salePrice *
-//           userCart.products[i].quantity;
-//     }
-//     res.render('checkout',{ isLogin, userAddress, userCart, grandTotal })
-//   } catch (error){
-//     console.error(error);
-//   }
-// }
-
+// Display Checkout Page
 module.exports.getCheckoutPage = async (req, res) => {
   try {
     const isLogin = req.cookies.isLogin;
@@ -744,8 +772,7 @@ module.exports.getCheckoutPage = async (req, res) => {
         model: "Product",
       });
     let grandTotal = 0;
-    const stockCheck = []; // An array to store stock check messages.
-
+    const stockCheck = []; 
     for (let i = 0; i < userCart.products.length; i++) {
       const product = userCart.products[i].productId;
       const quantityInCart = userCart.products[i].quantity;
@@ -765,8 +792,8 @@ module.exports.getCheckoutPage = async (req, res) => {
   }
 };
 
-
-module.exports.getPlaceOrder = async(req, res)=>{
+// Place order COD ( Cash on Delivery )
+module.exports.getPlaceOrderCOD = async(req, res)=>{
   try{
     let totalAmount = 0;
     const user = await customerModel.findOne({email:req.user});
@@ -799,13 +826,14 @@ module.exports.getPlaceOrder = async(req, res)=>{
           phone : address.address[0].phone,
           altPhone : address.address[0].altPhone
         },
-        payementMethod : "COD",
-        refernceId : "ref4337fgh37747",
+        paymentMethod : "COD",
+        referenceId : "ref4337fgh37747",
         shippingCharge : 0,
         discount : 0,
         totalAmount : totalAmount,
-        CreatedOn : new Date(),
-        status : "Delivered",
+        createdOn : new Date(),
+        orderStatus : "Order Placed",
+        paymentStatus : "Pending",
         deliveredOn : new Date(),
       }).then(async()=>{
         for (const product of cart.products) {
@@ -822,7 +850,108 @@ module.exports.getPlaceOrder = async(req, res)=>{
   }
 }
 
+// Place Order ( Online Payement methods using RazorPay )
+module.exports.getPlaceOrderOnline = async (req, res) => {
+  try {
+    let totalAmount = 0;
+    const user = await customerModel.findOne({ email: req.user });
+    const cart = await cartModel.findOne({ userId: user._id }).populate({
+      path: 'products.productId',
+      model: 'Product'
+    });
+    const address = await addressModel.findOne({ "address._id": req.query.addressId }, { "address.$": 1 });
+    const productArray = [];
 
+    cart.products.forEach((product) => {
+      productArray.push({
+        productId: product.productId._id,
+        quantity: product.quantity,
+        price: product.productId.salePrice
+      });
+    });
+
+    cart.products.forEach((product) => {
+      totalAmount += product.quantity * product.productId.salePrice;
+    });
+
+    var options = {
+      amount: totalAmount * 100, 
+      currency: "INR",
+      receipt: uuidv4(),
+      payment_capture: "1"
+    };
+
+    const newOrder = await razorpay.orders.create(options);
+
+    await orderModel.create({
+      customerId: user._id,
+      products: productArray,
+      address: {
+        addressType: address.address[0].addressType,
+        name: address.address[0].name,
+        city: address.address[0].city,
+        landMark: address.address[0].landMark,
+        state: address.address[0].state,
+        pincode: address.address[0].pincode,
+        phone: address.address[0].phone,
+        altPhone: address.address[0].altPhone
+      },
+      paymentMethod: "Online",
+      referenceId: newOrder.id,
+      shippingCharge: 0,
+      discount: 0,
+      totalAmount: totalAmount,
+      createdOn: new Date(),
+      orderStatus: "Order Placed",
+      paymentStatus: "Pending", 
+      deliveredOn: new Date(),
+    });
+
+    for (const product of cart.products) {
+      await productsModel.updateOne(
+        { _id: product.productId._id },
+        { $inc: { units: -product.quantity } }
+      );
+    }
+
+    await cartModel.deleteOne({ userId: user._id });
+
+    res.status(200).json({ order_id: newOrder.id });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+// Handle Payement Status on DB on Success and Failure of Payement Through Razorpay
+module.exports.postUpdatePaymentStatus = async (req, res) => {
+  try {
+    const { paymentStatus, orderId, response } = req.query;
+    
+    if (paymentStatus === 'Success') {
+      await orderModel.updateOne({ referenceId: orderId }, { $set: { paymentStatus: paymentStatus } });
+      res.redirect('/profile')
+    } else {
+      await orderModel.updateOne({ referenceId: orderId }, { $set: { paymentStatus: 'Failure' } });
+      const order = await orderModel.findOne({ referenceId: orderId });
+      if (order) {
+        for (const item of order.products) {
+          await productsModel.updateOne(
+            { _id: item.productId },
+            { $inc: { units: item.quantity } }
+          );
+        }
+      }
+      res.redirect('/profile')
+
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to update payment status' });
+  }
+};
+
+// Display Invoice Page
 module.exports.getInvoice = async(req, res)=>{
   try{
     const orderId = req.query.orderId;
@@ -838,6 +967,8 @@ module.exports.getInvoice = async(req, res)=>{
   }
 }
 
+
+// Cancel Placed Order
 module.exports.getOrderCancel = async(req,res)=>{
   try{
     const user = await customerModel.findOne({email:req.user});
@@ -858,6 +989,7 @@ module.exports.getOrderCancel = async(req,res)=>{
   }
 }
 
+// Return Delivered Product
 module.exports.getOrderReturn = async(req,res)=>{
   try{
     const user = await customerModel.findOne({email:req.user});

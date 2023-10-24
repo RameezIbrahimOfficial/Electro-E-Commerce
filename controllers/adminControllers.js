@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
+const Razorpay = require('razorpay')
 require("dotenv").config();
+const moment = require('moment')
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -9,6 +11,7 @@ const customerModel = require("../Model/customer");
 const productsModel = require("../Model/product");
 const brandModel = require('../Model/brand');
 const orderModel = require("../Model/order")
+const bannerModel = require('../Model/banner')
 
 const middlewares = require("../middlewares/adminAuth");
 
@@ -37,9 +40,9 @@ module.exports.getAdminPanel = async (req, res) => {
   const products = await productsModel.find({})
   const categories = await categoryModel.find({})
 
-  const cancelledOrder = await orderModel.find({status:"Canceled"})
-  const returnedOrder = await orderModel.find({status:"Returned"})
-  const deliveredOrder = await orderModel.find({status:"Delivered"})
+  const cancelledOrder = await orderModel.find({orderStatus:"Canceled"})
+  const returnedOrder = await orderModel.find({orderStatus:"Returned"})
+  const deliveredOrder = await orderModel.find({orderStatus:"Delivered"})
 
   let revenue = 0
   orders.forEach((order)=>{
@@ -416,7 +419,8 @@ module.exports.getLogout = (req, res ) => {
 
 module.exports.getOrderManagementPage = async(req,res)=>{
   try{
-    const orders = await orderModel.find({}) 
+
+    const orders = await orderModel.find({})
     res.render('page-orders' ,{ orders })
   } catch(error){
     console.error(error);
@@ -442,8 +446,43 @@ module.exports.postOrderEdit = async(req, res)=>{
     const orderId = req.body.orderId;
     const order = await orderModel.findOne({_id:orderId});
     if(orderStatus){
-      await orderModel.updateOne({_id:orderId},{$set:{status:orderStatus}});
+      await orderModel.updateOne({_id:orderId},{$set:{orderStatus:orderStatus}});
       res.redirect('/admin/order_management')
+    }
+  } catch(error){
+    console.error(error)
+  }
+}
+
+module.exports.getBannerManagement = async(req, res)=>{
+  try{
+    const banners = await bannerModel.find({});
+    res.render('page-banner', { banners, moment })
+  } catch(error){
+    console.error(error);
+  }
+}
+
+module.exports.postAddBanner = async(req, res) => {
+  try{
+    const { description, startDate, endDate, isBlocked } = req.body;
+    const { filename, originalname, path } = req.file;
+    if(req.body && req.file){
+      await bannerModel.create({
+        description,
+        bannerImage : {
+          filename,
+          originalname,
+          path
+        },
+        startDate,
+        endDate,
+        status : isBlocked
+      }).then(()=>{
+        res.redirect('/admin/banner_management')
+      })
+    } else{
+      res.redirect('/admin/banner_management')
     }
   } catch(error){
     console.error(error)

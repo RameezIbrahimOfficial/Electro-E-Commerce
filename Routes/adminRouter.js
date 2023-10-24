@@ -50,9 +50,13 @@ adminRouter.get('/admin_panel/brand/unblock', adminAuth.isLogin, adminMiddleware
 adminRouter.get('/admin_panel/edit_brand', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getEditBrand)
 adminRouter.post('/admin_panel/brand/update', upload.single('brandLogo'), adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.postEditBrand)
 adminRouter.get('/logout', adminControllers.getLogout)
-
 adminRouter.get('/order_management', adminAuth.isLogin, adminMiddleware.currentRouter , adminControllers.getOrderManagementPage)
 adminRouter.get('/order/edit', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getOrderEditPage)
 adminRouter.post('/order/edit', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.postOrderEdit)
+
+adminRouter.get('/banner_management', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getBannerManagement)
+adminRouter.post('/banner_management/add',upload.single('bannerImage'), adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.postAddBanner)
+// Do Edit, Block, Unblock Banner && Display Banner 
+
 
 module.exports = adminRouter

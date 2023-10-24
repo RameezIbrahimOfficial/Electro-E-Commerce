@@ -20,10 +20,11 @@
         <div class="col-lg-6 col-md-6 ms-auto text-md-end">
             <form method="post" action="/admin/order/edit?orderId=<%=order._id%>">
               <select class="form-select d-inline-block mb-lg-0 mb-15 mw-200" name="orderStatus">
-                <option value="AwaitingPayment" <% if (order.status === "AwaitingPayment") { %> selected <% } %>>Awaiting payment</option>
-                <option value="Confirmed" <% if (order.status === "Confirmed") { %> selected <% } %>>Confirmed</option>
-                <option value="Shipped" <% if (order.status === "Shipped") { %> selected <% } %>>Shipped</option>
-                <option value="Delivered" <% if (order.status === "Delivered") { %> selected <% } %>>Delivered</option>
+                <option value="AwaitingPayment" <% if (order.orderStatus === "Awaiting Payment") { %> selected <% } %>>Awaiting Payment</option>
+                <option value="Confirmed" <% if (order.orderStatus === "Confirmed") { %> selected <% } %>>Confirmed</option>
+                <option value="Shipped" <% if (order.orderStatus === "Shipped") { %> selected <% } %>>Shipped</option>
+                <option value="Delivered" <% if (order.orderStatus === "Delivered") { %> selected <% } %>>Delivered</option>
+                <option value="Order Placed" <% if (order.orderStatus === "Order Placed") { %> selected <% } %>>Order Placed</option>
             </select>
             <input type="hidden" name="orderId" value="<%=order._id%>">
             <button class="btn btn-primary ms-2">SAVE</button>
@@ -47,7 +48,8 @@
               <h6 class="mb-1">Customer</h6>
               <p class="mb-1">
                 Name : <%=order.address.name%> <br />
-                Phone Number : <%=order.address.phone%>
+                Phone Number : <%=order.address.phone%> <br>
+                Alternative Number : <%=order.address.altPhone%>
               </p>
             </div>
           </article>
@@ -78,8 +80,10 @@
             <div class="text">
               <h6 class="mb-1">Deliver to</h6>
               <p class="mb-1">
-                City: <%order.address.city%><br /><%=order.address.landMark%>
-                <br />
+                Address Type : <%=order.address.addressType%> <br>
+                City: <%=order.address.city%> <br>
+                Land Mark :  <%=order.address.landMark%> <br>
+                State :  <%=order.address.state%> <br />
                 Pincode : <%=order.address.pincode%>
               </p>
             </div>
@@ -140,10 +144,10 @@
                       <dl class="dlist">
                         <dt class="text-muted">Status:</dt>
                         <dd>
-                          <% if (order.status === "Delivered") { %>
-                            <span class="badge rounded-pill alert-success"><%=order.status%></span>
+                          <% if (order.orderStatus === "Delivered") { %>
+                            <span class="badge rounded-pill alert-success"><%=order.orderStatus%></span>
                             <%}else{%>
-                              <span class="badge rounded-pill alert-warning"><%=order.status%></span>
+                              <span class="badge rounded-pill alert-warning"><%=order.orderStatus%></span>
                             <%}%>
                         </dd>
                       </dl>
@@ -163,6 +167,10 @@
             <p>
               Payement Method : <%=order.payementMethod%> <br />
               Reference ID : <%=order.refernceId%> <br />
+              Shipping Charge : <%=order.shippingCharge%> <br>
+              Discount : <%=order.discount%> <br>
+              Payement Status : <%=order.payementStatus%> <br>
+              Order Status : <%=order.orderStatus%> <br>
             </p>
           </div>
         </div>

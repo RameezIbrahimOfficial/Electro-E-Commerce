@@ -39,9 +39,12 @@ userRouter.get('/wishlist',userAuth.isUserLogin, userController.getWishlistPage)
 userRouter.post('/wishlist',userAuth.isUserLogin, userController.postAddToWishlist)
 userRouter.get('/wishlist/delete',userAuth.isUserLogin, userController.getDeleteWishlist)
 userRouter.get('/checkout', userAuth.isUserLogin, userController.getCheckoutPage)
-userRouter.get('/placeorder', userAuth.isUserLogin, userController.getPlaceOrder)
+userRouter.get('/placeorder/cod', userAuth.isUserLogin, userController.getPlaceOrderCOD)
 userRouter.get('/invoice',userAuth.isUserLogin, userController.getInvoice)
 userRouter.get('/order/cancel', userAuth.isUserLogin, userController.getOrderCancel)
 userRouter.get('/order/return', userAuth.isUserLogin, userController.getOrderReturn)
+
+userRouter.get('/placeorder/online', userAuth.isUserLogin, userController.getPlaceOrderOnline)
+userRouter.post('/updatePaymentStatus', userAuth.isUserLogin,userController.postUpdatePaymentStatus)
 
 module.exports = userRouter;
