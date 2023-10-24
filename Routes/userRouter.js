@@ -43,7 +43,6 @@ userRouter.get('/placeorder/cod', userAuth.isUserLogin, userController.getPlaceO
 userRouter.get('/invoice',userAuth.isUserLogin, userController.getInvoice)
 userRouter.get('/order/cancel', userAuth.isUserLogin, userController.getOrderCancel)
 userRouter.get('/order/return', userAuth.isUserLogin, userController.getOrderReturn)
-
 userRouter.get('/placeorder/online', userAuth.isUserLogin, userController.getPlaceOrderOnline)
 userRouter.post('/updatePaymentStatus', userAuth.isUserLogin,userController.postUpdatePaymentStatus)
 

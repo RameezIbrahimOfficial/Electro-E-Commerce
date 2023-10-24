@@ -127,7 +127,11 @@ module.exports.getUserRegister = (req, res) => {
 // Display User Login Page
 module.exports.getUserLogin = (req, res) => {
   const isLogin = req.cookies.isLogin;
-  res.render("page-login", { isLogin });
+  if(isLogin){
+    res.redirect('/')
+  } else{
+    res.render("page-login", { isLogin });
+  }
 };
 
 // POST User Login ( Authenticate user )
