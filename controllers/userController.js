@@ -775,7 +775,8 @@ module.exports.getCheckoutPage = async (req, res) => {
         path: "products.productId",
         model: "Product",
       });
-    let grandTotal = 0;
+    if(userCart){
+      let grandTotal = 0;
     const stockCheck = []; 
     for (let i = 0; i < userCart.products.length; i++) {
       const product = userCart.products[i].productId;
@@ -791,6 +792,9 @@ module.exports.getCheckoutPage = async (req, res) => {
     }
 
     res.render('checkout', { isLogin, userAddress, userCart, grandTotal, stockCheck });
+    } else {
+      res.redirect('/products')
+    }
   } catch (error) {
     console.error(error);
   }
