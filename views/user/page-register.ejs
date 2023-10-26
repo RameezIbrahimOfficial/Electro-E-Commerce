@@ -26,24 +26,25 @@
                                     <%=locals.errorMsgSignup?errorMsgSignup:""%>
                                 </p>
                                 <form method="post" action="/register">
+                                    <span id="errSignupName" class="text-danger"></span>
                                     <div class="form-group d-flex">
                                         <input type="text" name="fname" placeholder="First Name" />
                                         <input type="text" name="lname" placeholder="Last Name" class="ms-2" /><br>
-                                        <span id="errSignupName" class="text-danger"></span>
                                     </div>
+                                    <span id="errSignupEmail" class="text-danger"></span>
                                     <div class="form-group">
                                         <input type="email" name="email" placeholder="Email" />
-                                        <span id="errSignupEmail" class="text-danger"></span>
                                     </div>
+                                    <span id="errSignupPassword" class="text-danger"></span>
+                                    <span id="errSignupConfirmPassword" class="text-danger"></span>
                                     <div class="form-group d-flex">
                                         <input type="password" name="SignupPassword" placeholder="Password" />
-                                        <span id="errSignupPassword" class="text-danger"></span>
                                         <input type="password" name="Confirmpassword" placeholder="Confirm password"
                                             class="ms-2" />
-                                        <span id="errSignupConfirmPassword" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
                                     </div>
+                                    <span id="errSignupPhoneNumber" class="text-danger"></span>
                                     <div class="form-group d-flex">
                                         <input type="number" name="phoneNumber" placeholder="Phone Number"
                                             id="phoneNumber" />
@@ -57,7 +58,6 @@
                                             ResendOTP
                                         </button>
                                     </div>
-                                    <span id="errSignupPhoneNumber" class="text-danger"></span>
                                     <p class="text-danger>
                                                 <%=locals.errorMsgOTP?errorMsgOTP:""%>
                                             </p>
@@ -101,10 +101,10 @@
             </div>
         </section>
     </main>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            var timeLeft = 30;
+            var timeLeft = 60;
             var elem = document.getElementById('some_div');
 
             var timerId = setInterval(countdown, 1000);
@@ -141,6 +141,7 @@
                         return response.json();
                     })
                     .then((data) => {
+                        console.log(data);
                         Swal.fire({
                             position: 'top-end',
                             icon: 'success',
@@ -224,7 +225,7 @@
                         Swal.fire({
                             position: 'top-end',
                             icon: 'success',
-                            title: 'OTP verified, Account Created Successfully',
+                            title: 'OTP verified',
                             showConfirmButton: false,
                             timer: 1500
                         })
@@ -240,16 +241,11 @@
             });
 
 
-
-            const loginForm = document.querySelector('form[action="/signin"]');
-            const loginEmailInput = document.getElementById("loginEmail");
-            const loginPasswordInput = document.getElementById("loginPassword");
-
             const errEmail = document.getElementById('errEmail')
             const errPassword = document.getElementById('errPassword')
             const registrationForm = document.querySelector('form[action="/register"]');
             const registrationEmailInput = document.querySelector('input[name="email"]');
-            const registrationPasswordInput = document.querySelector('input[name="signupPassword"]');
+            const registrationPasswordInput = document.querySelector('input[name="SignupPassword"]');
             const registrationConfirmPasswordInput = document.querySelector('input[name="Confirmpassword"]');
             const registrationPhoneNumberInput = document.getElementById("phoneNumber");
             const registrationOTPInput = document.getElementById("otp");
@@ -262,48 +258,47 @@
             const errSignupName = document.getElementById('errSignupName')
 
             registrationForm.addEventListener("submit", function (e) {
-                if (registrationForm.querySelector('input[name="fname"]').value.trim() === "") {
-                    e.preventDefault();
-                    errSignupName.innerHTML = "Please enter your First Name."
-                    return;
-                }
+    e.preventDefault(); // Prevent the form from being submitted
 
-                if (registrationForm.querySelector('input[name="lname"]').value.trim() === "") {
-                    e.preventDefault();
-                    errSignupName.innerHTML = "Please enter your Last Name."
-                    return;
-                }
+    if (registrationForm.querySelector('input[name="fname"]').value.trim() === "") {
+        errSignupName.innerHTML = "Please enter your First Name.";
+        return false;
+    }
 
-                if (registrationEmailInput.value.trim() === "") {
-                    e.preventDefault();
-                    errSignupEmail.innerHTML = "Please enter a valid email address."
-                    return;
-                }
+    if (registrationForm.querySelector('input[name="lname"]').value.trim() === "") {
+        errSignupName.innerHTML = "Please enter your Last Name.";
+        return false;
+    }
 
-                if (registrationPasswordInput.value.length < 6) {
-                    e.preventDefault();
-                    errSignupPassword.innerHTML = "Password must be entered and Must have alteast 6 characters."
-                    return;
-                }
+    if (!isValidEmail(registrationEmailInput.value)) {
+        errSignupEmail.innerHTML = "Please enter a valid email address.";
+        return false;
+    }
 
-                if (registrationPasswordInput.value !== registrationConfirmPasswordInput.value) {
-                    e.preventDefault();
-                    errSignupConfirmPassword.innerHTML = "Passwords do not match."
-                    return;
-                }
+    if (registrationPasswordInput.value.length < 6) {
+        errSignupPassword.innerHTML = "Password must be at least 6 characters.";
+        return false;
+    }
 
-                if (!isValidPhoneNumber(registrationPhoneNumberInput.value)) {
-                    e.preventDefault();
-                    errSignupPhoneNumber.innerHTML = "Please enter a valid phone number."
-                    return;
-                }
+    if (registrationPasswordInput.value !== registrationConfirmPasswordInput.value) {
+        errSignupConfirmPassword.innerHTML = "Passwords do not match.";
+        return false;
+    }
 
-                if (!isValidOTP(registrationOTPInput.value)) {
-                    e.preventDefault();
-                    errSignupOtp.innerHTML = "Please enter a valid OTP."
-                    return;
-                }
-            });
+    if (!isValidPhoneNumber(registrationPhoneNumberInput.value)) {
+        errSignupPhoneNumber.innerHTML = "Please enter a valid phone number.";
+        return false;
+    }
+
+    if (!isValidOTP(registrationOTPInput.value)) {
+        errSignupOtp.innerHTML = "Please enter a valid OTP.";
+        return false;
+    }
+
+    // If all validations pass, the form will be submitted.
+    return true;
+});
+
 
             function isValidEmail(email) {
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -324,4 +319,6 @@
 
     </script>
 
+
+    
     <% -include('../partials/user-footer')%>

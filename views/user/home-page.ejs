@@ -437,13 +437,17 @@
         </div>
       </div>
     </section>
+    <input type="hidden" data-isLogin="<%=isLogin%>" class="isLogin">
   </main>
 
   <script>
+    var isLogin= document.querySelector('.isLogin').getAttribute('data-isLogin')
+
     document.querySelectorAll('.add-to-cart').forEach(element => {
       element.addEventListener('click', (event) => {
         event.preventDefault();
-        var productId = element.getAttribute('data-productId')
+        if(isLogin){
+          var productId = element.getAttribute('data-productId')
         fetch(`/cart`, {
           method: 'POST',
           headers: {
@@ -472,6 +476,14 @@
           .catch(error => {
             console.error('Error:', error);
           });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Please Login',
+          text: 'You Need to Login in order to Add to Cart',
+          footer: '<a href="/signin">Login Page?</a>'
+        })
+      }
       })
     });
 
@@ -479,7 +491,8 @@
     document.querySelectorAll('.add-to-wishlist').forEach(element => {
       element.addEventListener('click', (event) => {
         event.preventDefault();
-        var productId = element.getAttribute('data-productId')
+        if(isLogin){
+          var productId = element.getAttribute('data-productId')
         fetch(`/wishlist`, {
           method: 'POST',
           headers: {
@@ -507,6 +520,14 @@
           .catch(error => {
             console.error('Error:', error);
           });
+        } else {
+          Swal.fire({
+          icon: 'error',
+          title: 'Please Login',
+          text: 'You Need to Login in order to Add to Wishlist',
+          footer: '<a href="/signin">Login Page?</a>'
+        })
+        }
       })
     });
 

@@ -12,7 +12,7 @@
         <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
           <span>
             <i class="material-icons md-calendar_today"></i>
-            <b><%=order.CreatedOn%></b>
+            <b><%=order.createdOn%></b>
           </span>
           <br />
           <small class="text-muted">Order ID: <%=order._id%></small>
@@ -165,11 +165,11 @@
           <div class="box shadow-sm bg-light">
             <h6 class="mb-15">Payment info</h6>
             <p>
-              Payement Method : <%=order.payementMethod%> <br />
-              Reference ID : <%=order.refernceId%> <br />
+              Payement Method : <%=order.paymentMethod%> <br />
+              Reference ID : <%=order.referenceId%> <br />
               Shipping Charge : <%=order.shippingCharge%> <br>
               Discount : <%=order.discount%> <br>
-              Payement Status : <%=order.payementStatus%> <br>
+              Payement Status : <%=order.paymentStatus%> <br>
               Order Status : <%=order.orderStatus%> <br>
             </p>
           </div>

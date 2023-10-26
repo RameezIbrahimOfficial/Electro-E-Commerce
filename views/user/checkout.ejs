@@ -288,10 +288,10 @@
 
           // Function to handle payment success
           function handlePaymentSuccess(order_id, response) {
-            alert(response.razorpay_payment_id);
-            alert(response.razorpay_order_id);
-            alert(response.razorpay_signature);
-            alert("Payment Successful");
+            // alert(response.razorpay_payment_id);
+            // alert(response.razorpay_order_id);
+            // alert(response.razorpay_signature);
+            // alert("Payment Successful");
             updatePaymentStatus("Success", order_id, response);
             window.location.href = '/profile'; // Redirect after successful payment
           }
@@ -299,11 +299,12 @@
           // Function to handle payment failure
           function handlePaymentFailure(order_id, response) {
             updatePaymentStatus("Failure", order_id, response);
+
           }
 
           // Function to update the payment status in the database
-          function updatePaymentStatus(orderStatus, order_id, payementResponse) {
-            const url = `/updatePaymentStatus?orderStatus=${orderStatus}&orderId=${order_id}&response=${JSON.stringify(payementResponse)}`;
+          function updatePaymentStatus(paymentStatus, order_id, payementResponse) {
+            const url = `/updatePaymentStatus?paymentStatus=${paymentStatus}&orderId=${order_id}&response=${JSON.stringify(payementResponse)}`;
 
             fetch(url, {
               method: 'POST',

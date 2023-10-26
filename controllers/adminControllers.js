@@ -184,9 +184,9 @@ module.exports.postAddProducts = async (req, res) => {
     const productImages = [];
     for (let i = 0; i < images.length; i++) {
       productImages.push({
-        fileName: images[i].originalname,
-        mimeType: images[i].mimetype,
-        buffer: images[i].buffer,
+        fileName: images[i].filename,
+        originalname: images[i].originalname,
+        path: images[i].path,
       });
     }
     await productsModel.create({
@@ -209,7 +209,7 @@ module.exports.postAddProducts = async (req, res) => {
       batteryCapacity: req.body.batteryCapacity,
       processor: req.body.processor,
     });
-    res.redirect("/admin/admin_panel/add_products");
+    res.redirect("/admin/admin_panel/products");
   } catch (err) {
     console.error(err);
   }
@@ -417,12 +417,11 @@ module.exports.getLogout = (req, res ) => {
   res.redirect("/admin");
 };
 
-module.exports.getOrderManagementPage = async(req,res)=>{
-  try{
-
-    const orders = await orderModel.find({})
-    res.render('page-orders' ,{ orders })
-  } catch(error){
+module.exports.getOrderManagementPage = async (req, res) => {
+  try {
+    const orders = await orderModel.find();
+    res.render('page-orders', { orders, moment });
+  } catch (error) {
     console.error(error);
   }
 }

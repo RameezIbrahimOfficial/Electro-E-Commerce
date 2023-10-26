@@ -59,12 +59,14 @@ module.exports.getVerifyOtp = async (req, res) => {
       .verificationChecks.create({
         to: `+91${phoneNumber}`,
         code: otp,
-      });
-    if (verifyOTP.valid) {
-      isOtpVerified = true;
-    } else {
-      isOtpVerified = false;
-    }
+      })
+      if (verifyOTP.valid) {
+        isOtpVerified = true;
+      } else {
+        isOtpVerified = false;
+      }
+      res.status(200).json({ data : "Verified" })
+  
   } catch (err) {
     console.error(err);
   }
@@ -143,8 +145,7 @@ module.exports.postUserLogin = async (req, res) => {
     if (user) {
       if (user.isBlocked) {
         res.render("page-login", {
-          errorMsgLogin: "You Have Been Blocked by Admin",
-        });
+          errorMsgLogin: "You Have Been Blocked by Admin", isLogin});
       } else {
         bcrypt.compare(password,user.password,(err,result)=>{
           if (email === user.email && result == true) {
@@ -173,10 +174,20 @@ module.exports.postUserLogin = async (req, res) => {
 // Display products Page
 module.exports.getProductsPage = async (req, res) => {
   try {
+    const page = req.query.page ? parseInt(req.query.page, 10) : 1;
+    const limit = 9;
     const isLogin = req.cookies.isLogin;
-    const products = await productsModel.find({});
+    // const products = await productsModel.find({});
     const categories = await categoryModel.find({});
     const brands = await brandsModel.find({});
+    const products = await productsModel.aggregate([
+      {
+        $skip: (page - 1) * limit
+      },
+      {
+        $limit: limit
+      }
+    ]).exec();    
     res.render("products-grid-view", { products, categories, brands, isLogin });
   } catch (err) {
     console.error(err);
@@ -509,7 +520,10 @@ module.exports.getProfile = async (req, res) => {
     const userEmail = req.user;
     const user = await customerModel.findOne({ email: userEmail }, { _id: 1 });
     const userAddress = await addressModel.findOne({ userId: user._id });
-    const orders = await orderModel.find({customerId:user._id})
+    const orders = await orderModel.aggregate([
+      { $match: { customerId: user._id } },
+      { $sort: { createdOn: -1 } }
+    ]);    
     const { firstName, lastName } = await customerModel.findOne(
       { email: userEmail },
       { firstName: 1, lastName: 1 }
@@ -937,7 +951,7 @@ module.exports.postUpdatePaymentStatus = async (req, res) => {
     const { paymentStatus, orderId, response } = req.query;
     
     if (paymentStatus === 'Success') {
-      await orderModel.updateOne({ referenceId: orderId }, { $set: { paymentStatus: paymentStatus } });
+      await orderModel.updateOne({ referenceId: orderId }, { $set: { paymentStatus: 'Success' } });
       res.redirect('/profile')
     } else {
       await orderModel.updateOne({ referenceId: orderId }, { $set: { paymentStatus: 'Failure' } });
@@ -982,7 +996,7 @@ module.exports.getOrderCancel = async(req,res)=>{
     const user = await customerModel.findOne({email:req.user});
     const orderId = req.query.orderId;
     if(user){
-      await orderModel.updateOne({_id : orderId},{$set:{status:"Canceled"}});
+      await orderModel.updateOne({_id : orderId},{$set:{orderStatus:"Canceled"}});
       const order = await orderModel.findOne({_id: orderId});
       order.products.forEach(async(product)=>{
         await productsModel.updateOne({_id:product.productId},{ $inc: { units: product.quantity }})
@@ -1003,7 +1017,7 @@ module.exports.getOrderReturn = async(req,res)=>{
     const user = await customerModel.findOne({email:req.user});
     const orderId = req.query.orderId;
     if(user){
-      await orderModel.updateOne({_id : orderId},{$set:{status:"Returned"}})
+      await orderModel.updateOne({_id : orderId},{$set:{orderStatus:"Returned"}})
       const order = await orderModel.findOne({_id: orderId});
       order.products.forEach(async(product)=>{
         await productsModel.updateOne({_id:product.productId},{ $inc: { units: product.quantity }})

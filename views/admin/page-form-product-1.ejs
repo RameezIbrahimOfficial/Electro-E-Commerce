@@ -12,7 +12,8 @@
                             <h4>Basic</h4>
                         </div>
                         <div class="card-body">
-                            <form method="post" action="/admin/admin_panel/add_products" enctype="multipart/form-data">
+                            <div id="error-message" class="alert-danger"></div>
+                            <form method="post" action="/admin/admin_panel/add_products" enctype="multipart/form-data" id="productForm">
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Product #ID</label>
                                     <input type="number" placeholder="Type here" class="form-control" id="product_id" name="product_id">
@@ -35,34 +36,34 @@
                                 </div>                                
                                 <div class="mb-4">
                                     <label class="form-label">Full description</label>
-                                    <textarea placeholder="Type here" class="form-control" rows="4" name="product_description"></textarea>
+                                    <textarea placeholder="Type here" class="form-control" rows="4" name="product_description" id="product_description"></textarea>
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-4">
                                         <div class="mb-4">
                                             <label class="form-label">Regular Price</label>
                                             <div class="row gx-2">
-                                                <input placeholder="$" type="text" class="form-control" name="regular_price">
+                                                <input placeholder="$" type="text" class="form-control" name="regular_price" id="regular_price">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="mb-4">
                                             <label class="form-label">Sales Price</label>
-                                            <input placeholder="$" type="text" class="form-control" name="sales_price">
+                                            <input placeholder="$" type="text" class="form-control" name="sales_price" id="sales_price">
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
                                         <label class="form-label">Units</label>
-                                            <input placeholder="$" type="text" class="form-control" name="units">
+                                            <input placeholder="$" type="text" class="form-control" name="units" id="units">
                                     </div>
                                     <div class="mb-4">
                                         <label class="form-label">Operating System</label>
-                                            <input placeholder="OS" type="text" class="form-control" name="operatingSystem">
+                                            <input placeholder="OS" type="text" class="form-control" name="operatingSystem" id="operatingSystem">
                                     </div>
                                     <div class="mb-4">
                                         <label class="form-label">Cellular Technology</label>
-                                            <input placeholder="2G,3G,4G,5G" type="text" class="form-control" name="cellularTechnology">
+                                            <input placeholder="2G,3G,4G,5G" type="text" class="form-control" name="cellularTechnology" id="cellularTechnology">
                                     </div>
                                     <div class="col-lg-4">
                                         <label class="form-label">Internal Memory</label>
@@ -97,11 +98,11 @@
                                     </div>
                                     <div class="mb-4">
                                         <label class="form-label">Battery Capacity</label>
-                                        <input placeholder="Mah" type="number" class="form-control" name="batteryCapacity">
+                                        <input placeholder="Mah" type="number" class="form-control" name="batteryCapacity" id="batteryCapacity">
                                     </div>
                                     <div class="mb-4">
                                         <label class="form-label">Processor</label>
-                                        <input placeholder="Processor" type="text" class="form-control" name="processor">
+                                        <input placeholder="Processor" type="text" class="form-control" name="processor" id="processor">
                                     </div>
                                 
                                 <div class="col-lg-4">
@@ -143,7 +144,7 @@
                             <div class="card-body">
                                 <div class="input-upload">
                                     <img src="admin-assets/imgs/theme/upload.svg" alt="">
-                                    <input class="form-control" type="file" name="product_images" multiple>
+                                    <input class="form-control" type="file" name="product_images" multiple required>
                                 </div>
                             </div>
                             <button class="btn btn-md rounded font-sm hover-up" type="submit">Publish</button>
@@ -152,4 +153,87 @@
                 </form>
             </div>
         </section> <!-- content-main end// -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Function to validate the form
+        function validateForm() {
+            // Reset any previous error messages
+            $('#error-message').html('');
+            
+            // Get form input values
+            var productId = $('#product_id').val()
+            var productName = $('#product_name').val();
+            var productBrand = $('#product_brand').val();
+            var productDescription = $('#product_description').val();
+            var regularPrice = $('#regular_price').val();
+            var salesPrice = $('#sales_price').val();
+            var units = $('#units').val();
+            var operatingSystem = $('#operatingSystem').val();
+            var cellularTechnology = $('#cellularTechnology').val();
+            var batteryCapacity = $('#batteryCapacity').val();
+            var processor = $('#processor').val();
+            // Add validation rules here
+
+            // Example: Check if product name is empty
+            if (productId.trim() === '') {
+                $('#error-message').html('Product ID is required.');
+                return false; // Prevent form submission
+            }
+            if (productName.trim() === '') {
+                $('#error-message').html('Product Name is required.');
+                return false; // Prevent form submission
+            }
+
+            // Example: Check if product brand is selected
+            if (productBrand === '') {
+                $('#error-message').html('Product Brand is required.');
+                return false; // Prevent form submission
+            }
+            if (productDescription.trim() === '') {
+                $('#error-message').html('Product Description is required.');
+                return false; // Prevent form submission
+            }
+            if (regularPrice.trim() === '') {
+                $('#error-message').html('Product Regular Price is required.');
+                return false; // Prevent form submission
+            }
+            if (salesPrice.trim() === '') {
+                $('#error-message').html('Product Sale Price is required.');
+                return false; // Prevent form submission
+            }
+            if (units.trim() === '') {
+                $('#error-message').html('Product Units is required.');
+                return false; // Prevent form submission
+            }
+            if (operatingSystem.trim() === '') {
+                $('#error-message').html('Product Operating System is required.');
+                return false; // Prevent form submission
+            }
+            if (cellularTechnology.trim() === '') {
+                $('#error-message').html('Product Cellular Technology is required.');
+                return false; // Prevent form submission
+            }
+            if (batteryCapacity.trim() === '') {
+                $('#error-message').html('Product Battery Capacity is required.');
+                return false; // Prevent form submission
+            }
+            if (processor.trim() === '') {
+                $('#error-message').html('Product Processor is required.');
+                return false; // Prevent form submission
+            }
+
+            // Add more validation rules for other fields as needed
+
+            return true; // Form is valid, allow submission
+        }
+
+        // Form submit event
+        $('#productForm').submit(function (e) {
+            if (!validateForm()) {
+                e.preventDefault(); // Prevent form submission if validation fails
+            }
+        });
+    });
+</script>
         <%- include('../partials/admin-footer')%>

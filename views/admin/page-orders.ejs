@@ -69,7 +69,7 @@
                   <td><%=order._id%></td>
                   <td><b><%=order.address.name%></b></td>
                   <td>
-                    <%=order.payementMethod%>
+                    <%=order.paymentMethod%>
                   </td>
                   <td><%=order.totalAmount%></td>
                   <td>
@@ -83,7 +83,7 @@
                       <span class="badge rounded-pill alert-warning"><%=order.orderStatus%></span>
                     <%}%>
                   </td>
-                  <td><%= new Date(order.CreatedOn).toUTCString() %></td>
+                  <td><%= moment(order.createdOn).format('MMMM Do YYYY, h:mm:ss a'); %></td>
                   
                   <td class="text-end">
                     <a href="/admin/order/edit?orderId=<%=order._id%>" class="btn btn-md rounded font-sm mb-1">Edit</a>

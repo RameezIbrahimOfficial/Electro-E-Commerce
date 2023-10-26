@@ -22,14 +22,19 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row">
+                        <div class="alert-danger" id="error-message"></div>
                         <div class="col-md-3">
-                            <form method="post" action="/admin/admin_panel/ceate_category">
+                            <form method="post" action="/admin/admin_panel/ceate_category" id="categoryForm">
                                 <!-- <div class="mb-4">
                                     <label for="product_name" class="form-label">#ID</label>
                                     <input type="number" placeholder="Type here" class="form-control" id="categoryID" name="categoryId"/>
                                 </div> -->
                                 <div class="mb-4">
-                                    <label for="product_name" class="form-label">Name</label>
+                                    <label for="categoryID" class="form-label">#ID</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="categoryId" name="categoryID"/>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="categoryName" class="form-label">Name</label>
                                     <input type="text" placeholder="Type here" class="form-control" id="categoryName" name="categoryName"/>
                                 </div>
                                 <div class="mb-4">
@@ -100,4 +105,53 @@
                 </div> <!-- card body .// -->
             </div> <!-- card .// -->
         </section> <!-- content-main end// -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        function validateCategoryForm() {
+            // Reset any previous error messages
+            $('#error-message').html('');
+
+            // Get form input values
+            var categoryName = $('#categoryName').val();
+            var status = $('#status').val();
+            var categoryId = $('#categoryId').val();
+            
+            // Validation rules
+
+            if (categoryId.trim() === '') {
+                $('#error-message').html('Category ID is required.');
+                return false;
+            }
+
+            if (categoryName.trim() === '') {
+                $('#error-message').html('Category Name is required.');
+                return false;
+            }
+
+            if (status === '') {
+                $('#error-message').html('Status is required.');
+                return false;
+            }
+
+            // Additional validation rules
+
+            // Check if Category Name contains only letters and spaces
+            var namePattern = /^[A-Za-z\s]+$/;
+            if (!namePattern.test(categoryName)) {
+                $('#error-message').html('Category Name can only contain letters and spaces.');
+                return false;
+            }
+
+            return true;
+        }
+
+        // Form submit event
+        $('#categoryForm').submit(function (e) {
+            if (!validateCategoryForm()) {
+                e.preventDefault(); // Prevent form submission if validation fails
+            }
+        });
+    });
+</script>
         <%- include('../partials/admin-footer')%>

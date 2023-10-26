@@ -79,7 +79,7 @@
                       </div>
                       <div class="card-body">
                         <div class="table-responsive">
-                          <table class="table">
+                          <table class="table" id="example">
                             <thead>
                               <tr>
                                 <th>Order</th>
@@ -94,7 +94,7 @@
                                 <%orders.forEach((order)=>{%>
                                   <tr>
                                     <td><%=order._id%></td>
-                                    <td><%=moment(order.CreatedOn).format('MMMM Do YYYY, h:mm:ss a')%></td>
+                                    <td><%=moment(order.createdOn).format('MMMM Do YYYY, h:mm:ss a')%></td>
                                     <%if(order.orderStatus==='Delivered'){%>
                                       <td><span class="badge rounded-pill alert-success"><%=order.orderStatus%></span></td>
                                       <%}else if(order.status==="Canceled"){%>
@@ -105,12 +105,14 @@
                                     <td><%=order.totalAmount%></td>
                                     <td>
                                       <a href="/invoice?orderId=<%=order._id%>" class="btn-small d-block btn mb-2">View</a>
-                                      <%if(order.orderStatus === "Awaiting Payment" || order.orderStatus === "Confirmed" || order.orderStatus === "Shipped" || order.orderStatus === "Order Placed" ){%>
+                                      <%if(order.orderStatus === "Awaiting Payment" || order.orderStatus === "Confirmed" || order.orderStatus === "Shipped" || (order.orderStatus === "Order Placed" && order.paymentStatus === "Success") ){%>
                                         <a  href="/order/cancel?orderId=<%=order._id%>" class="btn btn-small d-block mb-2 btn-danger">CANCEL</a>
                                       <%} else if(order.orderStatus === "Canceled") {%>
                                         <button class="btn btn-danger" disabled>CANCELED</button>
                                       <%} else if(order.orderStatus === "Returned") {%>
                                         <button class="btn btn-warning" disabled>RETURNED</button>
+                                        <%}else if(order.paymentStatus === "Failure"){%>
+                                          <button class="btn btn-danger" disabled>PAYMENT FAILED</button>
                                       <%}else{%>
                                         <a href="/order/return?orderId=<%=order._id%>" class="btn btn-small d-block mb-2 btn-warning">RETURN</a>
                                       <%}%>
@@ -198,7 +200,7 @@
                         <div class="col-lg-6">
                           <div class="card  mb-3 mb-lg-0">
                             <div class="card-header">
-                              <h5 class="mb-0"><%=address.addressType%></h5>
+                              <h5 class="mb-0"></h5>
                             </div>
                         <div class="card-body">
                           <address>
@@ -273,5 +275,13 @@
       </div>
     </section>
   </main>
-
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+  <script>
+      $(document).ready(function () {
+          new DataTable('#example');
+  
+      })
+  </script>
   <%-include('../partials/user-footer')%>
