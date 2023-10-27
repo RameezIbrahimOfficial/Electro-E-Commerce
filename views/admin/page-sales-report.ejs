@@ -1,0 +1,79 @@
+<%- include('../partials/admin-header')%>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function () {
+        new DataTable('#example');
+
+    })
+</script>
+
+<section class="content-main">
+  <div class="content-header">
+    <div>
+      <h2 class="content-title card-title">Sales List</h2>
+      <p>Sale Insights.</p>
+    </div>
+    <div>
+        <a href="/admin/sale?saleDate=Week" class="btn btn-secondary">Weekly</a>
+        <a href="/admin/sale?saleDate=Month" class="btn btn-primary">Monthly</a>
+        <a href="/admin/sale?saleDate=Year" class="btn btn-secondary">Yearly</a>
+      </div>
+  </div>
+  <div class="card mb-4">
+    <header class="card-header">
+    </header>
+    <!-- card-header end// -->
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover" id="example">
+          <thead>
+            <tr>
+              <th scope="col">Ordered Date</th>
+              <th scope="col">order ID</th>
+              <th scope="col">Customer Name</th>
+              <th scope="col">Product Name</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Total Amount</th>
+              <th scope="col">Payement Method</th>
+              <th scope="col">Delivered On</th>
+            </tr>
+          </thead>
+          <tbody>
+                <%if(sales){%>
+                    <%sales.forEach((sale)=>{%>
+                    <tr>
+                        <td><%=moment(sale.orderedOn).format('MMMM Do YYYY')%></td>
+                        <td><%=sale.referenceId%></td>
+                        <td><%=sale.address.name%></td>
+                        <td>
+                            <%sale.products.forEach((product)=>{%>
+                                <%=product.productId.productName%> <br>
+                            <%})%>
+                        </td>
+                        <td>
+                            <%sale.products.forEach((product)=>{%>
+                                <span class="badge rounded-pill alert-success"><%=product.quantity%> </span><br>
+                            <%})%>
+                        </td>
+                        <td><%=sale.totalAmount%></td>
+                        <td><%=sale.paymentMethod%></td>
+                        <td><%=moment(sale.deliveredOn).format('MMMM Do YYYY')%></td>
+                    </tr>
+                    <%})%>
+                <%} else {%>
+                    <td>No Orders Found</td>
+                <%}%>
+          </tbody>
+        </table>
+      </div>
+      <!-- table-responsive //end -->
+    </div>
+    <!-- card-body end// -->
+  </div>
+  <!-- card end// -->
+</section>
+<!-- content-main end// -->
+<%- include('../partials/admin-footer')%>

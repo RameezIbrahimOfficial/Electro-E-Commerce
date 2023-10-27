@@ -15,6 +15,8 @@ const bannerModel = require('../Model/banner')
 
 const middlewares = require("../middlewares/adminAuth");
 
+const adminHelpers = require('../helpers/adminHelpers')
+
 module.exports.getAdminLogin = async (req, res) => {
   res.render("admin-login");
 };
@@ -40,15 +42,16 @@ module.exports.getAdminPanel = async (req, res) => {
   const products = await productsModel.find({})
   const categories = await categoryModel.find({})
 
-  const cancelledOrder = await orderModel.find({orderStatus:"Canceled"})
-  const returnedOrder = await orderModel.find({orderStatus:"Returned"})
-  const deliveredOrder = await orderModel.find({orderStatus:"Delivered"})
+  const cancelledOrder = await orderModel.find({ orderStatus: "Canceled" })
+  const returnedOrder = await orderModel.find({ orderStatus: "Returned" })
+  const deliveredOrder = await orderModel.find({ orderStatus: "Delivered" })
+  const sales = await orderModel.find({ paymentStatus: "Success" })
 
   let revenue = 0
-  orders.forEach((order)=>{
-    revenue += order.totalAmount
+  sales.forEach((sale) => {
+    revenue += sale.totalAmount
   })
-  res.render("admin-dashboard",{orders, products, categories, revenue, cancelledOrder, returnedOrder, deliveredOrder});
+  res.render("admin-dashboard", { orders, products, categories, revenue, cancelledOrder, returnedOrder, deliveredOrder });
 };
 
 module.exports.getProductsPage = async (req, res) => {
@@ -412,7 +415,7 @@ module.exports.postEditBrand = async (req, res) => {
 };
 
 
-module.exports.getLogout = (req, res ) => {
+module.exports.getLogout = (req, res) => {
   res.clearCookie("token");
   res.redirect("/admin");
 };
@@ -426,113 +429,81 @@ module.exports.getOrderManagementPage = async (req, res) => {
   }
 }
 
-module.exports.getOrderEditPage = async(req,res)=>{
-  try{
+module.exports.getOrderEditPage = async (req, res) => {
+  try {
     const orderId = req.query.orderId;
-    const order = await orderModel.findOne({_id:orderId}).populate({
-      path : "products.productId",
-      model : 'Product'
+    const order = await orderModel.findOne({ _id: orderId }).populate({
+      path: "products.productId",
+      model: 'Product'
     });
-    res.render('page-orders-detail', {order})
-  } catch(error){
+    res.render('page-orders-detail', { order })
+  } catch (error) {
     console.error(error);
   }
 }
 
-module.exports.postOrderEdit = async(req, res)=>{
-  try{
+module.exports.postOrderEdit = async (req, res) => {
+  try {
     const orderStatus = req.body.orderStatus;
     const orderId = req.body.orderId;
-    const order = await orderModel.findOne({_id:orderId});
-    if(orderStatus){
-      await orderModel.updateOne({_id:orderId},{$set:{orderStatus:orderStatus}});
+    const order = await orderModel.findOne({ _id: orderId });
+    if (orderStatus) {
+      await orderModel.updateOne({ _id: orderId }, { $set: { orderStatus: orderStatus } });
       res.redirect('/admin/order_management')
     }
-  } catch(error){
+  } catch (error) {
     console.error(error)
   }
 }
 
-module.exports.getBannerManagement = async(req, res)=>{
-  try{
+module.exports.getBannerManagement = async (req, res) => {
+  try {
     const banners = await bannerModel.find({});
     res.render('page-banner', { banners, moment })
-  } catch(error){
+  } catch (error) {
     console.error(error);
   }
 }
 
-module.exports.postAddBanner = async(req, res) => {
-  try{
+module.exports.postAddBanner = async (req, res) => {
+  try {
     const { description, startDate, endDate, isBlocked } = req.body;
     const { filename, originalname, path } = req.file;
-    if(req.body && req.file){
+    if (req.body && req.file) {
       await bannerModel.create({
         description,
-        bannerImage : {
+        bannerImage: {
           filename,
           originalname,
           path
         },
         startDate,
         endDate,
-        status : isBlocked
-      }).then(()=>{
+        status: isBlocked
+      }).then(() => {
         res.redirect('/admin/banner_management')
       })
-    } else{
+    } else {
       res.redirect('/admin/banner_management')
     }
-  } catch(error){
+  } catch (error) {
     console.error(error)
   }
 }
 
-module.exports.getEditBannerPage = async(req, res) => {
-  try{
-    const banner = await bannerModel.findOne({ _id : req.query.bannerId })
+module.exports.getEditBannerPage = async (req, res) => {
+  try {
+    const banner = await bannerModel.findOne({ _id: req.query.bannerId })
     const banners = await bannerModel.find({});
-    res.render('page-edit-banner', { banners,banner, moment })
-  } catch(error){
+    res.render('page-edit-banner', { banners, banner, moment })
+  } catch (error) {
     console.error(error);
   }
 }
 
-// module.exports.postUpdateBanner = async (req, res) => {
-//   try {
-//     const banner = await bannerModel.findOne({ _id: req.query.bannerId });
-//     if (req.body) {
-//       if(req.file){
-//         const { filename, originalname, path } = req.file;
-//       }
-//       const { description, startDate, endDate, isBlocked } = req.body;
-//       await bannerModel.updateOne({_id : req.query.bannerId},{
-//         $set : {
-//           description : description || banner.description,
-//           bannerImage : {
-//             filename : filename ?? banner.bannerImage.filename,
-//             originalname : originalname ? originalname : banner.bannerImage.originalname,
-//             path : path ? path : banner.bannerImage.path
-//           },
-//           startDate : startDate || banner.startDate,
-//           endDate : endDate || banner.endDate,
-//           status : isBlocked || banner.status
-//         }
-//       }).then(()=>{
-//         res.redirect('/admin/banner_management')
-//       }).catch((error)=>{
-//         console.error(error)
-//       })
-//     }
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };
-
 module.exports.postUpdateBanner = async (req, res) => {
   try {
     const banner = await bannerModel.findOne({ _id: req.query.bannerId });
-    // const { filename, originalname, path } = req.file;
     const newbannerImage = req.file
 
     const bannerImage = newbannerImage
@@ -565,11 +536,11 @@ module.exports.postUpdateBanner = async (req, res) => {
 };
 
 
-module.exports.getBlockBanner = async(req, res) => {
+module.exports.getBlockBanner = async (req, res) => {
   try {
-    await bannerModel.updateOne({_id : req.query.bannerId},{
-      $set : {
-        status : true
+    await bannerModel.updateOne({ _id: req.query.bannerId }, {
+      $set: {
+        status: true
       }
     })
     res.redirect('/admin/banner_management')
@@ -578,11 +549,11 @@ module.exports.getBlockBanner = async(req, res) => {
   }
 }
 
-module.exports.getUnblockBanner = async(req, res) => {
+module.exports.getUnblockBanner = async (req, res) => {
   try {
-    await bannerModel.updateOne({_id : req.query.bannerId},{
-      $set : {
-        status : false
+    await bannerModel.updateOne({ _id: req.query.bannerId }, {
+      $set: {
+        status: false
       }
     })
     res.redirect('/admin/banner_management')
@@ -590,3 +561,52 @@ module.exports.getUnblockBanner = async(req, res) => {
     console.error(error);
   }
 }
+
+module.exports.getSalesReportPage = async (req, res) => {
+  try {
+    const sales = await orderModel.find({ orderStatus: "Delivered" }).populate({
+      path: "products.productId",
+      model: 'Product'
+    })
+    res.render('page-sales-report', { sales, moment })
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+// COMPLETE THIS ASAP
+module.exports.getMonthWeekYearSales = async (req, res) => {
+  try {
+    const filterOrdersForYear = adminHelpers.filterOrdersForYear;
+    const filterOrdersForMonth = adminHelpers.filterOrdersForMonth;
+    const filterOrdersForWeek = adminHelpers.filterOrdersForWeek;
+
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
+    const currentWeek = Math.ceil(currentDate.getDate() / 7);
+
+    let orders = await orderModel.find({ orderStatus: "Delivered" });
+    orders = await orderModel.populate(orders, { path: 'products.productId' , model : 'Product'});
+
+    const ordersThisYear = filterOrdersForYear(orders, currentYear);
+    const ordersThisMonth = filterOrdersForMonth(orders, currentYear, currentMonth);
+    const ordersThisWeek = filterOrdersForWeek(orders, currentYear, currentMonth, currentWeek);
+
+    if (req.query.saleDate === "Month") {
+      res.render('page-sales-report', { sales: ordersThisMonth , moment});
+    }
+
+    if (req.query.saleDate === "Week") {
+      res.render('page-sales-report', { sales: ordersThisWeek, moment });
+    }
+
+    if (req.query.saleDate === "Year") {
+      res.render('page-sales-report', { sales: ordersThisYear , moment});
+    }
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("An error occurred");
+  }
+};

@@ -60,6 +60,9 @@ adminRouter.get('/banner/edit', adminAuth.isLogin, adminMiddleware.currentRouter
 adminRouter.post('/banner/edit',upload.single('bannerImage'), adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.postUpdateBanner)
 adminRouter.get('/banner/block', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getBlockBanner)
 adminRouter.get('/banner/unblock', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getUnblockBanner)
+adminRouter.get('/sales_report',adminAuth.isLogin,adminMiddleware.currentRouter, adminControllers.getSalesReportPage)
+adminRouter.get('/sale',adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getMonthWeekYearSales)
+
 
 
 module.exports = adminRouter
