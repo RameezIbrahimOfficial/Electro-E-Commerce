@@ -18,7 +18,7 @@
     <div class="card-body">
       <div class="row gx-3">
         <div class="col-xl-4 col-lg-6 col-md-8 col-12">
-          <form method="post" action="/admin/banner_management/add"  enctype="multipart/form-data">
+          <form method="post" action="/admin/banner/edit?bannerId=<%= banner._id%>"  enctype="multipart/form-data">
             <div class="mb-4">
               <label for="description" class="form-label">Description</label>
               <input
@@ -27,7 +27,7 @@
                 class="form-control"
                 id="description"
                 name="description"
-                required
+                value="<%=banner.description%>"
               />
             </div>
             <div class="mb-4">
@@ -38,7 +38,7 @@
                 class="form-control"
                 id="startDate"
                 name="startDate"
-                required
+                value="<%=moment(banner.startDate).format('YYYY-MM-DD')%>"
               />
             </div>
             <div class="mb-4">
@@ -49,20 +49,20 @@
                 class="form-control"
                 id="endDate"
                 name="endDate"
-                required
+                value="<%=moment(banner.endDate).format('YYYY-MM-DD')%>"
               />
             </div>
             <div class="mb-4">
               <label class="form-label">Status</label>
               <select class="form-select" name="isBlocked">
-                  <option value=true> True </option>
-                  <option value=false> False </option>
+                  <option value=true <%if(banner.status===true){%> selected <%}%>> True </option>
+                  <option value=false <%if(banner.status===false){%> selected <%}%>> False </option>
               </select>
           </div>
             <div class="mb-4">
                 <div class="input-upload">
                   <img src="admin-assets/imgs/theme/upload.svg" alt="">
-                  <input class="form-control" type="file" name="bannerImage" required>
+                  <input class="form-control" type="file" name="bannerImage">
               </div>
             </div>
             <div class="d-grid">
@@ -78,7 +78,7 @@
               <figure class="card border-1">
                 <div class="card-header bg-white text-center">
                   <img
-                    height="100p"
+                    height="100px"
                     src="/<%=banner.bannerImage.path%>"
                     alt="Logo"
                   />
@@ -88,21 +88,17 @@
                   <a href="#">Start Date : <%= moment(banner.startDate).format('MMMM Do YYYY') %> </a><br>
                   <a href="#">End Date : <%= moment(banner.endDate).format('MMMM Do YYYY') %> </a><br>
                     <!-- <span class="badge rounded-pill alert-danger">Blocked</span> -->
-                    <%if(banner.status){%>
-                    <span class="badge rounded-pill alert-danger">Blocked : <%= banner.status %></span>
-                    <%}else{%>
-                      <span class="badge rounded-pill alert-success">Blocked : <%= banner.status %></span>
-                    <%}%>
+                    <span class="badge rounded-pill alert-success">Status : <%= banner.status %></span>
                 </figcaption>
                 <div class="d-flex justify-content-between ">
-                 <a href="/admin/banner/edit?bannerId=<%=banner._id%>" class="btn btn-lg font-sm btn-success rounded">Edit</a>
-                  <!-- <a href="" class="btn btn-lg font-sm btn-success rounded">Unblock</a> -->
-                  <%if(banner.status){%>
-                    <a href="/admin/banner/unblock?bannerId=<%=banner._id%>" class="btn btn-lg font-sm btn-success rounded">Unblock</a>
-                  <%} else{%>
-                    <a href="/admin/banner/block?bannerId=<%=banner._id%>" class="btn btn-lg font-sm btn-danger rounded">Block</a>
-                  <%}%>
-                </div>
+                  <a href="/admin/banner/edit?bannerId=<%=banner._id%>" class="btn btn-lg font-sm btn-success rounded">Edit</a>
+                   <!-- <a href="" class="btn btn-lg font-sm btn-success rounded">Unblock</a> -->
+                   <%if(banner.status){%>
+                     <a href="/admin/banner/unblock?bannerId=<%=banner._id%>" class="btn btn-lg font-sm btn-success rounded">Unblock</a>
+                   <%} else{%>
+                     <a href="/admin/banner/block?bannerId=<%=banner._id%>" class="btn btn-lg font-sm btn-danger rounded">Block</a>
+                   <%}%>
+                 </div>
               </figure>
             </div>
             <%})%>

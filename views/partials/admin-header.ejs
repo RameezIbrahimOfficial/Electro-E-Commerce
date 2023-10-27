@@ -102,7 +102,11 @@
               <span class="text">Orders</span>
             </a>
           </li>
-          <li class="menu-item">
+          <%if(currentRoute === '/banner_management' || currentRoute === '/banner_management/edit' || currentRoute === '/banner/edit' || currentRoute === '/banner/block' || currentRoute === '/banner/unblock'){%>
+            <li class="menu-item active">
+              <%}else{%>
+                <li class="menu-item">
+              <%}%>
             <a class="menu-link" href="/admin/banner_management">
               <i class="icon material-icons md-add_box"></i>
               <span class="text">Banner</span>

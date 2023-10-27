@@ -23,7 +23,8 @@ const brandsModel = require("../Model/brand");
 const cartModel = require("../Model/cart");
 const addressModel = require("../Model/address");
 const wishlistModel = require("../Model/wishlist");
-const orderModel = require("../Model/order")
+const orderModel = require("../Model/order");
+const bannerModel = require('../Model/banner')
 
 let phoneNumber;
 let isOtpVerified = false;
@@ -78,7 +79,8 @@ module.exports.getHome = async (req, res) => {
     const isLogin = req.cookies.isLogin;
     let products = await productsModel.find({});
     let brands = await brandsModel.find({});
-    res.render("home-page", { products, brands, isLogin });
+    const banners = await bannerModel.find({status:false})
+    res.render("home-page", { products, brands, banners,moment , isLogin });
   } catch (err) {
     console.error(err);
   }

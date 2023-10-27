@@ -22,6 +22,7 @@ adminRouter.use('/uploads', express.static('uploads'));
 adminRouter.use(express.static('Public'))
 adminRouter.use('/admin_panel', express.static('Public'));
 adminRouter.use('/order', express.static('Public'));
+adminRouter.use('/banner', express.static('Public'));
 adminRouter.use(express.json());
 adminRouter.use(express.urlencoded({ extended: true }));
 adminRouter.use(cookieParser())
@@ -53,10 +54,12 @@ adminRouter.get('/logout', adminControllers.getLogout)
 adminRouter.get('/order_management', adminAuth.isLogin, adminMiddleware.currentRouter , adminControllers.getOrderManagementPage)
 adminRouter.get('/order/edit', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getOrderEditPage)
 adminRouter.post('/order/edit', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.postOrderEdit)
-
 adminRouter.get('/banner_management', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getBannerManagement)
 adminRouter.post('/banner_management/add',upload.single('bannerImage'), adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.postAddBanner)
-// Do Edit, Block, Unblock Banner && Display Banner 
+adminRouter.get('/banner/edit', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getEditBannerPage)
+adminRouter.post('/banner/edit',upload.single('bannerImage'), adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.postUpdateBanner)
+adminRouter.get('/banner/block', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getBlockBanner)
+adminRouter.get('/banner/unblock', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getUnblockBanner)
 
 
 module.exports = adminRouter

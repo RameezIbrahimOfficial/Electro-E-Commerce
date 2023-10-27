@@ -388,9 +388,9 @@ module.exports.postEditBrand = async (req, res) => {
     const brand = await brandModel.findOne({ _id: id });
     const newBrandImage = brandImage
       ? {
-        fileName: brandImage.originalname,
-        mimeType: brandImage.mimetype,
-        buffer: brandImage.buffer,
+        fileName: brandImage.filename,
+        originalname: brandImage.originalname,
+        path: brandImage.path,
       }
       : brand.brandImage;
 
@@ -485,5 +485,108 @@ module.exports.postAddBanner = async(req, res) => {
     }
   } catch(error){
     console.error(error)
+  }
+}
+
+module.exports.getEditBannerPage = async(req, res) => {
+  try{
+    const banner = await bannerModel.findOne({ _id : req.query.bannerId })
+    const banners = await bannerModel.find({});
+    res.render('page-edit-banner', { banners,banner, moment })
+  } catch(error){
+    console.error(error);
+  }
+}
+
+// module.exports.postUpdateBanner = async (req, res) => {
+//   try {
+//     const banner = await bannerModel.findOne({ _id: req.query.bannerId });
+//     if (req.body) {
+//       if(req.file){
+//         const { filename, originalname, path } = req.file;
+//       }
+//       const { description, startDate, endDate, isBlocked } = req.body;
+//       await bannerModel.updateOne({_id : req.query.bannerId},{
+//         $set : {
+//           description : description || banner.description,
+//           bannerImage : {
+//             filename : filename ?? banner.bannerImage.filename,
+//             originalname : originalname ? originalname : banner.bannerImage.originalname,
+//             path : path ? path : banner.bannerImage.path
+//           },
+//           startDate : startDate || banner.startDate,
+//           endDate : endDate || banner.endDate,
+//           status : isBlocked || banner.status
+//         }
+//       }).then(()=>{
+//         res.redirect('/admin/banner_management')
+//       }).catch((error)=>{
+//         console.error(error)
+//       })
+//     }
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
+
+module.exports.postUpdateBanner = async (req, res) => {
+  try {
+    const banner = await bannerModel.findOne({ _id: req.query.bannerId });
+    // const { filename, originalname, path } = req.file;
+    const newbannerImage = req.file
+
+    const bannerImage = newbannerImage
+      ? {
+        filename: newbannerImage.originalname,
+        originalname: newbannerImage.originalname,
+        path: newbannerImage.path,
+      }
+      : banner.bannerImage;
+    if (req.body) {
+      const { description, startDate, endDate, isBlocked } = req.body;
+      await bannerModel.updateOne(
+        { _id: req.query.bannerId },
+        {
+          $set: {
+            description: description || banner.description,
+            bannerImage: bannerImage,
+            startDate: startDate || banner.startDate,
+            endDate: endDate || banner.endDate,
+            status: isBlocked || banner.status,
+          },
+        }
+      );
+
+      res.redirect('/admin/banner_management');
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
+module.exports.getBlockBanner = async(req, res) => {
+  try {
+    await bannerModel.updateOne({_id : req.query.bannerId},{
+      $set : {
+        status : true
+      }
+    })
+    res.redirect('/admin/banner_management')
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+module.exports.getUnblockBanner = async(req, res) => {
+  try {
+    await bannerModel.updateOne({_id : req.query.bannerId},{
+      $set : {
+        status : false
+      }
+    })
+    res.redirect('/admin/banner_management')
+  } catch (error) {
+    console.error(error);
   }
 }
