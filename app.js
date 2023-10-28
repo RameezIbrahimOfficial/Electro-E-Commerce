@@ -13,6 +13,7 @@ const MONGO_CON_STR = process.env.MONGO_CON_STR;
 app.set('view engine', 'ejs')
 app.set('views', [path.join(__dirname, "views/user"), path.join(__dirname, "views/admin")])
 
+// app.use(morgan('dev'))
 app.use('/', userRouter)
 app.use('/admin', adminRouter)
 app.use(express.static('public'))

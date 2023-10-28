@@ -6,6 +6,8 @@ const userController = require('../controllers/userController')
 const userAuth = require('../middlewares/userAuth');
 const cookieParser = require("cookie-parser");
 
+const userMiddlewares = require('../middlewares/userMiddlewares')
+
 userRouter.use(express.static("Public"));
 userRouter.use('/address', express.static('Public'));
 userRouter.use(express.json());
@@ -45,5 +47,14 @@ userRouter.get('/order/cancel', userAuth.isUserLogin,userAuth.isUserBloked, user
 userRouter.get('/order/return', userAuth.isUserLogin,userAuth.isUserBloked, userController.getOrderReturn)
 userRouter.get('/placeorder/online', userAuth.isUserLogin,userAuth.isUserBloked, userController.getPlaceOrderOnline)
 userRouter.post('/updatePaymentStatus', userAuth.isUserLogin,userAuth.isUserBloked, userController.postUpdatePaymentStatus)
+
+userRouter.get('/forgetPassword', userController.getPasswordResetPage)
+userRouter.get('/forgetPassword/sendOtp', userController.getSendOtpPasswordReset)
+userRouter.get('/forgetPassword/verifyOtp', userController.getVerifyOtpPasswordReset)
+
+userRouter.get('/changePassword', userController.getchangePasswordPage);
+userRouter.post('/changePassword', userController.postNewPassword)
+
+// userRouter.use(userMiddlewares.errorHandlingMiddleware)
 
 module.exports = userRouter;

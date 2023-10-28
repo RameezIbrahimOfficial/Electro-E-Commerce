@@ -47,6 +47,7 @@ module.exports.getSendOtp = async (req, res) => {
     })
 
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -69,6 +70,7 @@ module.exports.getVerifyOtp = async (req, res) => {
       res.status(200).json({ data : "Verified" })
   
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -82,6 +84,7 @@ module.exports.getHome = async (req, res) => {
     const banners = await bannerModel.find({status:false})
     res.render("home-page", { products, brands, banners,moment , isLogin });
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -117,6 +120,7 @@ module.exports.postUserRegister = async (req, res) => {
     })
     
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -168,6 +172,7 @@ module.exports.postUserLogin = async (req, res) => {
       });
     }
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -179,7 +184,6 @@ module.exports.getProductsPage = async (req, res) => {
     const page = req.query.page ? parseInt(req.query.page, 10) : 1;
     const limit = 9;
     const isLogin = req.cookies.isLogin;
-    // const products = await productsModel.find({});
     const categories = await categoryModel.find({});
     const brands = await brandsModel.find({});
     const products = await productsModel.aggregate([
@@ -192,6 +196,7 @@ module.exports.getProductsPage = async (req, res) => {
     ]).exec();    
     res.render("products-grid-view", { products, categories, brands, isLogin });
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -205,6 +210,7 @@ module.exports.getProductPage = async (req, res) => {
     const brand = await brandsModel.findOne({ brandName: product.brand });
     res.render("shop-product-full", { product, brand, isLogin });
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -232,6 +238,7 @@ module.exports.getCartPage = async (req, res) => {
     }
     res.render("cart", { userCart, isLogin, grandTotal });
   } catch (err) {
+    next(err)
     console.error(err);
     res.status(500).json({ message: "Server error" });
   }
@@ -275,6 +282,7 @@ module.exports.postAddToCart = async (req, res) => {
       res.status(200).json({ data: productId });
     }
   } catch (error) {
+    next(error)
     console.error(error);
     res.status(500).json({ message: "Server error" });
   }
@@ -299,6 +307,7 @@ module.exports.getDeleteCart = async (req, res) => {
     );
     res.redirect("/cart");
   } catch (error) {
+    next(error)
     console.error(error);
     res.status(500).send("Internal Server Error");
   }
@@ -341,6 +350,7 @@ module.exports.postCartUpdate = async (req, res) => {
       res.status(400).json({ message: "Invalid input" });
     }
   } catch (error) {
+    next(error)
     console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
   }
@@ -361,6 +371,7 @@ module.exports.getUserLogout = async (req, res) => {
     res.clearCookie("isLogin");
     res.redirect("/");
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -394,6 +405,7 @@ module.exports.getSearch = async (req, res) => {
       });
     }
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -511,6 +523,7 @@ module.exports.postSearch = async (req, res) => {
       });
     }
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -538,6 +551,7 @@ module.exports.getProfile = async (req, res) => {
       moment
     });
   } catch (error) {
+    next(error)
     console.error(error);
   }
 };
@@ -549,6 +563,7 @@ module.exports.getAddAddressPage = async (req, res) => {
     const isLogin = req.cookies.isLogin;
     res.render("page-address", { isLogin });
   } catch (error) {
+    next(error)
     console.error(error);
   }
 };
@@ -600,6 +615,7 @@ module.exports.postAddAddress = async (req, res) => {
     await userAddress.save();
     res.redirect("/profile");
   } catch (error) {
+    next(error)
     console.error(error);
   }
 };
@@ -622,6 +638,7 @@ module.exports.getAddressDelete = async (req, res) => {
     }
     res.redirect("/profile");
   } catch (error) {
+    next(error)
     console.error(error);
   }
 };
@@ -644,6 +661,7 @@ module.exports.getAddressEdit = async (req, res) => {
       res.redirect("/profile");
     }
   } catch (error) {
+    next(error)
     console.error(error);
   }
 };
@@ -697,6 +715,7 @@ module.exports.postAddressEdit = async (req, res) => {
       res.redirect("/profile");
     }
   } catch (error) {
+    next(error)
     console.error(error);
   }
 };
@@ -712,6 +731,7 @@ module.exports.getWishlistPage = async (req, res) => {
     const isLogin = req.cookies.isLogin;
     res.render("wishlist", { isLogin, userWishlist });
   } catch (error) {
+    next(error)
     console.error(error);
   }
 };
@@ -751,6 +771,7 @@ module.exports.postAddToWishlist = async (req, res) => {
       res.status(200).json({ message: "Added to Wishlist" });
     }
   } catch (error) {
+    next(error)
     console.error(error);
     res.status(500).json({ message: "Server error" });
   }
@@ -774,6 +795,7 @@ module.exports.getDeleteWishlist = async (req, res) => {
     );
     res.redirect("/wishlist");
   } catch (error) {
+    next(error)
     console.error(error);
     res.status(500).send("Internal Server Error");
   }
@@ -812,6 +834,7 @@ module.exports.getCheckoutPage = async (req, res) => {
       res.redirect('/products')
     }
   } catch (error) {
+    next(error)
     console.error(error);
   }
 };
@@ -870,6 +893,7 @@ module.exports.getPlaceOrderCOD = async(req, res)=>{
       })
       res.render('order-placed')
   } catch (error){
+    next(error)
     console.error(error);
   }
 }
@@ -942,6 +966,7 @@ module.exports.getPlaceOrderOnline = async (req, res) => {
 
     res.status(200).json({ order_id: newOrder.id });
   } catch (error) {
+    next(error)
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
@@ -970,6 +995,7 @@ module.exports.postUpdatePaymentStatus = async (req, res) => {
 
     }
   } catch (error) {
+    next(error)
     console.error(error);
     res.status(500).json({ error: 'Failed to update payment status' });
   }
@@ -987,6 +1013,7 @@ module.exports.getInvoice = async(req, res)=>{
     const isLogin = req.cookies.isLogin;
     res.render('invoice', {isLogin, order})
   } catch(error){
+    next(error)
     console.error(error)
   }
 }
@@ -1009,6 +1036,7 @@ module.exports.getOrderCancel = async(req,res)=>{
       res.redirect('/')
     }
   } catch(error){
+    next(error)
     console.error(error)
   }
 }
@@ -1029,6 +1057,95 @@ module.exports.getOrderReturn = async(req,res)=>{
       res.redirect('/')
     }
   } catch(error){
+    next(error)
     console.error(error)
+  }
+}
+
+// Display Forget Password Page 
+module.exports.getPasswordResetPage = (req, res) => {
+  try {
+    const isLogin = req.cookies.isLogin;
+    res.render('forget-password',{ isLogin })
+  } catch ( error ) {
+    next(error);
+    console.error(error)
+  }
+}
+
+// Send Password Reset OTP 
+module.exports.getSendOtpPasswordReset = async(req, res) => {
+  try {
+    const userEmail = req.query.email;
+    const user = await customerModel.findOne({ email : userEmail })
+    if(user){
+        await twilio.verify.v2.services(TWILIO_SERVICE_SID).verifications.create({
+        to: `+91${user.phoneNumber}`,
+        channel: "sms",
+      }).then(()=>{
+        res.status(200).json({ data: "Send" });
+      })
+    } else {
+      res.status(500).json({ data : "No user with this email" })
+    }
+  } catch (err) {
+    next(err)
+    console.error(err);
+  }
+}
+
+// Verify Password Reset OTP
+module.exports.getVerifyOtpPasswordReset = async(req, res) => {
+  try {
+    const otp = req.query.otp;
+    const email = req.query.email
+    const user = await customerModel.findOne({ email : email })
+    const verifyOTP = await twilio.verify.v2
+      .services(TWILIO_SERVICE_SID)
+      .verificationChecks.create({
+        to: `+91${user.phoneNumber}`,
+        code: otp,
+      })
+      if (verifyOTP.valid) {
+        res.status(200).json({ data : "Verified" })
+      } else {
+        res.status(500).json({ data : "Incorrect OTP" })
+      }
+  
+  } catch (err) {
+    next(err)
+    console.error(err);
+  }
+}
+
+// Display New Password Page
+module.exports.getchangePasswordPage = async(req, res) => {
+  try {
+    const userEmail = req.query.email;
+    const isLogin = req.cookies.isLogin;
+
+    res.render('change-password' , { isLogin, userEmail })
+  } catch(error){
+    next(error);
+    console.error(error)
+  }
+}
+
+// Update DB with new New Password
+module.exports.postNewPassword = async(req, res) => {
+  try {
+    const { email, password } = req.body
+    bcrypt.hash(password,10,async(err,hash)=>{
+      await customerModel.updateOne({ email : email },{
+        $set : {
+          password : hash
+        }
+      })
+    })
+    res.status(200).json({ Data : "Password Updated" })
+  } catch ( error ) {
+    next(error)
+    console.error(error)
+    res.status(500).json({ Data : "Password Updation Failed" })
   }
 }

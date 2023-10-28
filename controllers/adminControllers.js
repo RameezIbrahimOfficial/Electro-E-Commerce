@@ -33,6 +33,7 @@ module.exports.postAdminLogin = async (req, res) => {
       res.render("admin-login", { errorMsg: "Incorrect Credentials" });
     }
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -87,6 +88,7 @@ module.exports.getAdminPanel = async (req, res) => {
       monthlySalesCounts,
     });
   } catch (error) {
+    next(err)
     console.error(error);
     res.status(500).send("Internal Server Error");
   }
@@ -107,6 +109,7 @@ module.exports.getCategoriesPage = async (req, res) => {
     const categories = await categoryModel.find({});
     res.render("page-categories", { categories });
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -118,6 +121,7 @@ module.exports.getEditCategory = async (req, res) => {
     const category = await categoryModel.findOne({ _id: id });
     res.render("page-edit-categories", { categories, category });
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -138,6 +142,7 @@ module.exports.postEditCategory = async (req, res) => {
     );
     res.redirect("/admin/admin_panel/categories");
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -151,6 +156,7 @@ module.exports.getBlockCategory = async (req, res) => {
     );
     res.redirect("/admin/admin_panel/categories");
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -164,6 +170,7 @@ module.exports.getUnblockCategory = async (req, res) => {
     );
     res.redirect("/admin/admin_panel/categories");
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -178,6 +185,7 @@ module.exports.postCreateCategory = async (req, res) => {
     });
     res.redirect("/admin/admin_panel/categories");
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -206,6 +214,7 @@ module.exports.getUserManagement = async (req, res) => {
     const users = await customerModel.find({});
     res.render("page-users", { users });
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -216,6 +225,7 @@ module.exports.getAddProducts = async (req, res) => {
     const brands = await brandModel.find({})
     res.render("page-form-product-1", { categories, brands });
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -253,6 +263,7 @@ module.exports.postAddProducts = async (req, res) => {
     });
     res.redirect("/admin/admin_panel/products");
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -264,6 +275,7 @@ module.exports.getEditProducts = async (req, res) => {
     const categories = await categoryModel.find({});
     res.render("page-edit-product", { product, categories });
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -319,6 +331,7 @@ module.exports.postEditProducts = async (req, res) => {
     );
     res.redirect("/admin/admin_panel/products");
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -334,6 +347,7 @@ module.exports.getBlockProducts = async (req, res) => {
       res.redirect("/admin/admin_panel/products");
     }
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -352,6 +366,7 @@ module.exports.getUnblockProducts = async (req, res) => {
       res.redirect("/admin/admin_panel/products");
     }
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -362,6 +377,7 @@ module.exports.getBrands = async (req, res) => {
     res.render('page-brands', { brands })
   }
   catch (err) {
+    next(err)
     console.error(err)
   }
 }
@@ -382,6 +398,7 @@ module.exports.postAddBrands = async (req, res) => {
     res.redirect('/admin/admin_panel/brands')
   }
   catch (err) {
+    next(err)
     console.error(err)
   }
 }
@@ -393,6 +410,7 @@ module.exports.getBlockBrand = async (req, res) => {
     res.redirect('/admin/admin_panel/brands')
   }
   catch (err) {
+    next(err)
     console.error(err)
   }
 
@@ -405,6 +423,7 @@ module.exports.getUnblockBrand = async (req, res) => {
     res.redirect('/admin/admin_panel/brands')
   }
   catch (err) {
+    next(err)
     console.error(err)
   }
 
@@ -418,6 +437,7 @@ module.exports.getEditBrand = async (req, res) => {
     res.render('page-edit-brand', { brand, brands })
   }
   catch (err) {
+    next(err)
     console.error(err)
   }
 
@@ -449,6 +469,7 @@ module.exports.postEditBrand = async (req, res) => {
     );
     res.redirect('/admin/admin_panel/brands');
   } catch (err) {
+    next(err)
     console.error(err);
   }
 };
@@ -464,6 +485,7 @@ module.exports.getOrderManagementPage = async (req, res) => {
     const orders = await orderModel.find();
     res.render('page-orders', { orders, moment });
   } catch (error) {
+    next(error)
     console.error(error);
   }
 }
@@ -477,6 +499,7 @@ module.exports.getOrderEditPage = async (req, res) => {
     });
     res.render('page-orders-detail', { order })
   } catch (error) {
+    next(error)
     console.error(error);
   }
 }
@@ -491,6 +514,7 @@ module.exports.postOrderEdit = async (req, res) => {
       res.redirect('/admin/order_management')
     }
   } catch (error) {
+    next(error)
     console.error(error)
   }
 }
@@ -500,6 +524,7 @@ module.exports.getBannerManagement = async (req, res) => {
     const banners = await bannerModel.find({});
     res.render('page-banner', { banners, moment })
   } catch (error) {
+    next(error)
     console.error(error);
   }
 }
@@ -526,6 +551,7 @@ module.exports.postAddBanner = async (req, res) => {
       res.redirect('/admin/banner_management')
     }
   } catch (error) {
+    next(error)
     console.error(error)
   }
 }
@@ -536,6 +562,7 @@ module.exports.getEditBannerPage = async (req, res) => {
     const banners = await bannerModel.find({});
     res.render('page-edit-banner', { banners, banner, moment })
   } catch (error) {
+    next(error)
     console.error(error);
   }
 }
@@ -570,6 +597,7 @@ module.exports.postUpdateBanner = async (req, res) => {
       res.redirect('/admin/banner_management');
     }
   } catch (error) {
+    next(error)
     console.error(error);
   }
 };
@@ -584,6 +612,7 @@ module.exports.getBlockBanner = async (req, res) => {
     })
     res.redirect('/admin/banner_management')
   } catch (error) {
+    next(error)
     console.error(error);
   }
 }
@@ -597,6 +626,7 @@ module.exports.getUnblockBanner = async (req, res) => {
     })
     res.redirect('/admin/banner_management')
   } catch (error) {
+    next(error)
     console.error(error);
   }
 }
@@ -609,6 +639,7 @@ module.exports.getSalesReportPage = async (req, res) => {
     })
     res.render('page-sales-report', { sales, moment })
   } catch (error) {
+    next(error)
     console.error(error)
   }
 }
@@ -644,6 +675,7 @@ module.exports.getMonthWeekYearSales = async (req, res) => {
     }
 
   } catch (error) {
+    next(error)
     console.log(error);
     res.status(500).send("An error occurred");
   }
