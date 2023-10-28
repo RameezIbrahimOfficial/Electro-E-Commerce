@@ -38,21 +38,60 @@ module.exports.postAdminLogin = async (req, res) => {
 };
 
 module.exports.getAdminPanel = async (req, res) => {
-  const orders = await orderModel.find({});
-  const products = await productsModel.find({})
-  const categories = await categoryModel.find({})
+  try {
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
 
-  const cancelledOrder = await orderModel.find({ orderStatus: "Canceled" })
-  const returnedOrder = await orderModel.find({ orderStatus: "Returned" })
-  const deliveredOrder = await orderModel.find({ orderStatus: "Delivered" })
-  const sales = await orderModel.find({ paymentStatus: "Success" })
+    const SalesOrders = await orderModel.find({ orderStatus: "Delivered" });
 
-  let revenue = 0
-  sales.forEach((sale) => {
-    revenue += sale.totalAmount
-  })
-  res.render("admin-dashboard", { orders, products, categories, revenue, cancelledOrder, returnedOrder, deliveredOrder });
+    const monthlySalesCounts = {};
+
+    for (let month = 0; month < 12; month++) {
+      monthlySalesCounts[month] = 0;
+    }
+
+    SalesOrders.forEach((order) => {
+      if (order.deliveredOn instanceof Date) { 
+        const orderMonth = order.deliveredOn.getMonth();
+        if (!isNaN(orderMonth)) {
+          monthlySalesCounts[orderMonth]++;
+        }
+      }
+    });
+
+    const currentMonthSalesCount = monthlySalesCounts[currentMonth];
+
+    const orders = await orderModel.find({});
+    const products = await productsModel.find({});
+    const categories = await categoryModel.find({});
+    const cancelledOrder = await orderModel.find({ orderStatus: "Canceled" });
+    const returnedOrder = await orderModel.find({ orderStatus: "Returned" });
+    const deliveredOrder = await orderModel.find({ orderStatus: "Delivered" });
+    const sales = await orderModel.find({ paymentStatus: "Success" });
+
+    let revenue = 0;
+    sales.forEach((sale) => {
+      revenue += sale.totalAmount;
+    });
+
+    res.render("admin-dashboard", {
+      orders,
+      products,
+      categories,
+      revenue,
+      cancelledOrder,
+      returnedOrder,
+      deliveredOrder,
+      currentMonthSalesCount,
+      monthlySalesCounts,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
 };
+
 
 module.exports.getProductsPage = async (req, res) => {
   try {
@@ -574,7 +613,6 @@ module.exports.getSalesReportPage = async (req, res) => {
   }
 }
 
-// COMPLETE THIS ASAP
 module.exports.getMonthWeekYearSales = async (req, res) => {
   try {
     const filterOrdersForYear = adminHelpers.filterOrdersForYear;
