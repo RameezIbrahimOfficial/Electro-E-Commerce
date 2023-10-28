@@ -19,50 +19,50 @@
     <div class="card-body">
       <div class="row gx-3">
         <div class="col-xl-4 col-lg-6 col-md-8 col-12">
-          <form method="post" action="/admin/admin_panel/brand/update?id=<%=brand._id%>"  enctype="multipart/form-data" onsubmit="showSuccessAlert()">
+          <form method="post" action="/admin/admin_panel/brand/update?id=<%=brand._id%>" enctype="multipart/form-data" onsubmit="return validateForm()">
             <div class="mb-4">
               <label for="brandId" class="form-label">#ID</label>
               <input
                 type="number"
-                placeholder="Type here"
                 class="form-control"
                 id="brandId"
                 name="brandId"
-                value=<%=brand.id%>
+                value="<%=brand.id%>"
+                required
               />
             </div>
             <div class="mb-4">
               <label for="brandName" class="form-label">Name</label>
               <input
                 type="text"
-                placeholder="Type here"
                 class="form-control"
                 id="brandName"
                 name="brandName"
-                value=<%=brand.brandName%>
+                value="<%=brand.brandName%>"
+                required
               />
             </div>
             <div class="mb-4">
               <label class="form-label">Block</label>
-              <select class="form-select" name="isBlocked">
-                  <option value=true <%if(brand.isBlocked === true){%> selected <%}%>> True </option>
-                  <option value=false <%if(brand.isBlocked === false){%> selected <%}%>> False </option>
+              <select class="form-select" name="isBlocked" required>
+                <option value="true" <%if(brand.isBlocked === true){%> selected <%}%>> True </option>
+                <option value="false" <%if(brand.isBlocked === false){%> selected <%}%>> False </option>
               </select>
-          </div>
-          <div class="mb-4">
-            <div class="input-upload">
-              <img src="/<%= brand.brandImage.path %>">
-          </div>
-        </div>
+            </div>
             <div class="mb-4">
-                <div class="input-upload">
-                  <img src="admin-assets/imgs/theme/upload.svg" alt="">
-                  <input class="form-control" type="file" name="brandLogo">
+              <div class="input-upload">
+                <img src="/<%= brand.brandImage.path %>">
+              </div>
+            </div>
+            <div class="mb-4">
+              <div class="input-upload">
+                <img src="admin-assets/imgs/theme/upload.svg" alt="">
+                <input class="form-control" type="file" name="brandLogo">
               </div>
             </div>
             <div class="d-grid">
               <button class="btn btn-primary" type="submit">
-                Create Brand
+                Update Brand
               </button>
             </div>
           </form>
@@ -111,4 +111,26 @@
 
 </section>
 <!-- content-main end// -->
+<script>
+  function validateForm() {
+  var brandId = document.getElementById("brandId").value;
+  var brandName = document.getElementById("brandName").value.trim();
+  var isBlocked = document.querySelector('select[name="isBlocked"]').value;
+
+  // Number validation for brandId
+  if (isNaN(brandId)) {
+    alert("#ID must be a valid number.");
+    return false; // Prevent form submission
+  }
+
+  // Check if brandName is empty
+  if (brandName === "") {
+    alert("Name field cannot be empty.");
+    return false; // Prevent form submission
+  }
+
+  // All fields are valid, allow form submission
+  return true;
+}
+</script>
 <%- include('../partials/admin-footer')%>

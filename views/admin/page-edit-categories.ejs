@@ -13,26 +13,40 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3">
-                            <form method="post" action="/admin/admin_panel/edit_category?id=<%=category._id%>">
+                            <form method="post" action="/admin/admin_panel/edit_category?id=<%=category._id%>" onsubmit="return validateForm()">
                                 <div class="mb-4">
-                                    <label for="product_name" class="form-label">#ID</label>
-                                    <input type="number" placeholder="Type here" class="form-control" id="categoryID" name="categoryId" value="<%=category.categoryId%>"/>
+                                  <label for="categoryID" class="form-label">#ID</label>
+                                  <input
+                                    type="number"
+                                    class="form-control"
+                                    id="categoryID"
+                                    name="categoryId"
+                                    value="<%=category.categoryId%>"
+                                    required
+                                  />
                                 </div>
                                 <div class="mb-4">
-                                    <label for="product_name" class="form-label">Name</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="categoryName" name="categoryName" value="<%=category.categoryName%>"/>
+                                  <label for="categoryName" class="form-label">Name</label>
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="categoryName"
+                                    name="categoryName"
+                                    value="<%=category.categoryName%>"
+                                    required
+                                  />
                                 </div>
                                 <div class="mb-4">
-                                    <label class="form-label">Status</label>
-                                    <select class="form-select" name="status">
-                                        <option value="Listed"> List </option>
-                                        <option value="Unlisted"> Unlist</option>
-                                    </select>
+                                  <label class="form-label">Status</label>
+                                  <select class="form-select" name="status">
+                                    <option value="Listed" <%if(category.status === 'Listed'){%> selected <%}%>> List </option>
+                                    <option value="Unlisted" <%if(category.status === 'Unlisted'){%> selected <%}%>> Unlist </option>
+                                  </select>
                                 </div>
                                 <div class="d-grid">
-                                    <button class="btn btn-primary" type="submit">Update category</button>
+                                  <button class="btn btn-primary" type="submit">Update category</button>
                                 </div>
-                            </form>
+                              </form>
                         </div>
                         <div class="col-md-9">
                             <div class="table-responsive">
@@ -90,4 +104,31 @@
                 </div> <!-- card body .// -->
             </div> <!-- card .// -->
         </section> <!-- content-main end// -->
+        <script>
+            function validateForm() {
+  var categoryID = document.getElementById("categoryID").value;
+  var categoryName = document.getElementById("categoryName").value.trim();
+
+  // Number validation for categoryID
+  if (isNaN(categoryID)) {
+    alert("#ID must be a valid number.");
+    return false; // Prevent form submission
+  }
+
+  // Check if categoryID is empty
+  if (categoryID === "") {
+    alert("#ID field cannot be empty.");
+    return false; // Prevent form submission
+  }
+
+  // Check if categoryName is empty
+  if (categoryName === "") {
+    alert("Name field cannot be empty.");
+    return false; // Prevent form submission
+  }
+
+  // All fields are valid, allow form submission
+  return true;
+}
+        </script>
         <%- include('../partials/admin-footer')%>

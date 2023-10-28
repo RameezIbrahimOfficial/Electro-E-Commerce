@@ -18,7 +18,7 @@
     <div class="card-body">
       <div class="row gx-3">
         <div class="col-xl-4 col-lg-6 col-md-8 col-12">
-          <form method="post" action="/admin/banner_management/add"  enctype="multipart/form-data">
+          <form method="post" action="/admin/banner_management/add" enctype="multipart/form-data" onsubmit="return validateDates()">
             <div class="mb-4">
               <label for="description" class="form-label">Description</label>
               <input
@@ -27,7 +27,6 @@
                 class="form-control"
                 id="description"
                 name="description"
-                required
               />
             </div>
             <div class="mb-4">
@@ -62,7 +61,7 @@
             <div class="mb-4">
                 <div class="input-upload">
                   <img src="admin-assets/imgs/theme/upload.svg" alt="">
-                  <input class="form-control" type="file" name="bannerImage" required>
+                  <input class="form-control" type="file" name="bannerImage">
               </div>
             </div>
             <div class="d-grid">
@@ -118,5 +117,40 @@
   </div>
 
 </section>
+
+<script>
+  function validateDates() {
+    // Get input values
+    var description = document.getElementById("description").value.trim();
+    var startDate = new Date(document.getElementById("startDate").value);
+    var endDate = new Date(document.getElementById("endDate").value);
+    var isBlocked = document.querySelector('select[name="isBlocked"]').value;
+    var bannerImage = document.querySelector('input[name="bannerImage"]').value;
+  
+    // Check if the description field is empty after trimming
+    if (description === "") {
+      alert("Description field cannot be empty.");
+      return false; // Prevent form submission
+    }
+  
+    // Check if the end date is greater than the start date
+    if (endDate <= startDate) {
+      alert("End date must be greater than the start date.");
+      return false; // Prevent form submission
+    }
+  
+    // Check if a banner image is selected
+    if (bannerImage === "") {
+      alert("Please select a banner image.");
+      return false; // Prevent form submission
+    }
+  
+    // All fields are valid, allow form submission
+    return true;
+  }
+  </script>
+  
+  
+  
 <!-- content-main end// -->
 <%- include('../partials/admin-footer')%>

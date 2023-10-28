@@ -18,12 +18,11 @@
     <div class="card-body">
       <div class="row gx-3">
         <div class="col-xl-4 col-lg-6 col-md-8 col-12">
-          <form method="post" action="/admin/admin_panel/brand/add"  enctype="multipart/form-data">
+          <form method="post" action="/admin/admin_panel/brand/add" enctype="multipart/form-data" onsubmit="return validateForm()">
             <div class="mb-4">
               <label for="brandId" class="form-label">#ID</label>
               <input
                 type="number"
-                placeholder="Type here"
                 class="form-control"
                 id="brandId"
                 name="brandId"
@@ -34,7 +33,6 @@
               <label for="brandName" class="form-label">Name</label>
               <input
                 type="text"
-                placeholder="Type here"
                 class="form-control"
                 id="brandName"
                 name="brandName"
@@ -43,15 +41,15 @@
             </div>
             <div class="mb-4">
               <label class="form-label">Block</label>
-              <select class="form-select" name="isBlocked">
-                  <option value=true> True </option>
-                  <option value=false> False </option>
+              <select class="form-select" name="isBlocked" required>
+                <option value="true">True</option>
+                <option value="false">False</option>
               </select>
-          </div>
+            </div>
             <div class="mb-4">
-                <div class="input-upload">
-                  <img src="admin-assets/imgs/theme/upload.svg" alt="">
-                  <input class="form-control" type="file" name="brandLogo" required>
+              <div class="input-upload">
+                <img src="admin-assets/imgs/theme/upload.svg" alt="">
+                <input class="form-control" type="file" name="brandLogo" required>
               </div>
             </div>
             <div class="d-grid">
@@ -59,7 +57,7 @@
                 Create Brand
               </button>
             </div>
-          </form>
+          </form>          
         </div>
         <%if(brands){%>
           <%for(let i=0;i<brands.length;i++){%>
@@ -105,4 +103,28 @@
 
 </section>
 <!-- content-main end// -->
+
+<script>
+  function validateForm() {
+  var brandId = document.getElementById("brandId").value;
+  var brandName = document.getElementById("brandName").value.trim();
+  var isBlocked = document.querySelector('select[name="isBlocked"]').value;
+  var brandLogo = document.querySelector('input[name="brandLogo"]').value;
+
+  // Number validation for brandId
+  if (isNaN(brandId)) {
+    alert("#ID must be a valid number.");
+    return false; // Prevent form submission
+  }
+
+  // Check if brandName is empty
+  if (brandName === "") {
+    alert("Name field cannot be empty.");
+    return false; // Prevent form submission
+  }
+
+  // All fields are valid, allow form submission
+  return true;
+}
+</script>
 <%- include('../partials/admin-footer')%>

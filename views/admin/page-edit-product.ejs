@@ -12,18 +12,18 @@
           <h4>Basic</h4>
         </div>
         <div class="card-body">
-          <form method="post" action="/admin/edit_products?id=<%=product[0]._id%>" enctype="multipart/form-data">
+          <form method="post" action="/admin/edit_products?id=<%=product[0]._id%>" enctype="multipart/form-data" onsubmit="return validateForm()">
             <div class="mb-4">
               <label for="product_id" class="form-label">Product #ID</label>
-              <input type="number" placeholder="Type here" class="form-control" id="product_id" name="product_id" value="<%=product[0].id %>">
+              <input type="number" placeholder="Type here" class="form-control" id="product_id" name="product_id" value="<%=product[0].id %>" required>
             </div>
             <div class="mb-4">
               <label for="product_name" class="form-label">Product Name</label>
-              <input type="text" placeholder="Type here" class="form-control" id="product_name" name="product_name" value="<%= product[0].productName %>">
+              <input type="text" placeholder="Type here" class ="form-control" id="product_name" name="product_name" value="<%= product[0].productName %>" required>
             </div>
             <div class="mb-4">
               <label for="product_brand" class="form-label">Product Brand</label>
-              <input type="text" placeholder="Type here" class="form-control" id="product_brand" name="product_brand" value="<%= product[0].brand %>">
+              <input type="text" placeholder="Type here" class="form-control" id="product_brand" name="product_brand" value="<%= product[0].brand %>" required>
             </div>
             <div class="mb-4">
               <label class="form-label">Full description</label>
@@ -50,128 +50,151 @@
               </div>
               <div class="mb-4">
                 <label class="form-label">Operating System</label>
-                    <input placeholder="OS" type="text" class="form-control" name="operatingSystem" value="<%= product[0].operatingSystem %>">
-            </div>
-            <div class="mb-4">
+                <input placeholder="OS" type="text" class="form-control" name="operatingSystem" value="<%= product[0].operatingSystem %>">
+              </div>
+              <div class="mb-4">
                 <label class="form-label">Cellular Technology</label>
-                    <input placeholder="2G,3G,4G,5G" type="text" class="form-control" name="cellularTechnology" value="<%= product[0].cellularTechnology %>">
-            </div>
-            <div class="col-lg-4">
+                <input placeholder="2G,3G,4G,5G" type="text" class="form-control" name="cellularTechnology" value="<%= product[0].cellularTechnology %>">
+              </div>
+              <div class="col-lg-4">
                 <label class="form-label">Internal Memory</label>
                 <select class="form-select" name="internalMemory">
-                    <option value=32 <% if (product[0].internalMemory === 32) { %> selected <% } %>> 32 </option>
-                    <option value=64 <% if (product[0].internalMemory === 64) { %> selected <% } %>> 64 </option>
-                    <option value=128 <% if (product[0].internalMemory === 128) { %> selected <% } %>> 128 </option>
-                    <option value=256 <% if (product[0].internalMemory === 256) { %> selected <% } %>> 256 </option>
-                    <option value=512 <% if (product[0].internalMemory === 512) { %> selected <% } %>> 512 </option>
-                    <option value=1024 <% if (product[0].internalMemory === 1024) { %> selected <% } %>> 1024 </option>
+                  <option value="32" <% if (product[0].internalMemory === 32) { %> selected <% } %>>32</option>
+                  <option value="64" <% if (product[0].internalMemory === 64) { %> selected <% } %>>64</option>
+                  <option value="128" <% if (product[0].internalMemory === 128) { %> selected <% } %>>128</option>
+                  <option value="256" <% if (product[0].internalMemory === 256) { %> selected <% } %>>256</option>
+                  <option value="512" <% if (product[0].internalMemory === 512) { %> selected <% } %>>512</option>
+                  <option value="1024" <% if (product[0].internalMemory === 1024) { %> selected <% } %>>1024</option>
                 </select>
-            </div>
-            <div class="col-lg-4">
+              </div>
+              <div class="col-lg-4">
                 <label class="form-label">RAM</label>
                 <select class="form-select" name="ram">
-                    <option value=2 <% if (product[0].ram === 2) { %> selected <% } %>> 2 </option>
-                    <option value=4 <% if (product[0].ram === 4) { %> selected <% } %>> 4 </option>
-                    <option value=6 <% if (product[0].ram === 6) { %> selected <% } %>> 6 </option>
-                    <option value=8 <% if (product[0].ram === 8) { %> selected <% } %>> 8 </option>
-                    <option value=12 <% if (product[0].ram === 12) { %> selected <% } %>> 12 </option>
-                    <option value=16 <% if (product[0].ram === 16) { %> selected <% } %>> 16 </option>
-                    <option value=32 <% if (product[0].ram === 32) { %> selected <% } %>> 32 </option>
+                  <option value="2" <% if (product[0].ram === 2) { %> selected <% } %>>2</option>
+                  <option value="4" <% if (product[0].ram === 4) { %> selected <% } %>>4</option>
+                  <option value="6" <% if (product[0].ram === 6) { %> selected <% } %>>6</option>
+                  <option value="8" <% if (product[0].ram === 8) { %> selected <% } %>>8</option>
+                  <option value="12" <% if (product[0].ram === 12) { %> selected <% } %>>12</option>
+                  <option value="16" <% if (product[0].ram === 16) { %> selected <% } %>>16</option>
+                  <option value="32" <% if (product[0].ram === 32) { %> selected <% } %>>32</option>
                 </select>
-            </div>
-            <div class="col-lg-4">
+              </div>
+              <div class="col-lg-4">
                 <label class="form-label">Screen Size</label>
                 <select class="form-select" name="screenSize">
-                    <option value=5.8 <% if (product[0].screenSize === 5.8) { %> selected <% } %>> 5.8 </option>
-                    <option value=6.2 <% if (product[0].screenSize === 6.2) { %> selected <% } %>> 6.2 </option>
-                    <option value=6.4 <% if (product[0].screenSize === 6.4) { %> selected <% } %>> 6.4 </option>
+                  <option value="5.8" <% if (product[0].screenSize === 5.8) { %> selected <% } %>>5.8</option>
+                  <option value="6.2" <% if (product[0].screenSize === 6.2) { %> selected <% } %>>6.2</option>
+                  <option value="6.4" <% if (product[0].screenSize === 6.4) { %> selected <% } %>>6.4</option>
                 </select>
-            </div>
-            <div class="mb-4">
+              </div>
+              <div class="mb-4">
                 <label class="form-label">Battery Capacity</label>
-                <input placeholder="Mah" type="number" class="form-control" name="batteryCapacity" value="<%= product[0].batteryCapacity%>">
-            </div>
-            <div class="mb-4">
+                <input placeholder="mAh" type="number" class="form-control" name="batteryCapacity" value="<%= product[0].batteryCapacity %>">
+              </div>
+              <div class="mb-4">
                 <label class="form-label">Processor</label>
-                <input placeholder="Processor" type="text" class="form-control" name="processor" value="<%= product[0].processor%>">
-            </div>
-            <div class="col-lg-4">
-              <label class="form-label">Status</label>
-              <select class="form-select" name="product_status">
-                <option value=true <% if (product[0].status === true) { %> selected <% } %>>Active</option>
-                <option value=false <% if (product[0].status === false) { %> selected <% } %>>Blocked</option>
-              </select>
-            </div>
-            <div class="col-lg-4">
-              <label class="form-label">Stock</label>
-              <select class="form-select" name="stock">
-                <option value=true <% if (product[0].stock === true) { %> selected <% } %>>Yes</option>
-                <option value=false <% if (product[0].stock === false) { %> selected <% } %>>No</option>
-              </select>
-            </div>
-            <div class="col-lg-4">
-              <label class="form-label">Category</label>
-              <select class="form-select" name="product_category">
-                <% if (categories.length > 0) { %>
-                  <% for (let i = 0; i < categories.length; i++) { %>
-                    <option value="<%= categories[i].categoryName %>"><%= categories[i].categoryName %></option>
-                  <% } %>
-                <% } else { %>
-                  <option value="">No Category</option>
-                <% } %>
-              </select>
+                <input placeholder="Processor" type="text" class="form-control" name="processor" value="<%= product[0].processor %>">
+              </div>
+              <div class="col-lg-4">
+                <label class="form-label">Status</label>
+                <select class="form-select" name="product_status">
+                  <option value="true" <% if (product[0].status === true) { %> selected <% } %>>Active</option>
+                  <option value="false" <% if (product[0].status === false) { %> selected <% } %>>Blocked</option>
                 </select>
+              </div>
+              <div class="col-lg-4">
+                <label class="form-label">Stock</label>
+                <select class="form-select" name="stock">
+                  <option value="true" <% if (product[0].stock === true) { %> selected <% } %>>Yes</option>
+                  <option value="false" <% if (product[0].stock === false) { %> selected <% } %>>No</option>
+                </select>
+              </div>
+              <div class="col-lg-4">
+                <label class="form-label">Category</label>
+                <select class="form-select" name="product_category">
+                  <% if (categories.length > 0) { %>
+                    <% for (let i = 0; i < categories.length; i++) { %>
+                      <option value="<%= categories[i].categoryName %>"><%= categories[i].categoryName %></option>
+                    <% } %>
+                  <% } else { %>
+                    <option value="">No Category</option>
+                  <% } %>
+                </select>
+              </div>
             </div>
+            </div>
+          </div> <!-- card end// -->
           </div>
-          </div>
-        </div> <!-- card end// -->
-      </div>
-
-    <div class="col-lg-3">
-      <div class="card mb-4">
-        <div class="card-header">
+          <div class="col-lg-3">
+          <div class="card mb-4">
+          <div class="card-header">
           <h4>Product Images</h4>
-        </div>
-        <% if (product[0].productImage && product[0].productImage.length > 0) { %>
-            <% product[0].productImage.forEach(function(image) { %>
-                <div class="card-body">
-                <img src="/<%= image.path %>" alt="Product Image">
-            </div>
-              <% }); %>
-            <% } else { %>
-              <h4>No Image Found</h4>
-            <% } %>
-          
-      </div> <!-- card end// -->
-    </div>
-    <div class="col-lg-3">
-      <div class="card mb-4">
-        <div class="card-header">
-          <h4>Media</h4>
-        </div>
-        <div class="card-body">
-          <div class="input-upload">
-            <img src="admin-assets/imgs/theme/upload.svg" alt="">
-            <input class="form-control" type="file" name="product_images" multiple>
           </div>
-        </div>
-        <button class="btn btn-md rounded font-sm hover-up submit" type="submit">Publish</button>
-      </div> <!-- card end// -->
-    </div>
-</div>
-  </form>
+          <% if (product[0].productImage && product[0].productImage.length > 0) { %>
+            <% product[0].productImage.forEach(function(image) { %>
+              <div class="card-body">
+                <img src="/<%= image.path %>" alt="Product Image">
+              </div>
+            <% }); %>
+          <% } else { %>
+            <h4>No Image Found</h4>
+          <% } %>
+          </div> <!-- card end// -->
+          </div>
+          <div class="col-lg-3">
+          <div class="card mb-4">
+          <div class="card-header">
+          <h4>Media</h4>
+          </div>
+          <div class="card-body">
+          <div class="input-upload">
+          <img src="admin-assets/imgs/theme/upload.svg" alt="">
+          <input class="form-control" type="file" name="product_images" multiple>
+          </div>
+          </div>
+          <button class="btn btn-md rounded font-sm hover-up submit" type="submit">Publish</button>
+          </div> <!-- card end// -->
+          </div>
+          </div>
+          </form>
 </div>
 </section> <!-- content-main end// -->
 <script>
-  document.querySelector('.submit').addEventListener('click',()=>{
-    Swal.fire({
-  position: 'top-end',
-  icon: 'success',
-  title: 'Product Updated',
-  showConfirmButton: false,
-  timer: 1500
-})
+  function validateForm() {
+    var product_id = document.getElementById("product_id").value;
+    var product_name = document.getElementById("product_name").value.trim();
+    var product_brand = document.getElementById("product_brand").value.trim();
 
-  })
+    // Number validation for product_id
+    if (isNaN(product_id)) {
+      alert("Product #ID must be a valid number.");
+      return false; // Prevent form submission
+    }
+
+    // Check if product_name is empty
+    if (product_name === "") {
+      alert("Product Name cannot be empty.");
+      return false; // Prevent form submission
+    }
+
+    // Check if product_brand is empty
+    if (product_brand === "") {
+      alert("Product Brand cannot be empty.");
+      return false; // Prevent form submission
+    }
+
+    // All fields are valid, allow form submission
+    return true;
+  }
+
+  document.querySelector('.submit').addEventListener('click', () => {
+    Swal.fire({
+      position: 'top-end',
+      icon: 'success',
+      title: 'Product Updated',
+      showConfirmButton: false,
+      timer: 1500
+    });
+  });
 </script>
 <%- include('../partials/admin-footer')%>

@@ -15,16 +15,16 @@
                             <div id="error-message" class="alert-danger"></div>
                             <form method="post" action="/admin/admin_panel/add_products" enctype="multipart/form-data" id="productForm">
                                 <div class="mb-4">
-                                    <label for="product_name" class="form-label">Product #ID</label>
-                                    <input type="number" placeholder="Type here" class="form-control" id="product_id" name="product_id">
+                                    <label for="product_id" class="form-label">Product #ID</label>
+                                    <input type="number" placeholder="Type here" class="form-control" id="product_id" name="product_id" required>
                                 </div>
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Product Name</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="product_name" name="product_name">
+                                    <input type="text" placeholder="Type here" class="form-control" id="product_name" name="product_name" required>
                                 </div>
                                 <div class="mb-4">
                                     <label for="product_brand" class="form-label">Product Brand</label>
-                                    <select class="form-select" name="product_brand">
+                                    <select class="form-select" name="product_brand" required>
                                         <% if (brands.length > 0) { %>
                                             <% for (let i = 0; i < brands.length; i++) { %>
                                                 <option value="<%= brands[i].brandName %>"><%= brands[i].brandName %></option>
@@ -36,38 +36,38 @@
                                 </div>                                
                                 <div class="mb-4">
                                     <label class="form-label">Full description</label>
-                                    <textarea placeholder="Type here" class="form-control" rows="4" name="product_description" id="product_description"></textarea>
+                                    <textarea placeholder="Type here" class="form-control" rows="4" name="product_description" id="product_description" required></textarea>
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-4">
                                         <div class="mb-4">
                                             <label class="form-label">Regular Price</label>
                                             <div class="row gx-2">
-                                                <input placeholder="$" type="text" class="form-control" name="regular_price" id="regular_price">
+                                                <input placeholder="$" type="text" class="form-control" name="regular_price" id="regular_price" required>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="mb-4">
-                                            <label class="form-label">Sales Price</label>
-                                            <input placeholder="$" type="text" class="form-control" name="sales_price" id="sales_price">
+                                            <label class "form-label">Sales Price</label>
+                                            <input placeholder="$" type="text" class="form-control" name="sales_price" id="sales_price" required>
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
                                         <label class="form-label">Units</label>
-                                            <input placeholder="$" type="text" class="form-control" name="units" id="units">
+                                        <input placeholder="$" type="text" class="form-control" name="units" id="units" required>
                                     </div>
                                     <div class="mb-4">
                                         <label class="form-label">Operating System</label>
-                                            <input placeholder="OS" type="text" class="form-control" name="operatingSystem" id="operatingSystem">
+                                        <input placeholder="OS" type="text" class="form-control" name="operatingSystem" id="operatingSystem" required>
                                     </div>
                                     <div class="mb-4">
                                         <label class="form-label">Cellular Technology</label>
-                                            <input placeholder="2G,3G,4G,5G" type="text" class="form-control" name="cellularTechnology" id="cellularTechnology">
+                                        <input placeholder="2G,3G,4G,5G" type="text" class="form-control" name="cellularTechnology" id="cellularTechnology" required>
                                     </div>
                                     <div class="col-lg-4">
                                         <label class="form-label">Internal Memory</label>
-                                        <select class="form-select" name="internalMemory">
+                                        <select class="form-select" name="internalMemory" required>
                                             <option > 32 </option>
                                             <option > 64 </option>
                                             <option > 128 </option>
@@ -78,7 +78,7 @@
                                     </div>
                                     <div class="col-lg-4">
                                         <label class="form-label">RAM</label>
-                                        <select class="form-select" name="ram">
+                                        <select class="form-select" name="ram" required>
                                             <option > 2 </option>
                                             <option > 4 </option>
                                             <option > 6 </option>
@@ -90,7 +90,7 @@
                                     </div>
                                     <div class="col-lg-4">
                                         <label class="form-label">Screen Size</label>
-                                        <select class="form-select" name="screenSize">
+                                        <select class="form-select" name="screenSize" required>
                                             <option > 5.8 </option>
                                             <option > 6.2 </option>
                                             <option > 6.4 </option>
@@ -98,142 +98,132 @@
                                     </div>
                                     <div class="mb-4">
                                         <label class="form-label">Battery Capacity</label>
-                                        <input placeholder="Mah" type="number" class="form-control" name="batteryCapacity" id="batteryCapacity">
+                                        <input placeholder="Mah" type="number" class="form-control" name="batteryCapacity" id="batteryCapacity" required>
                                     </div>
                                     <div class="mb-4">
                                         <label class="form-label">Processor</label>
-                                        <input placeholder="Processor" type="text" class="form-control" name="processor" id="processor">
+                                        <input placeholder="Processor" type="text" class="form-control" name="processor" id="processor" required>
                                     </div>
-                                
-                                <div class="col-lg-4">
-                                    <label class="form-label">Status</label>
-                                    <select class="form-select" name="product_status">
-                                        <option value=true> Active </option>
-                                        <option value=false> Blocked </option>
-                                    </select>
-                                </div>
-                                <div class="col-lg-4">
-                                    <label class="form-label">Stock</label>
-                                    <select class="form-select" name="stock">
-                                        <option value=true> Yes </option>
-                                        <option value=false> No </option>
-                                    </select>
-                                </div>
-                                <div class="col-lg-4">
-                                    <label class="form-label">Category</label>
-                                    <select class="form-select" name="product_category">
-                                        <% if (categories.length > 0) { %>
-                                          <% for (let i = 0; i < categories.length; i++) { %>
-                                            <option value="<%= categories[i].categoryName %>"><%= categories[i].categoryName %></option>
-                                          <% } %>
-                                        <% } else { %>
-                                          <option value="">No Category</option>
-                                        <% } %>
+                                    <div class="col-lg-4">
+                                        <label class="form-label">Status</label>
+                                        <select class="form-select" name="product_status" required>
+                                            <option value=true> Active </option>
+                                            <option value=false> Blocked </option>
                                         </select>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label class="form-label">Stock</label>
+                                        <select class="form-select" name="stock" required>
+                                            <option value=true> Yes </option>
+                                            <option value=false> No </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label class="form-label">Category</label>
+                                        <select class="form-select" name="product_category" required>
+                                            <% if (categories.length > 0) { %>
+                                                <% for (let i = 0; i < categories.length; i++) { %>
+                                                    <option value="<%= categories[i].categoryName %>"><%= categories[i].categoryName %></option>
+                                                <% } %>
+                                            <% } else { %>
+                                                <option value="">No Category</option>
+                                            <% } %>
+                                        </select>
+                                    </div>
                                 </div>
+                            </div> <!-- card end// -->
                             </div>
+                            <div class="col-lg-3">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h4>Media</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="input-upload">
+                                            <img src="admin-assets/imgs/theme/upload.svg" alt="">
+                                            <input class="form-control" type="file" name="product_images" multiple required>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-md rounded font-sm hover-up" type="submit">Publish</button>
+                                </div> <!-- card end// -->
                             </div>
-                        </div> <!-- card end// -->
-                        
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <h4>Media</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="input-upload">
-                                    <img src="admin-assets/imgs/theme/upload.svg" alt="">
-                                    <input class="form-control" type="file" name="product_images" multiple required>
-                                </div>
-                            </div>
-                            <button class="btn btn-md rounded font-sm hover-up" type="submit">Publish</button>
-                        </div> <!-- card end// -->
-                    </div>
-                </form>
+                            </form>
             </div>
         </section> <!-- content-main end// -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function () {
-        // Function to validate the form
-        function validateForm() {
-            // Reset any previous error messages
-            $('#error-message').html('');
-            
-            // Get form input values
-            var productId = $('#product_id').val()
-            var productName = $('#product_name').val();
-            var productBrand = $('#product_brand').val();
-            var productDescription = $('#product_description').val();
-            var regularPrice = $('#regular_price').val();
-            var salesPrice = $('#sales_price').val();
-            var units = $('#units').val();
-            var operatingSystem = $('#operatingSystem').val();
-            var cellularTechnology = $('#cellularTechnology').val();
-            var batteryCapacity = $('#batteryCapacity').val();
-            var processor = $('#processor').val();
-            // Add validation rules here
+   document.querySelector('#productForm').addEventListener('submit', function (e) {
+    e.preventDefault(); // Prevent the form from submitting
+    var product_id = document.getElementById("product_id").value;
+    var product_name = document.getElementById("product_name").value.trim();
+    var product_brand = document.querySelector('[name="product_brand"]').value;
+    var product_description = document.getElementById("product_description").value.trim();
+    var regular_price = document.getElementById("regular_price").value.trim();
+    var sales_price = document.getElementById("sales_price").value.trim();
+    var units = document.getElementById("units").value.trim();
+    var operatingSystem = document.getElementById("operatingSystem").value.trim();
+    var cellularTechnology = document.getElementById("cellularTechnology").value.trim();
+    var internalMemory = document.querySelector('[name="internalMemory"]').value;
+    var ram = document.querySelector('[name="ram"]').value;
+    var screenSize = document.querySelector('[name="screenSize"]').value;
+    var batteryCapacity = document.getElementById("batteryCapacity").value.trim();
+    var processor = document.getElementById("processor").value.trim();
+    var product_status = document.querySelector('[name="product_status"]').value;
+    var stock = document.querySelector('[name="stock"]').value;
+    var product_category = document.querySelector('[name="product_category"]').value;
 
-            // Example: Check if product name is empty
-            if (productId.trim() === '') {
-                $('#error-message').html('Product ID is required.');
-                return false; // Prevent form submission
-            }
-            if (productName.trim() === '') {
-                $('#error-message').html('Product Name is required.');
-                return false; // Prevent form submission
-            }
+    // Number validation for product_id
+    if (isNaN(product_id)) {
+        alert("Product #ID must be a valid number.");
+        return false; // Prevent form submission
+    }
 
-            // Example: Check if product brand is selected
-            if (productBrand === '') {
-                $('#error-message').html('Product Brand is required.');
-                return false; // Prevent form submission
-            }
-            if (productDescription.trim() === '') {
-                $('#error-message').html('Product Description is required.');
-                return false; // Prevent form submission
-            }
-            if (regularPrice.trim() === '') {
-                $('#error-message').html('Product Regular Price is required.');
-                return false; // Prevent form submission
-            }
-            if (salesPrice.trim() === '') {
-                $('#error-message').html('Product Sale Price is required.');
-                return false; // Prevent form submission
-            }
-            if (units.trim() === '') {
-                $('#error-message').html('Product Units is required.');
-                return false; // Prevent form submission
-            }
-            if (operatingSystem.trim() === '') {
-                $('#error-message').html('Product Operating System is required.');
-                return false; // Prevent form submission
-            }
-            if (cellularTechnology.trim() === '') {
-                $('#error-message').html('Product Cellular Technology is required.');
-                return false; // Prevent form submission
-            }
-            if (batteryCapacity.trim() === '') {
-                $('#error-message').html('Product Battery Capacity is required.');
-                return false; // Prevent form submission
-            }
-            if (processor.trim() === '') {
-                $('#error-message').html('Product Processor is required.');
-                return false; // Prevent form submission
-            }
+    // Check if product_name is empty
+    if (product_name === "") {
+        alert("Product Name cannot be empty.");
+        return false; // Prevent form submission
+    }
 
-            // Add more validation rules for other fields as needed
+    // Check if product_brand is not empty
+    if (product_brand === "") {
+        alert("Please select a Product Brand.");
+        return false; // Prevent form submission
+    }
 
-            return true; // Form is valid, allow submission
-        }
+    // Check if product_description is empty
+    if (product_description === "") {
+        alert("Product Description cannot be empty.");
+        return false; // Prevent form submission
+    }
 
-        // Form submit event
-        $('#productForm').submit(function (e) {
-            if (!validateForm()) {
-                e.preventDefault(); // Prevent form submission if validation fails
-            }
-        });
-    });
+    // Regular price must be a valid number
+    if (isNaN(regular_price)) {
+        alert("Regular Price must be a valid number.");
+        return false; // Prevent form submission
+    }
+
+    // Sales price must be a valid number
+    if (isNaN(sales_price)) {
+        alert("Sales Price must be a valid number.");
+        return false; // Prevent form submission
+    }
+
+    // Units must be a valid number
+    if (isNaN(units)) {
+        alert("Units must be a valid number.");
+        return false; // Prevent form submission
+    }
+
+    // Check if batteryCapacity is a valid number
+    if (isNaN(batteryCapacity)) {
+        alert("Battery Capacity must be a valid number.");
+        return false; // Prevent form submission
+    }
+
+    // Additional validation can be added for other fields as needed
+
+    // All fields are valid, allow form submission
+    e.target.submit(); // Submit the form
+});
 </script>
         <%- include('../partials/admin-footer')%>

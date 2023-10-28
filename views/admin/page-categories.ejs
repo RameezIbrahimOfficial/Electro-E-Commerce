@@ -24,30 +24,30 @@
                     <div class="row">
                         <div class="alert-danger" id="error-message"></div>
                         <div class="col-md-3">
-                            <form method="post" action="/admin/admin_panel/ceate_category" id="categoryForm">
+                            <form method="post" action="/admin/admin_panel/ceate_category" id="categoryForm" onsubmit="return validateForm()">
                                 <!-- <div class="mb-4">
-                                    <label for="product_name" class="form-label">#ID</label>
-                                    <input type="number" placeholder="Type here" class="form-control" id="categoryID" name="categoryId"/>
+                                  <label for="product_name" class="form-label">#ID</label>
+                                  <input type="number" placeholder="Type here" class="form-control" id="categoryID" name="categoryId"/>
                                 </div> -->
                                 <div class="mb-4">
-                                    <label for="categoryID" class="form-label">#ID</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="categoryId" name="categoryID"/>
+                                  <label for="categoryId" class="form-label">#ID</label>
+                                  <input type="text" placeholder="Type here" class="form-control" id="categoryId" name="categoryId" required />
                                 </div>
                                 <div class="mb-4">
-                                    <label for="categoryName" class="form-label">Name</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="categoryName" name="categoryName"/>
+                                  <label for="categoryName" class="form-label">Name</label>
+                                  <input type="text" placeholder="Type here" class="form-control" id="categoryName" name="categoryName" required />
                                 </div>
                                 <div class="mb-4">
-                                    <label class="form-label">Status</label>
-                                    <select class="form-select" name="status">
-                                        <option value="Listed"> List </option>
-                                        <option value="Unlisted"> Unlist</option>
-                                    </select>
+                                  <label class="form-label">Status</label>
+                                  <select class="form-select" name="status" required>
+                                    <option value="Listed">List</option>
+                                    <option value="Unlisted">Unlist</option>
+                                  </select>
                                 </div>
                                 <div class="d-grid">
-                                    <button class="btn btn-primary" type="submit">Create category</button>
+                                  <button class="btn btn-primary" type="submit">Create category</button>
                                 </div>
-                            </form>
+                              </form>                              
                         </div>
                         <div class="col-md-9">
                             <div class="table-responsive">
@@ -107,51 +107,31 @@
         </section> <!-- content-main end// -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function () {
-        function validateCategoryForm() {
-            // Reset any previous error messages
-            $('#error-message').html('');
+  function validateForm() {
+  var categoryId = document.getElementById("categoryId").value.trim();
+  var categoryName = document.getElementById("categoryName").value.trim();
+  var status = document.querySelector('select[name="status"]').value;
 
-            // Get form input values
-            var categoryName = $('#categoryName').val();
-            var status = $('#status').val();
-            var categoryId = $('#categoryId').val();
-            
-            // Validation rules
+  // Number validation for categoryId
+  if (isNaN(categoryId)) {
+    alert("#ID must be a valid number.");
+    return false; // Prevent form submission
+  }
 
-            if (categoryId.trim() === '') {
-                $('#error-message').html('Category ID is required.');
-                return false;
-            }
+  // Check if categoryId is empty
+  if (categoryId === "") {
+    alert("#ID field cannot be empty.");
+    return false; // Prevent form submission
+  }
 
-            if (categoryName.trim() === '') {
-                $('#error-message').html('Category Name is required.');
-                return false;
-            }
+  // Check if categoryName is empty
+  if (categoryName === "") {
+    alert("Name field cannot be empty.");
+    return false; // Prevent form submission
+  }
 
-            if (status === '') {
-                $('#error-message').html('Status is required.');
-                return false;
-            }
-
-            // Additional validation rules
-
-            // Check if Category Name contains only letters and spaces
-            var namePattern = /^[A-Za-z\s]+$/;
-            if (!namePattern.test(categoryName)) {
-                $('#error-message').html('Category Name can only contain letters and spaces.');
-                return false;
-            }
-
-            return true;
-        }
-
-        // Form submit event
-        $('#categoryForm').submit(function (e) {
-            if (!validateCategoryForm()) {
-                e.preventDefault(); // Prevent form submission if validation fails
-            }
-        });
-    });
+  // All fields are valid, allow form submission
+  return true;
+}
 </script>
         <%- include('../partials/admin-footer')%>

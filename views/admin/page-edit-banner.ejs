@@ -18,7 +18,7 @@
     <div class="card-body">
       <div class="row gx-3">
         <div class="col-xl-4 col-lg-6 col-md-8 col-12">
-          <form method="post" action="/admin/banner/edit?bannerId=<%= banner._id%>"  enctype="multipart/form-data">
+          <form method="post" action="/admin/banner/edit?bannerId=<%= banner._id%>" enctype="multipart/form-data" onsubmit="return validateForm()">
             <div class="mb-4">
               <label for="description" class="form-label">Description</label>
               <input
@@ -28,46 +28,47 @@
                 id="description"
                 name="description"
                 value="<%=banner.description%>"
+                required
               />
             </div>
             <div class="mb-4">
               <label for="startDate" class="form-label">Start Date</label>
               <input
                 type="date"
-                placeholder="Type here"
                 class="form-control"
                 id="startDate"
                 name="startDate"
                 value="<%=moment(banner.startDate).format('YYYY-MM-DD')%>"
+                required
               />
             </div>
             <div class="mb-4">
               <label for="endDate" class="form-label">End Date</label>
               <input
                 type="date"
-                placeholder="Type here"
                 class="form-control"
                 id="endDate"
                 name="endDate"
                 value="<%=moment(banner.endDate).format('YYYY-MM-DD')%>"
+                required
               />
             </div>
             <div class="mb-4">
               <label class="form-label">Status</label>
-              <select class="form-select" name="isBlocked">
-                  <option value=true <%if(banner.status===true){%> selected <%}%>> True </option>
-                  <option value=false <%if(banner.status===false){%> selected <%}%>> False </option>
+              <select class="form-select" name="isBlocked" required>
+                <option value=true <%if(banner.status===true){%> selected <%}%>> True </option>
+                <option value=false <%if(banner.status===false){%> selected <%}%>> False </option>
               </select>
-          </div>
+            </div>
             <div class="mb-4">
-                <div class="input-upload">
-                  <img src="admin-assets/imgs/theme/upload.svg" alt="">
-                  <input class="form-control" type="file" name="bannerImage">
+              <div class="input-upload">
+                <img src="admin-assets/imgs/theme/upload.svg" alt="">
+                <input class="form-control" type="file" name="bannerImage">
               </div>
             </div>
             <div class="d-grid">
               <button class="btn btn-primary" type="submit">
-                Create Banner
+                Update Banner
               </button>
             </div>
           </form>
@@ -115,4 +116,42 @@
 
 </section>
 <!-- content-main end// -->
+<script>
+ function validateForm() {
+  var description = document.getElementById("description").value.trim();
+  var startDate = new Date(document.getElementById("startDate").value);
+  var endDate = new Date(document.getElementById("endDate").value);
+  var isBlocked = document.querySelector('select[name="isBlocked"]').value;
+
+  // Get today's date
+  var today = new Date();
+
+  // Check if the end date is greater than the start date
+  if (endDate <= startDate) {
+    alert("End date must be greater than the start date.");
+    return false; // Prevent form submission
+  }
+
+  // Check if the start date is greater than today's date
+  if (startDate <= today) {
+    alert("Start date must be greater than today's date.");
+    return false; // Prevent form submission
+  }
+
+  // Check if the end date is greater than today's date
+  if (endDate <= today) {
+    alert("End date must be greater than today's date.");
+    return false; // Prevent form submission
+  }
+
+  // Check if description is empty
+  if (description === "") {
+    alert("Description field cannot be empty.");
+    return false; // Prevent form submission
+  }
+
+  // All fields are valid, allow form submission
+  return true;
+}
+</script>
 <%- include('../partials/admin-footer')%>
