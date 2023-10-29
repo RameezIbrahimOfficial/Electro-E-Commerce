@@ -1,4 +1,21 @@
 ﻿<%-include('../partials/user-header')%>
+<style>
+  .password-field {
+    position: relative;
+  }
+
+  .password-input {
+    padding-right: 40px; 
+  }
+
+  .password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+</style>
 <main class="main">
   <div class="page-header breadcrumb-wrap">
     <div class="container">
@@ -35,12 +52,23 @@
                       <span id="errEmail" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                      <input
-                        type="password"
-                        name="password"
-                        placeholder="Password"
-                        id="loginPassword"
-                      />
+                      <div class="password-field">
+                        <input
+                          type="password"
+                          name="password"
+                          placeholder="Password"
+                          id="loginPassword"
+                          class="password-input"
+                        />
+                        <!-- Add the eye button for viewing the password -->
+                        <span
+                          class="password-toggle"
+                          id="passwordToggle"
+                          onclick="togglePasswordVisibility()"
+                        >
+                          <i class="fas fa-eye"></i>
+                        </span>
+                      </div>
                       <span id="errPassword" class="text-danger"></span>
                     </div>
                     <div class="login_footer form-group">
@@ -57,6 +85,10 @@
                       </button>
                     </div>
                   </form>
+                  <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+/>
                 </div>
               </div>
             </div>
@@ -68,6 +100,18 @@
 </main>
 
 <script>
+  function togglePasswordVisibility() {
+  const passwordInput = document.getElementById("loginPassword");
+  const passwordToggle = document.getElementById("passwordToggle");
+
+  if (passwordInput.type === "password") {
+    passwordInput.type = "text";
+    passwordToggle.innerHTML = '<i class="fas fa-eye-slash"></i>'; // Change to hide icon
+  } else {
+    passwordInput.type = "password";
+    passwordToggle.innerHTML = '<i class="fas fa-eye"></i>'; // Change back to show icon
+  }
+}
   document.addEventListener("DOMContentLoaded", function () {
     const loginForm = document.querySelector('form[action="/signin"]');
     const loginEmailInput = document.getElementById("loginEmail");

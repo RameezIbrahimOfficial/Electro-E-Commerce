@@ -1,5 +1,6 @@
 <%-include('../partials/user-header')%>
-    <main class="main">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<main class="main">
         <div class="page-header breadcrumb-wrap">
             <div class="container">
                 <div class="breadcrumb">
@@ -38,10 +39,11 @@
                                     <span id="errSignupPassword" class="text-danger"></span>
                                     <span id="errSignupConfirmPassword" class="text-danger"></span>
                                     <div class="form-group d-flex">
-                                        <input type="password" name="SignupPassword" placeholder="Password" />
-                                        <input type="password" name="Confirmpassword" placeholder="Confirm password"
-                                            class="ms-2" />
-                                    </div>
+                                        <input type="password" name="SignupPassword" placeholder="Password" id="passwordField" />
+                                        <button class="password-toggle-button" id="passwordToggle"><i class="far fa-eye"></i></button>
+                                        <input type="password" name="Confirmpassword" placeholder="Confirm password" class="ms-2" id="confirmPasswordField" />
+                                        <button class="password-toggle-button" id="confirmPasswordToggle"><i class="far fa-eye"></i></button>
+                                    </div>                                      
                                     <div class="form-group">
                                     </div>
                                     <span id="errSignupPhoneNumber" class="text-danger"></span>
@@ -103,35 +105,29 @@
     </main>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            var timeLeft = 60;
-            var elem = document.getElementById('some_div');
+           document.addEventListener("DOMContentLoaded", function () {
+        let timerId;
+        let timeLeft;
+        const elem = document.getElementById('some_div');
 
-            var timerId = setInterval(countdown, 1000);
+        const sendOTPButton = document.getElementById("sendOTPButton");
+        const reSendButton = document.getElementById("reSendOTPButton");
+        const verifyOTPButton = document.getElementById("verifyOTPButton");
+        const otpInput = document.getElementById("otp");
 
-            function countdown() {
-                if (timeLeft == -1) {
-                    clearTimeout(timerId);
-                    document.querySelector('.resend-otp').disabled = false
-                } else {
-                    elem.innerHTML = timeLeft + ' seconds remaining';
-                    timeLeft--;
-                }
+        sendOTPButton.addEventListener("click", function (e) {
+            e.preventDefault();
+            const phoneNumber = document.querySelector('input[name="phoneNumber"]').value;
+
+            if (!phoneNumber) {
+                errSignupPhoneNumber.innerHTML = "Phone number is required.";
+                return;
             }
-            const sendOTPButton = document.getElementById("sendOTPButton");
-            const reSendButton = document.getElementById("reSendOTPButton")
-            const verifyOTPButton = document.getElementById("verifyOTPButton");
-            const otpInput = document.getElementById("otp");
 
-            sendOTPButton.addEventListener("click", function (e) {
-                e.preventDefault();
-
-                const phoneNumber = document.querySelector('input[name="phoneNumber"]').value;
-
-                if (!phoneNumber) {
-                    errSignupPhoneNumber.innerHTML = "Phone number is required."
-                    return;
-                }
+            // Start the timer
+            timeLeft = 60;
+            clearInterval(timerId);
+            timerId = setInterval(countdown, 1000);
 
                 fetch(`/send_otp?phoneNumber=${phoneNumber}`)
                     .then((response) => {
@@ -164,14 +160,18 @@
             });
             
             reSendButton.addEventListener("click", function (e) {
-                e.preventDefault();
+            e.preventDefault();
+            const phoneNumber = document.querySelector('input[name="phoneNumber"]').value;
 
-                const phoneNumber = document.querySelector('input[name="phoneNumber"]').value;
+            if (!phoneNumber) {
+                errSignupPhoneNumber.innerHTML = "Phone number is required.";
+                return;
+            }
 
-                if (!phoneNumber) {
-                    errSignupPhoneNumber.innerHTML = "Phone number is required."
-                    return;
-                }
+            // Start the timer
+            timeLeft = 60;
+            clearInterval(timerId);
+            timerId = setInterval(countdown, 1000);
 
                 fetch(`/send_otp?phoneNumber=${phoneNumber}`)
                     .then((response) => {
@@ -204,15 +204,14 @@
 
 
             verifyOTPButton.addEventListener("click", function (e) {
-                e.preventDefault();
+            e.preventDefault();
+            const otp = otpInput.value;
+            const phoneNumber = document.querySelector('input[name="phoneNumber"]').value;
 
-                const otp = otpInput.value;
-                const phoneNumber = document.querySelector('input[name="phoneNumber"]').value;
-
-                if (!phoneNumber || !otp) {
-                    errSignupOtp.innerHTML = "Phone number and OTP are required."
-                    return;
-                }
+            if (!phoneNumber || !otp) {
+                errSignupOtp.innerHTML = "Phone number and OTP are required.";
+                return;
+            }
 
                 fetch(`/verify_otp?phoneNumber=${phoneNumber}&otp=${otp}`)
                     .then((response) => {
@@ -239,6 +238,15 @@
                         })
                     });
             });
+            function countdown() {
+            if (timeLeft === -1) {
+                clearInterval(timerId);
+                document.querySelector('.resend-otp').disabled = false;
+            } else {
+                elem.innerHTML = timeLeft + ' seconds remaining';
+                timeLeft--;
+            }
+        }
 
 
             const errEmail = document.getElementById('errEmail')

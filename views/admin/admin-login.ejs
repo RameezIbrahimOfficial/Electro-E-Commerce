@@ -10,8 +10,21 @@
     <link rel="shortcut icon" type="image/x-icon" href="admin-assets/imgs/theme/favicon.svg" />
     <!-- Template CSS -->
     <link href="admin-assets/css/main.css" rel="stylesheet" type="text/css" />
+    <style>
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+    </style>
 </head>
 <body>
+    
     <main>
         <header class="main-header style-2 navbar">
             <div class="col-brand">
@@ -30,10 +43,11 @@
                             <input class="form-control" placeholder="Username or email" type="text" name="email" id="email"/>
                             <span id="email-error" class="text-danger"></span>
                         </div>
-                        <div class="mb-3">
-                            <input class="form-control" placeholder="Password" type="password" name="password" id="password"/>
+                        <div class="mb-3" style="position: relative;">
+                            <input class="form-control" placeholder="Password" type="password" name="password" id="password" />
                             <span id="password-error" class="text-danger"></span>
-                        </div>
+                            <button type="button" id="toggle-password" class="toggle-password" onclick="togglePasswordVisibility()">👁️</button>
+                        </div>                        
                         <div class="mb-3">
                             <a href="#" class="float-end font-sm text-muted">Forgot password?</a>
                         </div>
@@ -47,7 +61,19 @@
     </main>
     <script>
     
-        
+    function togglePasswordVisibility() {
+    const passwordInput = document.getElementById('password');
+    const togglePasswordButton = document.getElementById('toggle-password');
+
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        togglePasswordButton.textContent = '👁️';
+    } else {
+        passwordInput.type = 'password';
+        togglePasswordButton.textContent = '👁';
+    }
+}    
+
       function validateForm() {
           const email = document.getElementById('email').value;
           const password = document.getElementById('password').value;
