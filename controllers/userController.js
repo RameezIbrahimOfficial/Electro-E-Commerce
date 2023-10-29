@@ -535,7 +535,7 @@ module.exports.getProfile = async (req, res) => {
   try {
     const isLogin = req.cookies.isLogin;
     const userEmail = req.user;
-    const user = await customerModel.findOne({ email: userEmail }, { _id: 1 });
+    const user = await customerModel.findOne({ email: userEmail });
     const userAddress = await addressModel.findOne({ userId: user._id });
     const orders = await orderModel.aggregate([
       { $match: { customerId: user._id } },
@@ -550,7 +550,8 @@ module.exports.getProfile = async (req, res) => {
       userAddress,
       isLogin,
       orders,
-      moment
+      moment,
+      user
     });
   } catch (error) {
     next(error)
@@ -1151,3 +1152,31 @@ module.exports.postNewPassword = async (req, res) => {
     res.status(500).json({ Data: "Password Updation Failed" })
   }
 }
+
+module.exports.postUpdateUserDetails = async (req, res) => {
+  try {
+    const { firstName, lastName, email, password, newPassword } = req.body;
+    const user = await customerModel.findOne({ email: req.user });
+    const match = await bcrypt.compare(password, user.password);
+
+    if (match) {
+      const salt = await bcrypt.hash(newPassword, 10);
+
+      await customerModel.updateOne({ email: email }, {
+        $set: {
+          firstName,
+          lastName,
+          email,
+          password: salt
+        }
+      });
+
+      res.status(200).json({ data: "Data Updated" });
+    } else {
+      res.status(500).json({ data: "Current Password Incorrect" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ data: "An error occurred" });
+  }
+};

@@ -47,14 +47,14 @@ userRouter.get('/order/cancel', userAuth.isUserLogin,userAuth.isUserBloked, user
 userRouter.get('/order/return', userAuth.isUserLogin,userAuth.isUserBloked, userController.getOrderReturn)
 userRouter.get('/placeorder/online', userAuth.isUserLogin,userAuth.isUserBloked, userController.getPlaceOrderOnline)
 userRouter.post('/updatePaymentStatus', userAuth.isUserLogin,userAuth.isUserBloked, userController.postUpdatePaymentStatus)
-
 userRouter.get('/forgetPassword', userController.getPasswordResetPage)
 userRouter.get('/forgetPassword/sendOtp', userController.getSendOtpPasswordReset)
 userRouter.get('/forgetPassword/verifyOtp', userController.getVerifyOtpPasswordReset)
-
 userRouter.get('/changePassword', userController.getchangePasswordPage);
 userRouter.post('/changePassword', userController.postNewPassword)
 
-// userRouter.use(userMiddlewares.errorHandlingMiddleware)
+userRouter.post('/profile/update', userAuth.isUserLogin, userAuth.isUserBloked, userController.postUpdateUserDetails)
+
+userRouter.use(userMiddlewares.errorHandlingMiddleware)
 
 module.exports = userRouter;

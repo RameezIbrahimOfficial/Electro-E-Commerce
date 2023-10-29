@@ -69,6 +69,9 @@
                           <a href="#">shipping and billing addresses</a> and
                           <a href="#">edit your password and account details.</a>
                         </p>
+                        <p>Full Name : <%=userName%></p>
+                        <p>Email ID : <%=user.email%></p>
+                        <p>Phone Number : <%=user.phoneNumber%></p>
                       </div>
                     </div>
                   </div>
@@ -222,25 +225,25 @@
                           Already have an account?
                           <a href="/signin">Log in instead!</a>
                         </p>
-                        <form method="post" name="enq">
+                        <form method="post" action="/profile/update">
                           <div class="row">
                             <div class="form-group col-md-6">
                               <label>First Name <span class="required">*</span></label>
-                              <input required="" class="form-control square" name="name" type="text" />
+                              <input required="" class="form-control square" name="firstName" type="text" value="<%=user.firstName%>"/>
                             </div>
                             <div class="form-group col-md-6">
                               <label>Last Name <span class="required">*</span></label>
-                              <input required="" class="form-control square" name="phone" />
+                              <input required="" class="form-control square" name="lastName"  value="<%=user.lastName%>"/>
                             </div>
-                            <div class="form-group col-md-12">
+                            <!-- <div class="form-group col-md-12">
                               <label>Display Name
                                 <span class="required">*</span></label>
-                              <input required="" class="form-control square" name="dname" type="text" />
-                            </div>
+                              <input required="" class="form-control square" name="dname" type="text" value="<%=userName%>"/>
+                            </div> -->
                             <div class="form-group col-md-12">
                               <label>Email Address
                                 <span class="required">*</span></label>
-                              <input required="" class="form-control square" name="email" type="email" />
+                              <input required="" class="form-control square" name="email" type="email" value="<%=user.email%>"/>
                             </div>
                             <div class="form-group col-md-12">
                               <label>Current Password
@@ -250,15 +253,15 @@
                             <div class="form-group col-md-12">
                               <label>New Password
                                 <span class="required">*</span></label>
-                              <input required="" class="form-control square" name="npassword" type="password" />
+                              <input required="" class="form-control square" name="newPassword" type="password" />
                             </div>
                             <div class="form-group col-md-12">
                               <label>Confirm Password
                                 <span class="required">*</span></label>
-                              <input required="" class="form-control square" name="cpassword" type="password" />
+                              <input required="" class="form-control square" name="confirmNewPassword" type="password" />
                             </div>
                             <div class="col-md-12">
-                              <button type="submit" class="btn btn-fill-out submit" name="submit" value="Submit">
+                              <button type="submit" class="btn btn-fill-out submit">
                                 Save
                               </button>
                             </div>
@@ -281,7 +284,82 @@
   <script>
       $(document).ready(function () {
           new DataTable('#example');
-  
       })
+
+  function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  document.querySelector('form[action="/profile/update"]').addEventListener('submit',(event)=>{
+    event.preventDefault()
+    var firstName = document.getElementsByName("firstName")[0].value.trim();
+    var lastName = document.getElementsByName("lastName")[0].value.trim();
+    var email = document.getElementsByName("email")[0].value.trim();
+    var password = document.getElementsByName("password")[0].value.trim();
+    var newPassword = document.getElementsByName("newPassword")[0].value.trim();
+    var confirmNewPassword = document.getElementsByName("confirmNewPassword")[0].value.trim();
+
+    if (firstName === "") {
+      alert("First Name is required.");
+      return false;
+    }
+
+    if (lastName === "") {
+      alert("Last Name is required.");
+      return false;
+    }
+
+    if (email === "") {
+      alert("Email Address is required.");
+      return false;
+    }
+
+    if(!isValidEmail(email)){
+      alert("Enter valid Email ID")
+    }
+
+    if (password === "") {
+      alert("Current Password is required.");
+      return false;
+    }
+
+    if (newPassword === "") {
+      alert("New Password is required.");
+      return false;
+    }
+
+    if (newPassword.length < 6) {
+      alert("Password Must be minimum of six character long.");
+      return false;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      alert("New Password and Confirm Password do not match.");
+      return false;
+    }
+
+    fetch(`/profile/update`,{ 
+      method : "POST",
+      headers : {
+        "Content-Type" : "application/json"
+      },
+      body : JSON.stringify({ firstName, lastName, email, password, newPassword })
+     })
+     .then((response)=>{
+      if(response.ok){
+        alert("DATA UPDATED")
+        window.location.href='/logout'
+      } else {
+        alert("CURRENT PASSWORD DOESN'T MATCH")
+        window.location.href="/profile"
+      }
+     })
+     .catch((error)=>{
+      alert("Error Occurred while updating details, try after sometimes!")
+      window.location.href="/profile"
+     })
+  })
+
   </script>
   <%-include('../partials/user-footer')%>
