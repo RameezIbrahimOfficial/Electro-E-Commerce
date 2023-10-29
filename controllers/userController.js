@@ -29,9 +29,9 @@ const bannerModel = require('../Model/banner')
 let phoneNumber;
 let isOtpVerified = false;
 
-const razorpay = new Razorpay ({
-  key_id : RAZOR_PAY_key_id,
-  key_secret : RAZOR_PAY_key_secret
+const razorpay = new Razorpay({
+  key_id: RAZOR_PAY_key_id,
+  key_secret: RAZOR_PAY_key_secret
 })
 
 
@@ -42,7 +42,7 @@ module.exports.getSendOtp = async (req, res) => {
     await twilio.verify.v2.services(TWILIO_SERVICE_SID).verifications.create({
       to: `+91${phoneNumber}`,
       channel: "sms",
-    }).then(()=>{
+    }).then(() => {
       res.status(200).json({ data: "Send" });
     })
 
@@ -62,13 +62,13 @@ module.exports.getVerifyOtp = async (req, res) => {
         to: `+91${phoneNumber}`,
         code: otp,
       })
-      if (verifyOTP.valid) {
-        isOtpVerified = true;
-      } else {
-        isOtpVerified = false;
-      }
-      res.status(200).json({ data : "Verified" })
-  
+    if (verifyOTP.valid) {
+      isOtpVerified = true;
+    } else {
+      isOtpVerified = false;
+    }
+    res.status(200).json({ data: "Verified" })
+
   } catch (err) {
     next(err)
     console.error(err);
@@ -81,8 +81,8 @@ module.exports.getHome = async (req, res) => {
     const isLogin = req.cookies.isLogin;
     let products = await productsModel.find({});
     let brands = await brandsModel.find({});
-    const banners = await bannerModel.find({status:false})
-    res.render("home-page", { products, brands, banners,moment , isLogin });
+    const banners = await bannerModel.find({ status: false })
+    res.render("home-page", { products, brands, banners, moment, isLogin });
   } catch (err) {
     next(err)
     console.error(err);
@@ -95,7 +95,7 @@ module.exports.postUserRegister = async (req, res) => {
   try {
     const { fname, lname, email, SignupPassword, phoneNumber } = req.body;
     const isLogin = req.cookies.isLogin;
-    bcrypt.hash(SignupPassword,10,async(err,hash)=>{
+    bcrypt.hash(SignupPassword, 10, async (err, hash) => {
       if (isOtpVerified) {
         await customerModel.create({
           firstName: fname,
@@ -104,10 +104,10 @@ module.exports.postUserRegister = async (req, res) => {
           password: hash,
           phoneNumber: phoneNumber,
           createdOn: new Date(),
-        }).then((data)=>{
-          if(data){
+        }).then((data) => {
+          if (data) {
             res.render("page-register", {
-              errorMsgSignup: "Account Created Successfully",isLogin
+              errorMsgSignup: "Account Created Successfully", isLogin
             });
           }
         })
@@ -118,7 +118,7 @@ module.exports.postUserRegister = async (req, res) => {
         });
       }
     })
-    
+
   } catch (err) {
     next(err)
     console.error(err);
@@ -135,9 +135,9 @@ module.exports.getUserRegister = (req, res) => {
 // Display User Login Page
 module.exports.getUserLogin = (req, res) => {
   const isLogin = req.cookies.isLogin;
-  if(isLogin){
+  if (isLogin) {
     res.redirect('/')
-  } else{
+  } else {
     res.render("page-login", { isLogin });
   }
 };
@@ -151,9 +151,10 @@ module.exports.postUserLogin = async (req, res) => {
     if (user) {
       if (user.isBlocked) {
         res.render("page-login", {
-          errorMsgLogin: "You Have Been Blocked by Admin", isLogin});
+          errorMsgLogin: "You Have Been Blocked by Admin", isLogin
+        });
       } else {
-        bcrypt.compare(password,user.password,(err,result)=>{
+        bcrypt.compare(password, user.password, (err, result) => {
           if (email === user.email && result == true) {
             const token = jwt.sign(user.email, JWT_SECRET);
             res.cookie("userToken", token, { maxAge: 24 * 60 * 60 * 1000 });
@@ -161,7 +162,8 @@ module.exports.postUserLogin = async (req, res) => {
             res.redirect("/products");
           } else {
             res.render("page-login", {
-              errorMsgLogin: "Invalid Credentials",isLogin});
+              errorMsgLogin: "Invalid Credentials", isLogin
+            });
           }
         })
       }
@@ -193,7 +195,7 @@ module.exports.getProductsPage = async (req, res) => {
       {
         $limit: limit
       }
-    ]).exec();    
+    ]).exec();
     res.render("products-grid-view", { products, categories, brands, isLogin });
   } catch (err) {
     next(err)
@@ -228,12 +230,12 @@ module.exports.getCartPage = async (req, res) => {
       model: "Product",
     });
     let grandTotal = 0;
-    if(userCart){
+    if (userCart) {
       for (let i = 0; i < userCart.products.length; i++) {
         grandTotal =
           grandTotal +
           userCart.products[i].productId.salePrice *
-            userCart.products[i].quantity;
+          userCart.products[i].quantity;
       }
     }
     res.render("cart", { userCart, isLogin, grandTotal });
@@ -538,7 +540,7 @@ module.exports.getProfile = async (req, res) => {
     const orders = await orderModel.aggregate([
       { $match: { customerId: user._id } },
       { $sort: { createdOn: -1 } }
-    ]);    
+    ]);
     const { firstName, lastName } = await customerModel.findOne(
       { email: userEmail },
       { firstName: 1, lastName: 1 }
@@ -706,7 +708,7 @@ module.exports.postAddressEdit = async (req, res) => {
               },
             },
           }
-        ).then(()=>{
+        ).then(() => {
           res.redirect("/profile");
         })
       }
@@ -723,7 +725,7 @@ module.exports.postAddressEdit = async (req, res) => {
 // Display Wishlist Page
 module.exports.getWishlistPage = async (req, res) => {
   try {
-    const user = await customerModel.findOne({email:req.user},{_id:1})
+    const user = await customerModel.findOne({ email: req.user }, { _id: 1 })
     const userWishlist = await wishlistModel.findOne({ userId: user._id }).populate({
       path: "products.productId",
       model: "Product",
@@ -813,23 +815,23 @@ module.exports.getCheckoutPage = async (req, res) => {
         path: "products.productId",
         model: "Product",
       });
-    if(userCart){
+    if (userCart) {
       let grandTotal = 0;
-    const stockCheck = []; 
-    for (let i = 0; i < userCart.products.length; i++) {
-      const product = userCart.products[i].productId;
-      const quantityInCart = userCart.products[i].quantity;
+      const stockCheck = [];
+      for (let i = 0; i < userCart.products.length; i++) {
+        const product = userCart.products[i].productId;
+        const quantityInCart = userCart.products[i].quantity;
 
-      if (quantityInCart > product.units ) {
-        stockCheck.push(
-          `Product "${product.productName}" has only ${product.units} units available.`
-        );
+        if (quantityInCart > product.units) {
+          stockCheck.push(
+            `Product "${product.productName}" has only ${product.units} units available.`
+          );
+        }
+
+        grandTotal += product.salePrice * quantityInCart;
       }
 
-      grandTotal += product.salePrice * quantityInCart;
-    }
-
-    res.render('checkout', { isLogin, userAddress, userCart, grandTotal, stockCheck });
+      res.render('checkout', { isLogin, userAddress, userCart, grandTotal, stockCheck });
     } else {
       res.redirect('/products')
     }
@@ -840,59 +842,59 @@ module.exports.getCheckoutPage = async (req, res) => {
 };
 
 // Place order COD ( Cash on Delivery )
-module.exports.getPlaceOrderCOD = async(req, res)=>{
-  try{
+module.exports.getPlaceOrderCOD = async (req, res) => {
+  try {
     let totalAmount = 0;
-    const user = await customerModel.findOne({email:req.user});
-    const cart = await cartModel.findOne({userId:user._id}).populate({
-      path : 'products.productId',
-      model : 'Product'
+    const user = await customerModel.findOne({ email: req.user });
+    const cart = await cartModel.findOne({ userId: user._id }).populate({
+      path: 'products.productId',
+      model: 'Product'
     })
-    const address = await addressModel.findOne({"address._id":req.query.addressId},{"address.$":1});
+    const address = await addressModel.findOne({ "address._id": req.query.addressId }, { "address.$": 1 });
     const productArray = [];
-    cart.products.forEach((product)=>{
+    cart.products.forEach((product) => {
       productArray.push({
-        productId : product.productId._id,
-        quantity : product.quantity,
-        price:product.productId.salePrice
+        productId: product.productId._id,
+        quantity: product.quantity,
+        price: product.productId.salePrice
       })
     })
-    cart.products.forEach((product)=>{
+    cart.products.forEach((product) => {
       totalAmount += product.quantity * product.productId.salePrice;
     })
-      await orderModel.create({
-        customerId : user._id,
-        products: productArray,
-        address : {
-          addressType : address.address[0].addressType,
-          name : address.address[0].name,
-          city :address.address[0].city,
-          landMark :address.address[0].landMark,
-          state : address.address[0].state,
-          pincode : address.address[0].pincode,
-          phone : address.address[0].phone,
-          altPhone : address.address[0].altPhone
-        },
-        paymentMethod : "COD",
-        referenceId : "ref4337fgh37747",
-        shippingCharge : 0,
-        discount : 0,
-        totalAmount : totalAmount,
-        createdOn : new Date(),
-        orderStatus : "Order Placed",
-        paymentStatus : "Pending",
-        deliveredOn : new Date(),
-      }).then(async()=>{
-        for (const product of cart.products) {
-          await productsModel.updateOne(
-            { _id: product.productId._id },
-            { $inc: { units: -product.quantity } }
-          );
-        }
-        await cartModel.deleteOne({ userId: user._id });
-      })
-      res.render('order-placed')
-  } catch (error){
+    await orderModel.create({
+      customerId: user._id,
+      products: productArray,
+      address: {
+        addressType: address.address[0].addressType,
+        name: address.address[0].name,
+        city: address.address[0].city,
+        landMark: address.address[0].landMark,
+        state: address.address[0].state,
+        pincode: address.address[0].pincode,
+        phone: address.address[0].phone,
+        altPhone: address.address[0].altPhone
+      },
+      paymentMethod: "COD",
+      referenceId: "ref4337fgh37747",
+      shippingCharge: 0,
+      discount: 0,
+      totalAmount: totalAmount,
+      createdOn: new Date(),
+      orderStatus: "Order Placed",
+      paymentStatus: "Pending",
+      deliveredOn: new Date(),
+    }).then(async () => {
+      for (const product of cart.products) {
+        await productsModel.updateOne(
+          { _id: product.productId._id },
+          { $inc: { units: -product.quantity } }
+        );
+      }
+      await cartModel.deleteOne({ userId: user._id });
+    })
+    res.render('order-placed')
+  } catch (error) {
     next(error)
     console.error(error);
   }
@@ -923,7 +925,7 @@ module.exports.getPlaceOrderOnline = async (req, res) => {
     });
 
     var options = {
-      amount: totalAmount * 100, 
+      amount: totalAmount * 100,
       currency: "INR",
       receipt: uuidv4(),
       payment_capture: "1"
@@ -951,7 +953,7 @@ module.exports.getPlaceOrderOnline = async (req, res) => {
       totalAmount: totalAmount,
       createdOn: new Date(),
       orderStatus: "Order Placed",
-      paymentStatus: "Pending", 
+      paymentStatus: "Pending",
       deliveredOn: new Date(),
     });
 
@@ -976,7 +978,7 @@ module.exports.getPlaceOrderOnline = async (req, res) => {
 module.exports.postUpdatePaymentStatus = async (req, res) => {
   try {
     const { paymentStatus, orderId, response } = req.query;
-    
+
     if (paymentStatus === 'Success') {
       await orderModel.updateOne({ referenceId: orderId }, { $set: { paymentStatus: 'Success' } });
       res.redirect('/profile')
@@ -1002,17 +1004,17 @@ module.exports.postUpdatePaymentStatus = async (req, res) => {
 };
 
 // Display Invoice Page
-module.exports.getInvoice = async(req, res)=>{
-  try{
+module.exports.getInvoice = async (req, res) => {
+  try {
     const orderId = req.query.orderId;
-    const order = await orderModel.findOne({_id: orderId})
-    .populate({
-      path: 'products.productId', 
-      model: 'Product'
-    });
+    const order = await orderModel.findOne({ _id: orderId })
+      .populate({
+        path: 'products.productId',
+        model: 'Product'
+      });
     const isLogin = req.cookies.isLogin;
-    res.render('invoice', {isLogin, order})
-  } catch(error){
+    res.render('invoice', { isLogin, order })
+  } catch (error) {
     next(error)
     console.error(error)
   }
@@ -1020,43 +1022,43 @@ module.exports.getInvoice = async(req, res)=>{
 
 
 // Cancel Placed Order
-module.exports.getOrderCancel = async(req,res)=>{
-  try{
-    const user = await customerModel.findOne({email:req.user});
+module.exports.getOrderCancel = async (req, res) => {
+  try {
+    const user = await customerModel.findOne({ email: req.user });
     const orderId = req.query.orderId;
-    if(user){
-      await orderModel.updateOne({_id : orderId},{$set:{orderStatus:"Canceled"}});
-      const order = await orderModel.findOne({_id: orderId});
-      order.products.forEach(async(product)=>{
-        await productsModel.updateOne({_id:product.productId},{ $inc: { units: product.quantity }})
+    if (user) {
+      await orderModel.updateOne({ _id: orderId }, { $set: { orderStatus: "Canceled" } });
+      const order = await orderModel.findOne({ _id: orderId });
+      order.products.forEach(async (product) => {
+        await productsModel.updateOne({ _id: product.productId }, { $inc: { units: product.quantity } })
       })
-      
+
       res.redirect('/profile')
     } else {
       res.redirect('/')
     }
-  } catch(error){
+  } catch (error) {
     next(error)
     console.error(error)
   }
 }
 
 // Return Delivered Product
-module.exports.getOrderReturn = async(req,res)=>{
-  try{
-    const user = await customerModel.findOne({email:req.user});
+module.exports.getOrderReturn = async (req, res) => {
+  try {
+    const user = await customerModel.findOne({ email: req.user });
     const orderId = req.query.orderId;
-    if(user){
-      await orderModel.updateOne({_id : orderId},{$set:{orderStatus:"Returned"}})
-      const order = await orderModel.findOne({_id: orderId});
-      order.products.forEach(async(product)=>{
-        await productsModel.updateOne({_id:product.productId},{ $inc: { units: product.quantity }})
+    if (user) {
+      await orderModel.updateOne({ _id: orderId }, { $set: { orderStatus: "Returned" } })
+      const order = await orderModel.findOne({ _id: orderId });
+      order.products.forEach(async (product) => {
+        await productsModel.updateOne({ _id: product.productId }, { $inc: { units: product.quantity } })
       })
       res.redirect('/profile')
     } else {
       res.redirect('/')
     }
-  } catch(error){
+  } catch (error) {
     next(error)
     console.error(error)
   }
@@ -1066,27 +1068,27 @@ module.exports.getOrderReturn = async(req,res)=>{
 module.exports.getPasswordResetPage = (req, res) => {
   try {
     const isLogin = req.cookies.isLogin;
-    res.render('forget-password',{ isLogin })
-  } catch ( error ) {
+    res.render('forget-password', { isLogin })
+  } catch (error) {
     next(error);
     console.error(error)
   }
 }
 
 // Send Password Reset OTP 
-module.exports.getSendOtpPasswordReset = async(req, res) => {
+module.exports.getSendOtpPasswordReset = async (req, res) => {
   try {
     const userEmail = req.query.email;
-    const user = await customerModel.findOne({ email : userEmail })
-    if(user){
-        await twilio.verify.v2.services(TWILIO_SERVICE_SID).verifications.create({
+    const user = await customerModel.findOne({ email: userEmail })
+    if (user) {
+      await twilio.verify.v2.services(TWILIO_SERVICE_SID).verifications.create({
         to: `+91${user.phoneNumber}`,
         channel: "sms",
-      }).then(()=>{
+      }).then(() => {
         res.status(200).json({ data: "Send" });
       })
     } else {
-      res.status(500).json({ data : "No user with this email" })
+      res.status(500).json({ data: "No user with this email" })
     }
   } catch (err) {
     next(err)
@@ -1095,23 +1097,23 @@ module.exports.getSendOtpPasswordReset = async(req, res) => {
 }
 
 // Verify Password Reset OTP
-module.exports.getVerifyOtpPasswordReset = async(req, res) => {
+module.exports.getVerifyOtpPasswordReset = async (req, res) => {
   try {
     const otp = req.query.otp;
     const email = req.query.email
-    const user = await customerModel.findOne({ email : email })
+    const user = await customerModel.findOne({ email: email })
     const verifyOTP = await twilio.verify.v2
       .services(TWILIO_SERVICE_SID)
       .verificationChecks.create({
         to: `+91${user.phoneNumber}`,
         code: otp,
       })
-      if (verifyOTP.valid) {
-        res.status(200).json({ data : "Verified" })
-      } else {
-        res.status(500).json({ data : "Incorrect OTP" })
-      }
-  
+    if (verifyOTP.valid) {
+      res.status(200).json({ data: "Verified" })
+    } else {
+      res.status(500).json({ data: "Incorrect OTP" })
+    }
+
   } catch (err) {
     next(err)
     console.error(err);
@@ -1119,33 +1121,33 @@ module.exports.getVerifyOtpPasswordReset = async(req, res) => {
 }
 
 // Display New Password Page
-module.exports.getchangePasswordPage = async(req, res) => {
+module.exports.getchangePasswordPage = async (req, res) => {
   try {
     const userEmail = req.query.email;
     const isLogin = req.cookies.isLogin;
 
-    res.render('change-password' , { isLogin, userEmail })
-  } catch(error){
+    res.render('change-password', { isLogin, userEmail })
+  } catch (error) {
     next(error);
     console.error(error)
   }
 }
 
 // Update DB with new New Password
-module.exports.postNewPassword = async(req, res) => {
+module.exports.postNewPassword = async (req, res) => {
   try {
     const { email, password } = req.body
-    bcrypt.hash(password,10,async(err,hash)=>{
-      await customerModel.updateOne({ email : email },{
-        $set : {
-          password : hash
+    bcrypt.hash(password, 10, async (err, hash) => {
+      await customerModel.updateOne({ email: email }, {
+        $set: {
+          password: hash
         }
       })
     })
-    res.status(200).json({ Data : "Password Updated" })
-  } catch ( error ) {
+    res.status(200).json({ Data: "Password Updated" })
+  } catch (error) {
     next(error)
     console.error(error)
-    res.status(500).json({ Data : "Password Updation Failed" })
+    res.status(500).json({ Data: "Password Updation Failed" })
   }
 }

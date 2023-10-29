@@ -53,7 +53,7 @@ module.exports.getAdminPanel = async (req, res) => {
     }
 
     SalesOrders.forEach((order) => {
-      if (order.deliveredOn instanceof Date) { 
+      if (order.deliveredOn instanceof Date) {
         const orderMonth = order.deliveredOn.getMonth();
         if (!isNaN(orderMonth)) {
           monthlySalesCounts[orderMonth]++;
@@ -656,14 +656,14 @@ module.exports.getMonthWeekYearSales = async (req, res) => {
     const currentWeek = Math.ceil(currentDate.getDate() / 7);
 
     let orders = await orderModel.find({ orderStatus: "Delivered" });
-    orders = await orderModel.populate(orders, { path: 'products.productId' , model : 'Product'});
+    orders = await orderModel.populate(orders, { path: 'products.productId', model: 'Product' });
 
     const ordersThisYear = filterOrdersForYear(orders, currentYear);
     const ordersThisMonth = filterOrdersForMonth(orders, currentYear, currentMonth);
     const ordersThisWeek = filterOrdersForWeek(orders, currentYear, currentMonth, currentWeek);
 
     if (req.query.saleDate === "Month") {
-      res.render('page-sales-report', { sales: ordersThisMonth , moment});
+      res.render('page-sales-report', { sales: ordersThisMonth, moment });
     }
 
     if (req.query.saleDate === "Week") {
@@ -671,7 +671,7 @@ module.exports.getMonthWeekYearSales = async (req, res) => {
     }
 
     if (req.query.saleDate === "Year") {
-      res.render('page-sales-report', { sales: ordersThisYear , moment});
+      res.render('page-sales-report', { sales: ordersThisYear, moment });
     }
 
   } catch (error) {

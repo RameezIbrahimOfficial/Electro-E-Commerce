@@ -7,10 +7,10 @@ const wishlistSchema = mongoose.Schema({
     },
     products: [{
         productId: {
-            type:  mongoose.Schema.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
         }
     }]
 })
 
-const wishlist = mongoose.model('wishlist',wishlistSchema);
+const wishlist = mongoose.model('wishlist', wishlistSchema);
 module.exports = wishlist;

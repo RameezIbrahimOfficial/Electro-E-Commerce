@@ -48,8 +48,8 @@ const productSchema = new mongoose.Schema({
   },
   productImage: [
     {
-      fileName : String,
-      originalname : String,
+      fileName: String,
+      originalname: String,
       path: String,
     },
   ],

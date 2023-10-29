@@ -10,19 +10,19 @@ module.exports.isUserLogin = (req, res, next) => {
   jwt.verify(token, JWT_SECRET, (err, decoded) => {
     if (err) {
       return res.redirect("/signin");
-    } 
+    }
     req.user = decoded;
     next();
   });
 };
 
-module.exports.isUserBloked = async(req, res, next) => {
+module.exports.isUserBloked = async (req, res, next) => {
   user = req.user;
-  const currUser = await customer.findOne({email : user})
+  const currUser = await customer.findOne({ email: user })
   if (currUser.isBlocked) {
     res.clearCookie("userToken");
     res.clearCookie("isLogin");
     return res.redirect('/signin')
-  } 
+  }
   next()
 }
