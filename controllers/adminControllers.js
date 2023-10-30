@@ -38,25 +38,59 @@ module.exports.postAdminLogin = async (req, res) => {
   }
 };
 
+
 module.exports.getAdminPanel = async (req, res) => {
   try {
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth();
+    const currentWeek = getWeekNumber(currentDate);
+    const currentDay = currentDate.getDate();
 
     const SalesOrders = await orderModel.find({ orderStatus: "Delivered" });
 
+    const yearlySalesCounts = {};
     const monthlySalesCounts = {};
+    const weeklySalesCounts = {};
+    const dailySalesCounts = {};
+
+    for (let year = currentYear; year > currentYear - 5; year--) {
+      yearlySalesCounts[year] = 0;
+    }
 
     for (let month = 0; month < 12; month++) {
       monthlySalesCounts[month] = 0;
     }
 
+    for (let week = currentWeek; week > currentWeek - 5; week--) {
+      weeklySalesCounts[week] = 0;
+    }
+
+    for (let day = currentDay; day > currentDay - 7 ; day--) {
+      dailySalesCounts[day] = 0;
+    }
+
     SalesOrders.forEach((order) => {
       if (order.deliveredOn instanceof Date) {
+        const orderYear = order.deliveredOn.getFullYear();
         const orderMonth = order.deliveredOn.getMonth();
+        const orderWeek = getWeekNumber(order.deliveredOn);
+        const orderDay = order.deliveredOn.getDate();
+
         if (!isNaN(orderMonth)) {
           monthlySalesCounts[orderMonth]++;
+        }
+
+        if (yearlySalesCounts[orderYear] !== undefined) {
+          yearlySalesCounts[orderYear]++;
+        }
+
+        if (weeklySalesCounts[orderWeek] !== undefined) {
+          weeklySalesCounts[orderWeek]++;
+        }
+
+        if (dailySalesCounts[orderDay] !== undefined) {
+          dailySalesCounts[orderDay]++;
         }
       }
     });
@@ -86,6 +120,9 @@ module.exports.getAdminPanel = async (req, res) => {
       deliveredOrder,
       currentMonthSalesCount,
       monthlySalesCounts,
+      yearlySalesCounts,
+      weeklySalesCounts,
+      dailySalesCounts,
     });
   } catch (error) {
     next(err)
@@ -93,6 +130,15 @@ module.exports.getAdminPanel = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+
+// Function to get the week number for a given date
+function getWeekNumber(date) {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  const weekNumber = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+  return weekNumber;
+}
 
 
 module.exports.getProductsPage = async (req, res) => {

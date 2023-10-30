@@ -52,7 +52,6 @@ userRouter.get('/forgetPassword/sendOtp', userController.getSendOtpPasswordReset
 userRouter.get('/forgetPassword/verifyOtp', userController.getVerifyOtpPasswordReset)
 userRouter.get('/changePassword', userController.getchangePasswordPage);
 userRouter.post('/changePassword', userController.postNewPassword)
-
 userRouter.post('/profile/update', userAuth.isUserLogin, userAuth.isUserBloked, userController.postUpdateUserDetails)
 
 userRouter.use(userMiddlewares.errorHandlingMiddleware)

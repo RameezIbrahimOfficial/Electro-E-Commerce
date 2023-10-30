@@ -109,37 +109,80 @@
     </div>
   </div>
   <input type="hidden" class="monthlySalesCounts" data-monthlySalesCounts='<%= JSON.stringify(monthlySalesCounts) %>'>
+  <input type="hidden" class="yearlySalesCounts" data-yearlySalesCounts='<%= JSON.stringify(yearlySalesCounts) %>'>
+  <input type="hidden" class="weeklySalesCounts" data-weeklySalesCounts='<%= JSON.stringify(weeklySalesCounts) %>'>
+  <input type="hidden" class="dailySalesCounts" data-dailySalesCounts='<%= JSON.stringify(dailySalesCounts) %>'>
 </section>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   const monthlySalesCountsData = document.querySelector('.monthlySalesCounts').getAttribute('data-monthlySalesCounts');
+  const yearlySalesCountsData = document.querySelector('.yearlySalesCounts').getAttribute('data-yearlySalesCounts');
+  const weeklySalesCountsData = document.querySelector('.weeklySalesCounts').getAttribute('data-weeklySalesCounts');
+  const dailySalesCountsData = document.querySelector('.dailySalesCounts').getAttribute('data-dailySalesCounts');
+
   const monthlySalesCounts = JSON.parse(monthlySalesCountsData);
-  const data = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-    datasets: [{
-      label: 'Monthly Sales',
-      data: [monthlySalesCounts[0], monthlySalesCounts[1], monthlySalesCounts[2], monthlySalesCounts[3], monthlySalesCounts[4], monthlySalesCounts[5], monthlySalesCounts[6], monthlySalesCounts[7], monthlySalesCounts[8], monthlySalesCounts[9], monthlySalesCounts[10], monthlySalesCounts[11]],
-      backgroundColor: 'rgba(75, 192, 192, 0.2)',
-      borderColor: 'rgba(75, 192, 192, 1)',
-      borderWidth: 1
-    }]
-  };
+  const yearlySalesCounts = JSON.parse(yearlySalesCountsData);
+  const weeklySalesCounts = JSON.parse(weeklySalesCountsData);
+  const dailySalesCounts = JSON.parse(dailySalesCountsData);
+
+  console.log(yearlySalesCounts);
+  console.log(weeklySalesCounts);
+  console.log(dailySalesCounts)
+  // const ctx = document.getElementById('myChartNew').getContext('2d');
   
-  const ctx = document.getElementById('myChartNew').getContext('2d');
-  
-  const myChart = new Chart(ctx, {
-    type: 'bar', 
-    data: data,
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true,
-          // suggestedMin : 0,
-          // suggestedMax : 100
-        }
-      }
-    }
-  });
+  var ctx = document.getElementById('myChartNew').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'line',
+            
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [
+                {
+                        label: 'Yearly Sales',
+                        tension: 0.3,
+                        fill: true,
+                        backgroundColor: 'rgba(4, 209, 130, 0.2)',
+                        borderColor: 'rgb(4, 209, 130)',
+                        data: yearlySalesCounts,
+                    },  
+                {
+                        label: 'Monthly Sales',
+                        tension: 0.3,
+                        fill: true,
+                        backgroundColor: 'rgba(44, 120, 220, 0.2)',
+                        borderColor: 'rgba(44, 120, 220)',
+                        data: monthlySalesCounts,
+                    },
+                   
+                    {
+                        label: 'Weekly Sales',
+                        tension: 0.3,
+                        fill: true,
+                        backgroundColor: 'rgba(380, 200, 230, 0.2)',
+                        borderColor: 'rgb(100, 100, 230)',
+                        data: weeklySalesCounts,
+                    },
+                    {
+                        label: 'Daily Sales',
+                        tension: 0.3,
+                        fill: true,
+                        backgroundColor: 'rgba(380, 200, 230, 0.2)',
+                        borderColor: 'rgb(380, 200, 230)',
+                        data: dailySalesCounts,
+                    }
+
+                ]
+            },
+            options: {
+                plugins: {
+                legend: {
+                    labels: {
+                    usePointStyle: true,
+                    },
+                }
+                }
+            }
+        });
   </script>
   
 <%- include('../partials/admin-footer')%>

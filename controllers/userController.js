@@ -258,12 +258,8 @@ module.exports.postAddToCart = async (req, res) => {
       const userCart = await cartModel.findOne({ userId: currentUser._id });
       if (userCart) {
         let productIndex = -1;
-        for (let i = 0; i < userCart.products.length; i++) {
-          if (productId == userCart.products[i].productId) {
-            productIndex = i;
-            break;
-          }
-        }
+        productIndex = userCart.products.findIndex((product) => product.productId == productId
+        );
 
         if (productIndex !== -1) {
           userCart.products[productIndex].quantity += quantity;
@@ -752,12 +748,7 @@ module.exports.postAddToWishlist = async (req, res) => {
       });
       if (userWishlist) {
         let productIndex = -1;
-        for (let i = 0; i < userWishlist.products.length; i++) {
-          if (productId == userWishlist.products[i].productId) {
-            productIndex = i;
-            break;
-          }
-        }
+        productIndex = userWishlist.products.findIndex((product)=> product.productId == productId)
 
         if (productIndex === -1) {
           userWishlist.products.push({ productId });

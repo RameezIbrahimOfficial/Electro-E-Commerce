@@ -25,14 +25,14 @@
         </div>
         <div class="row mt-4">
             <div class="col-6">
-                <h5>From:</h5>
+                <h5>Sold by : </h5>
                 <p>Electro E-Commerce</p>
                 <p>123 Main Street</p>
                 <p>Ernakulam, Kerala, 765423</p>
                 <p>Email: electro@gmail.com</p>
             </div>
             <div class="col-6">
-                <h5>To:</h5>
+                <h5>To : </h5>
                 <p><%=order.address.name%></p>
                 <p><%=order.address.landMark%></p>
                 <p><%=order.address.city%>, <%=order.address.state%>, <%=order.address.pincode%></p>
@@ -52,6 +52,8 @@
         </div>
         <div class="row mt-4">
             <div class="col-12">
+                <p>Order Number: <%=order.referenceId%> </p>
+                <p>Order Date: <%=order.createdOn%> </p>
                 <table class="table table-bordered">
                     <thead>
                         <tr>
