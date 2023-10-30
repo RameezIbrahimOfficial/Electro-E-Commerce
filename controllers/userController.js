@@ -816,7 +816,7 @@ module.exports.getCheckoutPage = async (req, res) => {
         path: "products.productId",
         model: "Product",
       });
-    if (userCart) {
+    if (userCart && userCart.products.length>0) {
       let grandTotal = 0;
       const stockCheck = [];
       for (let i = 0; i < userCart.products.length; i++) {
@@ -1153,6 +1153,7 @@ module.exports.postNewPassword = async (req, res) => {
   }
 }
 
+//Update User Details Into DB
 module.exports.postUpdateUserDetails = async (req, res) => {
   try {
     const { firstName, lastName, email, password, newPassword } = req.body;
