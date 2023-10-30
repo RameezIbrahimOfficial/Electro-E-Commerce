@@ -26,8 +26,6 @@ const wishlistModel = require("../Model/wishlist");
 const orderModel = require("../Model/order");
 const bannerModel = require('../Model/banner')
 
-let phoneNumber;
-let isOtpVerified = false;
 
 const razorpay = new Razorpay({
   key_id: RAZOR_PAY_key_id,
@@ -55,6 +53,7 @@ module.exports.getSendOtp = async (req, res) => {
 // Verify the OTP that have been send and entered by user is Same 
 module.exports.getVerifyOtp = async (req, res) => {
   try {
+    const phoneNumber = req.query.phoneNumber
     const otp = req.query.otp;
     const verifyOTP = await twilio.verify.v2
       .services(TWILIO_SERVICE_SID)
@@ -63,11 +62,10 @@ module.exports.getVerifyOtp = async (req, res) => {
         code: otp,
       })
     if (verifyOTP.valid) {
-      isOtpVerified = true;
+      res.status(200).json({ data: "Verified" })
     } else {
-      isOtpVerified = false;
+      res.status(500).json({ data : "Incorrect OTP" })
     }
-    res.status(200).json({ data: "Verified" })
 
   } catch (err) {
     next(err)
@@ -96,7 +94,7 @@ module.exports.postUserRegister = async (req, res) => {
     const { fname, lname, email, SignupPassword, phoneNumber } = req.body;
     const isLogin = req.cookies.isLogin;
     bcrypt.hash(SignupPassword, 10, async (err, hash) => {
-      if (isOtpVerified) {
+      // if (isOtpVerified) {
         await customerModel.create({
           firstName: fname,
           lastName: lname,
@@ -111,12 +109,12 @@ module.exports.postUserRegister = async (req, res) => {
             });
           }
         })
-      } else {
-        res.render("page-register", {
-          errorMsgOTP: "Invalid OTP",
-          isLogin,
-        });
-      }
+      // } else {
+      //   res.render("page-register", {
+      //     errorMsgOTP: "Invalid OTP",
+      //     isLogin,
+      //   });
+      // }
     })
 
   } catch (err) {

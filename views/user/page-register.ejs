@@ -26,7 +26,7 @@
                                 <p class="text-success">
                                     <%=locals.errorMsgSignup?errorMsgSignup:""%>
                                 </p>
-                                <form method="post" action="/register">
+                                <form method="post" action="/register" id="signupForm">
                                     <span id="errSignupName" class="text-danger"></span>
                                     <div class="form-group d-flex">
                                         <input type="text" name="fname" placeholder="First Name" />
@@ -65,9 +65,6 @@
                                             </p>
                                             <div class=" form-group d-flex">
                                         <input type="number" name="otp" placeholder="OTP" id="otp" />
-                                        <button class="btn btn-success input-group-text" id="verifyOTPButton">
-                                            Verify OTP
-                                        </button>
                             </div>
                             <span id="errSignupOtp" class="text-danger"></span>
                             <div class="login_footer form-group">
@@ -106,13 +103,39 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
            document.addEventListener("DOMContentLoaded", function () {
+
+            const passwordField = document.getElementById("passwordField");
+    const confirmPasswordField = document.getElementById("confirmPasswordField");
+    const passwordToggle = document.getElementById("passwordToggle");
+    const confirmPasswordToggle = document.getElementById("confirmPasswordToggle");
+
+    // Function to toggle password visibility
+    function togglePasswordVisibility(inputField, toggleButton) {
+      if (inputField.type === "password") {
+        inputField.type = "text";
+        toggleButton.innerHTML = '<i class="far fa-eye-slash"></i>';
+      } else {
+        inputField.type = "password";
+        toggleButton.innerHTML = '<i class="far fa-eye"></i>';
+      }
+    }
+
+    // Event listeners for password toggle buttons
+    passwordToggle.addEventListener("click", function () {
+      togglePasswordVisibility(passwordField, passwordToggle);
+    });
+
+    confirmPasswordToggle.addEventListener("click", function () {
+      togglePasswordVisibility(confirmPasswordField, confirmPasswordToggle);
+    });
+        
+
         let timerId;
         let timeLeft;
         const elem = document.getElementById('some_div');
 
         const sendOTPButton = document.getElementById("sendOTPButton");
         const reSendButton = document.getElementById("reSendOTPButton");
-        const verifyOTPButton = document.getElementById("verifyOTPButton");
         const otpInput = document.getElementById("otp");
 
         sendOTPButton.addEventListener("click", function (e) {
@@ -203,41 +226,7 @@
             });
 
 
-            verifyOTPButton.addEventListener("click", function (e) {
-            e.preventDefault();
-            const otp = otpInput.value;
-            const phoneNumber = document.querySelector('input[name="phoneNumber"]').value;
-
-            if (!phoneNumber || !otp) {
-                errSignupOtp.innerHTML = "Phone number and OTP are required.";
-                return;
-            }
-
-                fetch(`/verify_otp?phoneNumber=${phoneNumber}&otp=${otp}`)
-                    .then((response) => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! Status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then((data) => {
-                        Swal.fire({
-                            position: 'top-end',
-                            icon: 'success',
-                            title: 'OTP verified',
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                    })
-                    .catch((error) => {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'Error verifying OTP!',
-                            footer: '<a href="">Why do I have this issue?</a>'
-                        })
-                    });
-            });
+            // Resend OTP Coutdown
             function countdown() {
             if (timeLeft === -1) {
                 clearInterval(timerId);
@@ -303,7 +292,40 @@
         return false;
     }
 
-    return true;
+    const otp = otpInput.value;
+            const phoneNumber = document.querySelector('input[name="phoneNumber"]').value;
+            const signupForm = document.querySelector("#signupForm")
+
+            if (!phoneNumber || !otp) {
+                errSignupOtp.innerHTML = "Phone number and OTP are required.";
+                return false;
+            }
+
+                fetch(`/verify_otp?phoneNumber=${phoneNumber}&otp=${otp}`)
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then((data) => {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'OTP verified',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        signupForm.submit()
+                    })
+                    .catch((error) => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Incorrect OTP OTP!',
+                            footer: '<a href="">Why do I have this issue?</a>'
+                        })
+                    });
 });
 
 
