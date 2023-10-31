@@ -44,7 +44,7 @@
                           </p>
                         </td>
                         <td class="price" data-title="Price"><span>
-                            <%=userCart.products[i].productId.salePrice%>
+                          ₹<%=userCart.products[i].productId.salePrice%>
                           </span></td>
                         <td class="text-center" data-title="Stock">
                           <div class="detail-qty border radius m-auto">
@@ -57,7 +57,7 @@
                         </td>
                         <td class="text-right" data-title="Cart">
                           <span>
-                            <%=userCart.products[i].productId.salePrice*userCart.products[i].quantity%>
+                            ₹<%=userCart.products[i].productId.salePrice*userCart.products[i].quantity%>
                           </span>
                         </td>
                         <td class="action" data-title="Remove">
@@ -90,7 +90,7 @@
                             <td class="cart_total_label">Cart Subtotal</td>
                             <td class="cart_total_amount">
                               <span class="font-lg fw-900 text-brand">
-                                <%=grandTotal%>
+                                ₹<%=grandTotal%>
                               </span>
                             </td>
                           </tr>
@@ -104,7 +104,7 @@
                             <td class="cart_total_label">Total</td>
                             <td class="cart_total_amount">
                               <strong><span class="font-xl fw-900 text-brand">
-                                  <%=grandTotal%>
+                                ₹<%=grandTotal%>
                                 </span></strong>
                             </td>
                           </tr>

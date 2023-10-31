@@ -1,9 +1,11 @@
 const jwt = require("jsonwebtoken");
-const Razorpay = require('razorpay')
+const Razorpay = require("razorpay");
 require("dotenv").config();
-const moment = require('moment')
-const Excel = require('exceljs')
-const path = require('path')
+const moment = require("moment");
+const Excel = require("exceljs");
+const path = require("path");
+const PDFDocument = require("pdfkit");
+const fs = require("fs");
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -11,13 +13,13 @@ const adminModel = require("../Model/admin");
 const categoryModel = require("../Model/category");
 const customerModel = require("../Model/customer");
 const productsModel = require("../Model/product");
-const brandModel = require('../Model/brand');
-const orderModel = require("../Model/order")
-const bannerModel = require('../Model/banner')
+const brandModel = require("../Model/brand");
+const orderModel = require("../Model/order");
+const bannerModel = require("../Model/banner");
 
 const middlewares = require("../middlewares/adminAuth");
 
-const adminHelpers = require('../helpers/adminHelpers')
+const adminHelpers = require("../helpers/adminHelpers");
 
 module.exports.getAdminLogin = async (req, res) => {
   res.render("admin-login");
@@ -35,11 +37,10 @@ module.exports.postAdminLogin = async (req, res) => {
       res.render("admin-login", { errorMsg: "Incorrect Credentials" });
     }
   } catch (err) {
-    next(err)
+    next(err);
     console.error(err);
   }
 };
-
 
 module.exports.getAdminPanel = async (req, res) => {
   try {
@@ -127,7 +128,7 @@ module.exports.getAdminPanel = async (req, res) => {
       dailySalesCounts,
     });
   } catch (error) {
-    next(err)
+    next(err);
     console.error(error);
     res.status(500).send("Internal Server Error");
   }
@@ -135,13 +136,14 @@ module.exports.getAdminPanel = async (req, res) => {
 
 // Function to get the week number for a given date
 function getWeekNumber(date) {
-  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const d = new Date(
+    Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+  );
   d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
   const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
   const weekNumber = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
   return weekNumber;
 }
-
 
 module.exports.getProductsPage = async (req, res) => {
   try {
@@ -157,7 +159,7 @@ module.exports.getCategoriesPage = async (req, res) => {
     const categories = await categoryModel.find({});
     res.render("page-categories", { categories });
   } catch (err) {
-    next(err)
+    next(err);
     console.error(err);
   }
 };
@@ -169,7 +171,7 @@ module.exports.getEditCategory = async (req, res) => {
     const category = await categoryModel.findOne({ _id: id });
     res.render("page-edit-categories", { categories, category });
   } catch (err) {
-    next(err)
+    next(err);
     console.error(err);
   }
 };
@@ -190,7 +192,7 @@ module.exports.postEditCategory = async (req, res) => {
     );
     res.redirect("/admin/admin_panel/categories");
   } catch (err) {
-    next(err)
+    next(err);
     console.error(err);
   }
 };
@@ -204,7 +206,7 @@ module.exports.getBlockCategory = async (req, res) => {
     );
     res.redirect("/admin/admin_panel/categories");
   } catch (err) {
-    next(err)
+    next(err);
     console.error(err);
   }
 };
@@ -218,7 +220,7 @@ module.exports.getUnblockCategory = async (req, res) => {
     );
     res.redirect("/admin/admin_panel/categories");
   } catch (err) {
-    next(err)
+    next(err);
     console.error(err);
   }
 };
@@ -233,7 +235,7 @@ module.exports.postCreateCategory = async (req, res) => {
     });
     res.redirect("/admin/admin_panel/categories");
   } catch (err) {
-    next(err)
+    next(err);
     console.error(err);
   }
 };
@@ -262,7 +264,7 @@ module.exports.getUserManagement = async (req, res) => {
     const users = await customerModel.find({});
     res.render("page-users", { users });
   } catch (err) {
-    next(err)
+    next(err);
     console.error(err);
   }
 };
@@ -270,10 +272,10 @@ module.exports.getUserManagement = async (req, res) => {
 module.exports.getAddProducts = async (req, res) => {
   try {
     const categories = await categoryModel.find({});
-    const brands = await brandModel.find({})
+    const brands = await brandModel.find({});
     res.render("page-form-product-1", { categories, brands });
   } catch (err) {
-    next(err)
+    next(err);
     console.error(err);
   }
 };
@@ -311,7 +313,7 @@ module.exports.postAddProducts = async (req, res) => {
     });
     res.redirect("/admin/admin_panel/products");
   } catch (err) {
-    next(err)
+    next(err);
     console.error(err);
   }
 };
@@ -323,7 +325,7 @@ module.exports.getEditProducts = async (req, res) => {
     const categories = await categoryModel.find({});
     res.render("page-edit-product", { product, categories });
   } catch (err) {
-    next(err)
+    next(err);
     console.error(err);
   }
 };
@@ -379,7 +381,7 @@ module.exports.postEditProducts = async (req, res) => {
     );
     res.redirect("/admin/admin_panel/products");
   } catch (err) {
-    next(err)
+    next(err);
     console.error(err);
   }
 };
@@ -395,7 +397,7 @@ module.exports.getBlockProducts = async (req, res) => {
       res.redirect("/admin/admin_panel/products");
     }
   } catch (err) {
-    next(err)
+    next(err);
     console.error(err);
   }
 };
@@ -414,21 +416,20 @@ module.exports.getUnblockProducts = async (req, res) => {
       res.redirect("/admin/admin_panel/products");
     }
   } catch (err) {
-    next(err)
+    next(err);
     console.error(err);
   }
 };
 
 module.exports.getBrands = async (req, res) => {
   try {
-    brands = await brandModel.find({})
-    res.render('page-brands', { brands })
+    brands = await brandModel.find({});
+    res.render("page-brands", { brands });
+  } catch (err) {
+    next(err);
+    console.error(err);
   }
-  catch (err) {
-    next(err)
-    console.error(err)
-  }
-}
+};
 
 module.exports.postAddBrands = async (req, res) => {
   try {
@@ -440,56 +441,49 @@ module.exports.postAddBrands = async (req, res) => {
       brandImage: {
         fileName: brandLogo.filename,
         originalname: brandLogo.originalname,
-        path: brandLogo.path
-      }
-    })
-    res.redirect('/admin/admin_panel/brands')
+        path: brandLogo.path,
+      },
+    });
+    res.redirect("/admin/admin_panel/brands");
+  } catch (err) {
+    next(err);
+    console.error(err);
   }
-  catch (err) {
-    next(err)
-    console.error(err)
-  }
-}
+};
 
 module.exports.getBlockBrand = async (req, res) => {
   try {
     const id = req.query.id;
     await brandModel.updateOne({ _id: id }, { $set: { isBlocked: true } });
-    res.redirect('/admin/admin_panel/brands')
+    res.redirect("/admin/admin_panel/brands");
+  } catch (err) {
+    next(err);
+    console.error(err);
   }
-  catch (err) {
-    next(err)
-    console.error(err)
-  }
-
-}
+};
 
 module.exports.getUnblockBrand = async (req, res) => {
   try {
     const id = req.query.id;
     await brandModel.updateOne({ _id: id }, { $set: { isBlocked: false } });
-    res.redirect('/admin/admin_panel/brands')
+    res.redirect("/admin/admin_panel/brands");
+  } catch (err) {
+    next(err);
+    console.error(err);
   }
-  catch (err) {
-    next(err)
-    console.error(err)
-  }
-
-}
+};
 
 module.exports.getEditBrand = async (req, res) => {
   try {
     const id = req.query.id;
-    const brands = await brandModel.find({})
+    const brands = await brandModel.find({});
     const brand = await brandModel.findOne({ _id: id });
-    res.render('page-edit-brand', { brand, brands })
+    res.render("page-edit-brand", { brand, brands });
+  } catch (err) {
+    next(err);
+    console.error(err);
   }
-  catch (err) {
-    next(err)
-    console.error(err)
-  }
-
-}
+};
 
 module.exports.postEditBrand = async (req, res) => {
   try {
@@ -515,13 +509,12 @@ module.exports.postEditBrand = async (req, res) => {
         },
       }
     );
-    res.redirect('/admin/admin_panel/brands');
+    res.redirect("/admin/admin_panel/brands");
   } catch (err) {
-    next(err)
+    next(err);
     console.error(err);
   }
 };
-
 
 module.exports.getLogout = (req, res) => {
   res.clearCookie("token");
@@ -531,26 +524,26 @@ module.exports.getLogout = (req, res) => {
 module.exports.getOrderManagementPage = async (req, res) => {
   try {
     const orders = await orderModel.find();
-    res.render('page-orders', { orders, moment });
+    res.render("page-orders", { orders, moment });
   } catch (error) {
-    next(error)
+    next(error);
     console.error(error);
   }
-}
+};
 
 module.exports.getOrderEditPage = async (req, res) => {
   try {
     const orderId = req.query.orderId;
     const order = await orderModel.findOne({ _id: orderId }).populate({
       path: "products.productId",
-      model: 'Product'
+      model: "Product",
     });
-    res.render('page-orders-detail', { order })
+    res.render("page-orders-detail", { order });
   } catch (error) {
-    next(error)
+    next(error);
     console.error(error);
   }
-}
+};
 
 module.exports.postOrderEdit = async (req, res) => {
   try {
@@ -558,67 +551,72 @@ module.exports.postOrderEdit = async (req, res) => {
     const orderId = req.body.orderId;
     const order = await orderModel.findOne({ _id: orderId });
     if (orderStatus) {
-      await orderModel.updateOne({ _id: orderId }, { $set: { orderStatus: orderStatus } });
-      res.redirect('/admin/order_management')
+      await orderModel.updateOne(
+        { _id: orderId },
+        { $set: { orderStatus: orderStatus } }
+      );
+      res.redirect("/admin/order_management");
     }
   } catch (error) {
-    next(error)
-    console.error(error)
+    next(error);
+    console.error(error);
   }
-}
+};
 
 module.exports.getBannerManagement = async (req, res) => {
   try {
     const banners = await bannerModel.find({});
-    res.render('page-banner', { banners, moment })
+    res.render("page-banner", { banners, moment });
   } catch (error) {
-    next(error)
+    next(error);
     console.error(error);
   }
-}
+};
 
 module.exports.postAddBanner = async (req, res) => {
   try {
     const { description, startDate, endDate, isBlocked } = req.body;
     const { filename, originalname, path } = req.file;
     if (req.body && req.file) {
-      await bannerModel.create({
-        description,
-        bannerImage: {
-          filename,
-          originalname,
-          path
-        },
-        startDate,
-        endDate,
-        status: isBlocked
-      }).then(() => {
-        res.redirect('/admin/banner_management')
-      })
+      await bannerModel
+        .create({
+          description,
+          bannerImage: {
+            filename,
+            originalname,
+            path,
+          },
+          startDate,
+          endDate,
+          status: isBlocked,
+        })
+        .then(() => {
+          res.redirect("/admin/banner_management");
+        });
     } else {
-      res.redirect('/admin/banner_management')
+      res.redirect("/admin/banner_management");
     }
   } catch (error) {
-    next(error)
-    console.error(error)
+    next(error);
+    console.error(error);
   }
-}
+};
 
 module.exports.getEditBannerPage = async (req, res) => {
   try {
-    const banner = await bannerModel.findOne({ _id: req.query.bannerId })
+    const banner = await bannerModel.findOne({ _id: req.query.bannerId });
     const banners = await bannerModel.find({});
-    res.render('page-edit-banner', { banners, banner, moment })
+    res.render("page-edit-banner", { banners, banner, moment });
   } catch (error) {
-    next(error)
+    next(error);
     console.error(error);
   }
-}
+};
 
 module.exports.postUpdateBanner = async (req, res) => {
   try {
     const banner = await bannerModel.findOne({ _id: req.query.bannerId });
-    const newbannerImage = req.file
+    const newbannerImage = req.file;
 
     const bannerImage = newbannerImage
       ? {
@@ -642,55 +640,60 @@ module.exports.postUpdateBanner = async (req, res) => {
         }
       );
 
-      res.redirect('/admin/banner_management');
+      res.redirect("/admin/banner_management");
     }
   } catch (error) {
-    next(error)
+    next(error);
     console.error(error);
   }
 };
 
-
 module.exports.getBlockBanner = async (req, res) => {
   try {
-    await bannerModel.updateOne({ _id: req.query.bannerId }, {
-      $set: {
-        status: true
+    await bannerModel.updateOne(
+      { _id: req.query.bannerId },
+      {
+        $set: {
+          status: true,
+        },
       }
-    })
-    res.redirect('/admin/banner_management')
+    );
+    res.redirect("/admin/banner_management");
   } catch (error) {
-    next(error)
+    next(error);
     console.error(error);
   }
-}
+};
 
 module.exports.getUnblockBanner = async (req, res) => {
   try {
-    await bannerModel.updateOne({ _id: req.query.bannerId }, {
-      $set: {
-        status: false
+    await bannerModel.updateOne(
+      { _id: req.query.bannerId },
+      {
+        $set: {
+          status: false,
+        },
       }
-    })
-    res.redirect('/admin/banner_management')
+    );
+    res.redirect("/admin/banner_management");
   } catch (error) {
-    next(error)
+    next(error);
     console.error(error);
   }
-}
+};
 
 module.exports.getSalesReportPage = async (req, res) => {
   try {
     const sales = await orderModel.find({ orderStatus: "Delivered" }).populate({
       path: "products.productId",
-      model: 'Product'
-    })
-    res.render('page-sales-report', { sales, moment })
+      model: "Product",
+    });
+    res.render("page-sales-report", { sales, moment });
   } catch (error) {
-    next(error)
-    console.error(error)
+    next(error);
+    console.error(error);
   }
-}
+};
 
 module.exports.getMonthWeekYearSales = async (req, res) => {
   try {
@@ -704,26 +707,37 @@ module.exports.getMonthWeekYearSales = async (req, res) => {
     const currentWeek = Math.ceil(currentDate.getDate() / 7);
 
     let orders = await orderModel.find({ orderStatus: "Delivered" });
-    orders = await orderModel.populate(orders, { path: 'products.productId', model: 'Product' });
+    orders = await orderModel.populate(orders, {
+      path: "products.productId",
+      model: "Product",
+    });
 
     const ordersThisYear = filterOrdersForYear(orders, currentYear);
-    const ordersThisMonth = filterOrdersForMonth(orders, currentYear, currentMonth);
-    const ordersThisWeek = filterOrdersForWeek(orders, currentYear, currentMonth, currentWeek);
+    const ordersThisMonth = filterOrdersForMonth(
+      orders,
+      currentYear,
+      currentMonth
+    );
+    const ordersThisWeek = filterOrdersForWeek(
+      orders,
+      currentYear,
+      currentMonth,
+      currentWeek
+    );
 
     if (req.query.saleDate === "Month") {
-      res.render('page-sales-report', { sales: ordersThisMonth, moment });
+      res.render("page-sales-report", { sales: ordersThisMonth, moment });
     }
 
     if (req.query.saleDate === "Week") {
-      res.render('page-sales-report', { sales: ordersThisWeek, moment });
+      res.render("page-sales-report", { sales: ordersThisWeek, moment });
     }
 
     if (req.query.saleDate === "Year") {
-      res.render('page-sales-report', { sales: ordersThisYear, moment });
+      res.render("page-sales-report", { sales: ordersThisYear, moment });
     }
-
   } catch (error) {
-    next(error)
+    next(error);
     console.log(error);
     res.status(500).send("An error occurred");
   }
@@ -731,15 +745,18 @@ module.exports.getMonthWeekYearSales = async (req, res) => {
 
 module.exports.salesReportExcel = async (req, res) => {
   try {
-    const orders = await orderModel.find({ orderStatus: "Delivered" }).populate({
-      path: 'products.productId',
-      model: 'Product'
-    }).populate({
-      path: "customerId",
-      model: "Customers"
-    })
+    const orders = await orderModel
+      .find({ orderStatus: "Delivered" })
+      .populate({
+        path: "products.productId",
+        model: "Product",
+      })
+      .populate({
+        path: "customerId",
+        model: "Customers",
+      });
     const workbook = new Excel.Workbook();
-    const worksheet = workbook.addWorksheet('sales report');
+    const worksheet = workbook.addWorksheet("sales report");
     const salesReportColumns = [
       { key: "orderId", header: "Order ID" },
       { key: "customerName", header: "Customer Name" },
@@ -753,7 +770,7 @@ module.exports.salesReportExcel = async (req, res) => {
       { key: "orderStatus", header: "Order Status" },
       { key: "paymentMethod", header: "Payment Method" },
       { key: "paymentStatus", header: "Payment Status" },
-      { key: "deliveredOn", header: "Delivered Date" }
+      { key: "deliveredOn", header: "Delivered Date" },
     ];
     worksheet.columns = salesReportColumns;
 
@@ -772,7 +789,7 @@ module.exports.salesReportExcel = async (req, res) => {
           orderStatus: order.orderStatus,
           paymentMethod: order.paymentMethod,
           paymentStatus: order.paymentStatus,
-          deliveredOn: order.deliveredOn
+          deliveredOn: order.deliveredOn,
         };
         worksheet.addRow(salesData);
       });
@@ -789,16 +806,89 @@ module.exports.salesReportExcel = async (req, res) => {
       bold: true,
       size: 13,
     };
-    const filePath = path.join(__dirname, 'sales_report.xlsx');
-    const exportPath = path.resolve(__dirname, "..", 'Public', "sales-report", 'sales_report.xlsx');
+    const filePath = path.join(__dirname, "sales_report.xlsx");
+    const exportPath = path.resolve(
+      __dirname,
+      "..",
+      "Public",
+      "sales-report",
+      "sales_report.xlsx"
+    );
     await workbook.xlsx.writeFile(exportPath);
-    res.download(exportPath, 'sales_report.xlsx', (err) => {
+    res.download(exportPath, "sales_report.xlsx", (err) => {
       if (err) {
-        res.status(500).send('Error sending the file');
-      } else {
+        res.status(500).send("Error sending the file");
       }
-    })
+    });
   } catch (error) {
     console.error(error);
   }
-}
+};
+
+module.exports.salesReportPdf = async (req, res) => {
+  try {
+    const orders = await orderModel
+      .find({ orderStatus: "Delivered" })
+      .populate({
+        path: "products.productId",
+        model: "Product",
+      })
+      .populate({
+        path: "customerId",
+        model: "Customers",
+      });
+
+    const doc = new PDFDocument();
+    const filePath = path.resolve(
+      __dirname,
+      "..",
+      "public",
+      "sales-report",
+      "sales_report.pdf"
+    );
+    doc.pipe(fs.createWriteStream(filePath));
+    doc.fillColor("red");
+    doc.text("SALES REPORT");
+    doc.fillColor("black")
+
+    doc.moveDown()
+    orders.forEach((order) => {
+      order.products.forEach((product) => {
+        doc.moveDown();
+        doc.fillColor("green")
+        doc.text("NEW ORDER")
+        doc.fillColor("black")
+        doc.moveDown();
+
+        const salesDataString = `
+Order ID: ${order.referenceId}
+Customer Name: ${order.customerId.firstName}
+Customer Email: ${order.customerId.email}
+Product Details: ${product.productId.productName}, Price: ${product.price}, Quantity: ${product.quantity}
+Address: ${order.address}
+Shipping Charge: ${order.shippingCharge}
+Discount: ${order.discount}
+Total Amount: ${order.totalAmount}
+Created On: ${order.createdOn}
+Order Status: ${order.orderStatus}
+Payment Method: ${order.paymentMethod}
+Payment Status: ${order.paymentStatus}
+Delivered On: ${order.deliveredOn}
+`;
+
+        doc.text(salesDataString);
+      });
+    });
+
+    doc.end();
+
+    res.download(filePath, "sales_report.pdf", (err) => {
+      if (err) {
+        res.status(500).send("Error sending the file");
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error generating sales report");
+  }
+};

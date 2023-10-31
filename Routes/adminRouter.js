@@ -64,6 +64,7 @@ adminRouter.get('/sales_report',adminAuth.isLogin,adminMiddleware.currentRouter,
 adminRouter.get('/sale',adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getMonthWeekYearSales)
 
 adminRouter.get('/salesReport/excel', adminAuth.isLogin, adminControllers.salesReportExcel)
+adminRouter.get('/salesReport/pdf', adminAuth.isLogin, adminControllers.salesReportPdf)
 
 adminRouter.use(adminMiddleware.errorHandlingMiddleware)
 

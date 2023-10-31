@@ -136,14 +136,14 @@
                                 </h5>
                                 <span class="product-qty">x <%=product.quantity%></span>
                               </td>
-                              <td>$<%=product.productId.salePrice*product.quantity%>
+                              <td>₹<%=product.productId.salePrice*product.quantity%>
                               </td>
                             </tr>
                             <%})%>
                               <tr>
                                 <th>SubTotal</th>
                                 <td class="product-subtotal" colspan="2">
-                                  $<%=grandTotal%>
+                                  ₹<%=grandTotal%>
                                 </td>
                               </tr>
                               <tr>
@@ -153,7 +153,7 @@
                               <tr>
                                 <th>Total</th>
                                 <td colspan="2" class="product-subtotal">
-                                  <span class="font-xl text-brand fw-900">$<%=grandTotal%></span>
+                                  <span class="font-xl text-brand fw-900">₹<%=grandTotal%></span>
                                 </td>
                               </tr>
 
