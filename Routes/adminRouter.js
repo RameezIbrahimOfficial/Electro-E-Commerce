@@ -63,7 +63,7 @@ adminRouter.get('/banner/unblock', adminAuth.isLogin, adminMiddleware.currentRou
 adminRouter.get('/sales_report',adminAuth.isLogin,adminMiddleware.currentRouter, adminControllers.getSalesReportPage)
 adminRouter.get('/sale',adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getMonthWeekYearSales)
 
-
+adminRouter.get('/salesReport/excel', adminAuth.isLogin, adminControllers.salesReportExcel)
 
 adminRouter.use(adminMiddleware.errorHandlingMiddleware)
 

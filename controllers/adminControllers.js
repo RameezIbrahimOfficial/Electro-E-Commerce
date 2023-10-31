@@ -2,6 +2,8 @@ const jwt = require("jsonwebtoken");
 const Razorpay = require('razorpay')
 require("dotenv").config();
 const moment = require('moment')
+const Excel = require('exceljs')
+const path = require('path')
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -66,7 +68,7 @@ module.exports.getAdminPanel = async (req, res) => {
       weeklySalesCounts[week] = 0;
     }
 
-    for (let day = currentDay; day > currentDay - 7 ; day--) {
+    for (let day = currentDay; day > currentDay - 7; day--) {
       dailySalesCounts[day] = 0;
     }
 
@@ -726,3 +728,77 @@ module.exports.getMonthWeekYearSales = async (req, res) => {
     res.status(500).send("An error occurred");
   }
 };
+
+module.exports.salesReportExcel = async (req, res) => {
+  try {
+    const orders = await orderModel.find({ orderStatus: "Delivered" }).populate({
+      path: 'products.productId',
+      model: 'Product'
+    }).populate({
+      path: "customerId",
+      model: "Customers"
+    })
+    const workbook = new Excel.Workbook();
+    const worksheet = workbook.addWorksheet('sales report');
+    const salesReportColumns = [
+      { key: "orderId", header: "Order ID" },
+      { key: "customerName", header: "Customer Name" },
+      { key: "customerEmail", header: "Customer Email" },
+      { key: "productDetails", header: "Product Details" },
+      { key: "address", header: "Customer Address" },
+      { key: "shippingCharge", header: "Shipping Charge" },
+      { key: "discount", header: "Discount" },
+      { key: "totalAmount", header: "Total Amount" },
+      { key: "createdOn", header: "Order Date" },
+      { key: "orderStatus", header: "Order Status" },
+      { key: "paymentMethod", header: "Payment Method" },
+      { key: "paymentStatus", header: "Payment Status" },
+      { key: "deliveredOn", header: "Delivered Date" }
+    ];
+    worksheet.columns = salesReportColumns;
+
+    orders.forEach((order) => {
+      order.products.forEach((product) => {
+        const salesData = {
+          orderId: order.referenceId,
+          customerName: order.customerId.firstName,
+          customerEmail: order.customerId.email,
+          productDetails: `${product.productId.productName}, Price: ${product.price}, Quantity: ${product.quantity}`,
+          address: order.address,
+          shippingCharge: order.shippingCharge,
+          discount: order.discount,
+          totalAmount: order.totalAmount,
+          createdOn: order.createdOn,
+          orderStatus: order.orderStatus,
+          paymentMethod: order.paymentMethod,
+          paymentStatus: order.paymentStatus,
+          deliveredOn: order.deliveredOn
+        };
+        worksheet.addRow(salesData);
+      });
+    });
+
+    worksheet.columns.forEach((sheetColumn) => {
+      sheetColumn.font = {
+        size: 12,
+      };
+      sheetColumn.width = 30;
+    });
+
+    worksheet.getRow(1).font = {
+      bold: true,
+      size: 13,
+    };
+    const filePath = path.join(__dirname, 'sales_report.xlsx');
+    const exportPath = path.resolve(__dirname, "..", 'Public', "sales-report", 'sales_report.xlsx');
+    await workbook.xlsx.writeFile(exportPath);
+    res.download(exportPath, 'sales_report.xlsx', (err) => {
+      if (err) {
+        res.status(500).send('Error sending the file');
+      } else {
+      }
+    })
+  } catch (error) {
+    console.error(error);
+  }
+}
