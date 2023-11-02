@@ -74,6 +74,23 @@
                         <p>Phone Number : <%=user.phoneNumber%></p>
                       </div>
                     </div>
+                    <div class="card mt-3">
+                      <div class="card-header">
+                        <h5 class="mb-0">Coupons
+                        </h5>
+                      </div>
+                      <% coupons.forEach((coupon, index) => { %>
+                        <div class="card-body">
+                          <p class="btn-group">
+                            <input type="text" value="<%= coupon.couponCode %>" id="myInput<%= index %>" disabled>
+                            <p><%= coupon.description %></p>
+                            <p><%= moment(coupon.expiryDate).format('MMMM Do YYYY') %></p>
+                            <button onclick="copyText(<%= index %>)" class="btn">Copy text</button>
+                          </p>
+                          <hr>
+                        </div>
+                      <% }) %>                                           
+                    </div>
                   </div>
                   <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
                     <div class="card">
@@ -285,6 +302,19 @@
       $(document).ready(function () {
           new DataTable('#example');
       })
+
+  function copyText(index) {
+  var copyText = document.getElementById("myInput" + index);
+  copyText.select();
+  copyText.setSelectionRange(0, 99999);
+  navigator.clipboard.writeText(copyText.value)
+    .then(function() {
+      alert("Copied the text: " + copyText.value);
+    })
+    .catch(function(err) {
+      console.error("Error copying text: " + err);
+    });
+}
 
   function isValidEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

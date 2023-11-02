@@ -532,6 +532,7 @@ module.exports.getProfile = async (req, res) => {
     const userEmail = req.user;
     const user = await customerModel.findOne({ email: userEmail });
     const userAddress = await addressModel.findOne({ userId: user._id });
+    const coupons = await couponModel.find({})
     const orders = await orderModel.aggregate([
       { $match: { customerId: user._id } },
       { $sort: { createdOn: -1 } }
@@ -546,7 +547,8 @@ module.exports.getProfile = async (req, res) => {
       isLogin,
       orders,
       moment,
-      user
+      user,
+      coupons
     });
   } catch (error) {
     next(error)

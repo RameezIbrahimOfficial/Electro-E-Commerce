@@ -3,7 +3,7 @@
   <div class="content-header">
     <div>
       <h2 class="content-title card-title">Order detail</h2>
-      <p>Details for Order ID: 3453012</p>
+      <p>Details for Order ID:<%=order._id%></p>
     </div>
   </div>
   <div class="card">
@@ -139,6 +139,10 @@
                         <dd><%=order.shippingCharge%></dd>
                       </dl>
                       <dl class="dlist">
+                        <dt>Discount:</dt>
+                        <dd><%=order.discount%></dd>
+                      </dl>
+                      <dl class="dlist">
                         <dt>Grand total:</dt>
                         <dd><b class="h5"><%=order.totalAmount+order.shippingCharge%></b></dd>
                       </dl>
@@ -172,6 +176,7 @@
               Discount : <%=order.discount%> <br>
               Payement Status : <%=order.paymentStatus%> <br>
               Order Status : <%=order.orderStatus%> <br>
+              Coupon Code : <%=order.couponCode%>
             </p>
           </div>
         </div>
