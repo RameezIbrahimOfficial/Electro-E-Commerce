@@ -4,10 +4,11 @@
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script>
-    $(document).ready(function () {
-        new DataTable('#example');
-
-    })
+     $(document).ready(function () {
+            new DataTable('#example', {
+                                sales: [[0, 'desc']] 
+                            });
+                        });
 </script>
 
 <section class="content-main">
@@ -43,9 +44,10 @@
           </thead>
           <tbody>
                 <%if(sales){%>
-                    <%sales.forEach((sale)=>{%>
+                  <% const reversedSales = [...sales].reverse();
+                  reversedSales.forEach((sale) => { %>
                     <tr>
-                        <td><%=moment(sale.orderedOn).format('MMMM Do YYYY')%></td>
+                        <td><%=moment(sale.createdOn).format('MMMM Do YYYY')%></td>
                         <td><%=sale.referenceId%></td>
                         <td><%=sale.address.name%></td>
                         <td>

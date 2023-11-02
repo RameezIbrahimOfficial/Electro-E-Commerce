@@ -5,7 +5,7 @@
       <div class="container">
         <div class="breadcrumb">
           <a href="/" rel="nofollow">Home</a>
-          <span></span> Pages <span></span> Account
+          <span></span> Account
         </div>
       </div>
     </div>
@@ -81,15 +81,20 @@
                       </div>
                       <% coupons.forEach((coupon, index) => { %>
                         <div class="card-body">
-                          <p class="btn-group">
+                          <p class="btn-group">Coupon Code : 
                             <input type="text" value="<%= coupon.couponCode %>" id="myInput<%= index %>" disabled>
-                            <p><%= coupon.description %></p>
-                            <p><%= moment(coupon.expiryDate).format('MMMM Do YYYY') %></p>
+                            <p>Coupon Description : <%= coupon.description %></p>
+                            <p>Expiry Date : <%= moment(coupon.expiryDate).format('MMMM Do YYYY') %></p>
+                            <% if (coupon.redeemedUsers.includes(user._id)) { %>
+                              <p class="text-danger">REDEEMED</p>
+                            <% } else{ %>
+                              <p class="text-success">NOT REDEEMED</p>
+                            <% } %>
                             <button onclick="copyText(<%= index %>)" class="btn">Copy text</button>
                           </p>
                           <hr>
                         </div>
-                      <% }) %>                                           
+                      <% }) %>                                                                
                     </div>
                   </div>
                   <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
@@ -299,9 +304,11 @@
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
   <script>
-      $(document).ready(function () {
-          new DataTable('#example');
-      })
+    $(document).ready(function () {
+            new DataTable('#example', {
+                                order: [[0, 'desc']] 
+                            });
+                        });
 
   function copyText(index) {
   var copyText = document.getElementById("myInput" + index);
