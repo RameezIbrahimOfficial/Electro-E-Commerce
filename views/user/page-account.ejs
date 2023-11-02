@@ -108,17 +108,17 @@
                                     <td><%=order.totalAmount%></td>
                                     <td>
                                       <a href="/invoice?orderId=<%=order._id%>" class="btn-small d-block btn mb-2">View</a>
-                                      <%if(order.orderStatus === "Awaiting Payment" || order.orderStatus === "Confirmed" || order.orderStatus === "Shipped" || (order.orderStatus === "Order Placed" && order.paymentStatus === "Success") ){%>
-                                        <a  href="/order/cancel?orderId=<%=order._id%>" class="btn btn-small d-block mb-2 btn-danger">CANCEL</a>
-                                      <%} else if(order.orderStatus === "Canceled") {%>
+                                      <% if (["Awaiting Payment", "Confirmed", "Shipped", "Order Placed"].includes(order.orderStatus) && order.paymentStatus !== "Failure") { %>
+                                        <a href="/order/cancel?orderId=<%=order._id%>" class="btn btn-small d-block mb-2 btn-danger">CANCEL</a>
+                                      <% } else if (order.orderStatus === "Canceled") { %>
                                         <button class="btn btn-danger" disabled>CANCELED</button>
-                                      <%} else if(order.orderStatus === "Returned") {%>
+                                      <% } else if (order.orderStatus === "Returned") { %>
                                         <button class="btn btn-warning" disabled>RETURNED</button>
-                                        <%}else if(order.paymentStatus === "Failure"){%>
-                                          <button class="btn btn-danger" disabled>PAYMENT FAILED</button>
-                                      <%}else{%>
+                                      <% } else if (order.paymentStatus === "Failure") { %>
+                                        <button class="btn btn-danger" disabled>PAYMENT FAILED</button>
+                                      <% } else if (order.orderStatus === "Delivered") { %>
                                         <a href="/order/return?orderId=<%=order._id%>" class="btn btn-small d-block mb-2 btn-warning">RETURN</a>
-                                      <%}%>
+                                      <% } %>                                      
                                     </td>
                                   </tr>
                                 <%})%>

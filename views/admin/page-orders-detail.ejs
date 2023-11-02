@@ -25,6 +25,7 @@
                 <option value="Shipped" <% if (order.orderStatus === "Shipped") { %> selected <% } %>>Shipped</option>
                 <option value="Delivered" <% if (order.orderStatus === "Delivered") { %> selected <% } %>>Delivered</option>
                 <option value="Order Placed" <% if (order.orderStatus === "Order Placed") { %> selected <% } %>>Order Placed</option>
+                <option value="Canceled" <% if (order.orderStatus === "Canceled") { %> selected <% } %>>Cancel</option>
             </select>
             <input type="hidden" name="orderId" value="<%=order._id%>">
             <button class="btn btn-primary ms-2">SAVE</button>

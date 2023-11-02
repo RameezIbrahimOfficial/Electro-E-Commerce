@@ -15,9 +15,9 @@
                     <h2 class="content-title card-title">Categories </h2>
                     <p>Add or Block a category</p>
                 </div>
-                <div>
+                <!-- <div>
                     <input type="text" placeholder="Search Categories" class="form-control bg-white">
-                </div>
+                </div> -->
             </div>
             <div class="card">
                 <div class="card-body">
@@ -25,10 +25,6 @@
                         <div class="alert-danger" id="error-message"></div>
                         <div class="col-md-3">
                             <form method="post" action="/admin/admin_panel/ceate_category" id="categoryForm" onsubmit="return validateForm()">
-                                <!-- <div class="mb-4">
-                                  <label for="product_name" class="form-label">#ID</label>
-                                  <input type="number" placeholder="Type here" class="form-control" id="categoryID" name="categoryId"/>
-                                </div> -->
                                 <div class="mb-4">
                                   <label for="categoryId" class="form-label">#ID</label>
                                   <input type="text" placeholder="Type here" class="form-control" id="categoryId" name="categoryId" required />

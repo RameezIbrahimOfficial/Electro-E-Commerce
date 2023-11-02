@@ -54,6 +54,8 @@ userRouter.get('/changePassword', userController.getchangePasswordPage);
 userRouter.post('/changePassword', userController.postNewPassword)
 userRouter.post('/profile/update', userAuth.isUserLogin, userAuth.isUserBloked, userController.postUpdateUserDetails)
 
-userRouter.use(userMiddlewares.errorHandlingMiddleware)
+userRouter.post('/coupon/redeem', userAuth.isUserLogin, userAuth.isUserBloked, userController.postRedeemCoupon)
+
+// userRouter.use(userMiddlewares.errorHandlingMiddleware)
 
 module.exports = userRouter;

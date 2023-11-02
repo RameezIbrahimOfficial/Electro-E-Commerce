@@ -23,6 +23,7 @@ adminRouter.use(express.static('Public'))
 adminRouter.use('/admin_panel', express.static('Public'));
 adminRouter.use('/order', express.static('Public'));
 adminRouter.use('/banner', express.static('Public'));
+adminRouter.use('/coupon', express.static('Public'));
 adminRouter.use(express.json());
 adminRouter.use(express.urlencoded({ extended: true }));
 adminRouter.use(cookieParser())
@@ -62,10 +63,16 @@ adminRouter.get('/banner/block', adminAuth.isLogin, adminMiddleware.currentRoute
 adminRouter.get('/banner/unblock', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getUnblockBanner)
 adminRouter.get('/sales_report',adminAuth.isLogin,adminMiddleware.currentRouter, adminControllers.getSalesReportPage)
 adminRouter.get('/sale',adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getMonthWeekYearSales)
-
 adminRouter.get('/salesReport/excel', adminAuth.isLogin, adminControllers.salesReportExcel)
 adminRouter.get('/salesReport/pdf', adminAuth.isLogin, adminControllers.salesReportPdf)
 
-adminRouter.use(adminMiddleware.errorHandlingMiddleware)
+adminRouter.get('/coupon', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getCouponManagementPage)
+adminRouter.post('/coupon/add', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.postAddCoupon)   
+adminRouter.get('/coupon/block', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getBlockCoupon)
+adminRouter.get('/coupon/unblock', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getUnBlockCoupon)
+adminRouter.get('/coupon/edit', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getEditCouponPage)
+adminRouter.post('/coupon/edit', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.postEditCoupon)
+
+// adminRouter.use(adminMiddleware.errorHandlingMiddleware)
 
 module.exports = adminRouter

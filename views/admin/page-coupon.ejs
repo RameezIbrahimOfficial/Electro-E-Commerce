@@ -1,0 +1,190 @@
+<%- include('../partials/admin-header')%>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function () {
+        new DataTable('#example');
+
+    })
+</script>
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Coupon </h2>
+                    <p>Manage Coupons</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="alert-danger" id="error-message"></div>
+                        <div class="col-md-3">
+                            <form method="post" action="/admin/coupon/add" id="couponForm" onsubmit="return validateForm()">
+                                <!-- <div class="mb-4">
+                                  <label for="product_name" class="form-label">#ID</label>
+                                  <input type="number" placeholder="Type here" class="form-control" id="categoryID" name="categoryId"/>
+                                </div> -->
+                                <div class="mb-3">
+                                  <label for="couponCode" class="form-label">#Coupon Code</label>
+                                  <input type="text" placeholder="Type here" class="form-control" id="couponCode" name="couponCode" required />
+                                </div>
+                                <div class="mb-3">
+                                  <label for="couponType" class="form-label">Coupon Type</label>
+                                  <input type="text" placeholder="Type here" class="form-control" id="couponType" name="couponType" required />
+                                </div>
+                                <div class="mb-3">
+                                  <label for="amount" class="form-label">Amount</label>
+                                  <input type="number" placeholder="Type here" class="form-control" id="amount" name="amount" required />
+                                </div>
+                                <div class="mb-3">
+                                  <label for="couponDescription" class="form-label">Coupon Description</label>
+                                  <input type="text" placeholder="Type here" class="form-control" id="couponDescription" name="description" required />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="minimumPurchase" class="form-label">Minimum Purchase</label>
+                                    <input type="number" placeholder="Type here" class="form-control" id="minimumPurchase" name="minimumPurchase" required />
+                                  </div>
+                                <div class="mb-3">
+                                    <label for="expiryDate" class="form-label">Expiry Date</label>
+                                    <input type="date" placeholder="Type here" class="form-control" id="expiryDate" name="expiryDate" required />
+                                  </div>
+                                <div class="mb-3">
+                                  <label class="form-label">Status</label>
+                                  <select class="form-select" name="status" required>
+                                    <option value="List">List</option>
+                                    <option value="Unlist">Unlist</option>
+                                  </select>
+                                </div>
+                                <div class="d-grid">
+                                  <button class="btn btn-primary" type="submit">Create Coupon</button>
+                                </div>
+                              </form>                              
+                        </div>
+                        <div class="col-md-9">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="example">
+                                    <thead>
+                                        <tr>
+                                            <th>Coupon Code</th>
+                                            <th>Coupon Type</th>
+                                            <th>Amount</th>
+                                            <th>Coupon Description</th>
+                                            <th>Minimum Purchase</th>
+                                            <th>Expiry Date</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <%if(!coupons){%>
+                                        <tr>
+                                            <td colspan="7">No Coupons Found</td>
+                                        </tr>
+                                        <%} else{%>
+                                            <%coupons.forEach((coupon)=>{%>
+                                                <tr>
+                                                    <td><%=coupon.couponCode%></td>
+                                                    <td><b><%=coupon.couponType%></b></td>
+                                                    <td><%=coupon.amount%></td>
+                                                    <td><%=coupon.description%></td>
+                                                    <td><%=coupon.minimumPurchase%></td>
+                                                    <td><%=moment(coupon.expiryDate).format('YYYY-MM-DD')%></td>
+                                                    <td>
+                                                        <%if(coupon.status == "Unlist"){%>
+                                                            <span class="badge rounded-pill alert-danger">Unlisted</span>
+                                                        <%} else if(coupon.status == "List"){%>
+                                                              <span class="badge rounded-pill alert-success">Listed</span>
+                                                        <%}%>
+                                                    </td>
+
+                                                    <td>
+                                                        <a href="/admin/coupon/edit?couponId=<%=coupon._id%>" class="btn btn-lg font-sm rounded btn-brand mb-1">
+                                                        <i class="material-icons md-edit"></i> Edit
+                                                    </a>
+                                                    <%if(coupon.status == "Unlist"){%>
+                                                        <a href="/admin/coupon/unblock?couponId=<%=coupon._id%>" class="btn btn-lg font-sm btn-success rounded"> List</a>
+                                                    <%} else if(coupon.status == "List"){%>
+                                                            <a href="/admin/coupon/block?couponId=<%=coupon._id%>" class="btn btn-lg font-sm btn-danger rounded"> Unlist</a>
+                                                    <%}%>
+                                                    </td>
+                                                </tr>
+                                            <%})%>
+                                            <%}%>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div> <!-- .col// -->
+                    </div> <!-- .row // -->
+                </div> <!-- card body .// -->
+            </div> <!-- card .// -->
+        </section> <!-- content-main end// -->
+
+        
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  function validateForm() {
+  var couponCode = document.getElementById("couponCode").value.trim();
+  var couponType = document.getElementById("couponType").value.trim();
+  var amount = document.getElementById("amount").value.trim();
+  var couponDescription = document.getElementById("couponDescription").value.trim();
+  var minimumPurchase = document.getElementById("minimumPurchase").value.trim();
+  var expiryDate = document.getElementById("expiryDate").value
+  var status = document.querySelector('select[name="status"]').value;
+
+  if (isNaN(amount)) {
+    alert("Amount must be a valid Number.");
+    return false; // Prevent form submission
+  }
+  if (isNaN(minimumPurchase)) {
+    alert("Minimum Purchase Amoouont must be valid Number.");
+    return false; // Prevent form submission
+  }
+
+  var expiryDateInput = document.getElementById('expiryDate');
+            var expiryDate = new Date(expiryDateInput.value);
+            var currentDate = new Date();
+
+            if (expiryDate <= currentDate) {
+                alert("Expiry Date must be greater than the current date.");
+                expiryDateInput.value = ''; // Clear the input field
+                return false
+            }
+
+  if (couponCode === "") {
+    alert("Coupon Code field cannot be empty.");
+    return false; // Prevent form submission
+  }
+
+  if (couponType === "") {
+    alert("Coupon Type field cannot be empty.");
+    return false; // Prevent form submission
+  }
+
+  if (couponDescription === "") {
+    alert("Coupon Description field cannot be empty.");
+    return false; // Prevent form submission
+  }
+
+  if (amount === "") {
+    alert("Amount field cannot be empty.");
+    return false; // Prevent form submission
+  }
+
+  if (minimumPurchase === "") {
+    alert("Minimum Purchase field cannot be empty.");
+    return false; // Prevent form submission
+  }
+
+  if (expiryDate === "") {
+    alert("Expiry Date field cannot be empty.");
+    return false; // Prevent form submission
+  }
+
+  // All fields are valid, allow form submission
+  return true;
+}
+</script>
+
+<%- include('../partials/admin-footer')%>

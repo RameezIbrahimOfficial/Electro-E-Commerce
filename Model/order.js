@@ -51,6 +51,9 @@ const orderModel = mongoose.Schema({
     type: Number,
     required: true,
   },
+  couponCode : {
+    type : String
+  },
   createdOn: {
     type: Date,
     required: true,

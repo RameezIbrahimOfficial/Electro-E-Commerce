@@ -25,6 +25,7 @@ const addressModel = require("../Model/address");
 const wishlistModel = require("../Model/wishlist");
 const orderModel = require("../Model/order");
 const bannerModel = require('../Model/banner')
+const couponModel = require('../Model/coupon')
 
 
 const razorpay = new Razorpay({
@@ -64,7 +65,7 @@ module.exports.getVerifyOtp = async (req, res) => {
     if (verifyOTP.valid) {
       res.status(200).json({ data: "Verified" })
     } else {
-      res.status(500).json({ data : "Incorrect OTP" })
+      res.status(500).json({ data: "Incorrect OTP" })
     }
 
   } catch (err) {
@@ -95,20 +96,20 @@ module.exports.postUserRegister = async (req, res) => {
     const isLogin = req.cookies.isLogin;
     bcrypt.hash(SignupPassword, 10, async (err, hash) => {
       // if (isOtpVerified) {
-        await customerModel.create({
-          firstName: fname,
-          lastName: lname,
-          email: email,
-          password: hash,
-          phoneNumber: phoneNumber,
-          createdOn: new Date(),
-        }).then((data) => {
-          if (data) {
-            res.render("page-register", {
-              errorMsgSignup: "Account Created Successfully", isLogin
-            });
-          }
-        })
+      await customerModel.create({
+        firstName: fname,
+        lastName: lname,
+        email: email,
+        password: hash,
+        phoneNumber: phoneNumber,
+        createdOn: new Date(),
+      }).then((data) => {
+        if (data) {
+          res.render("page-register", {
+            errorMsgSignup: "Account Created Successfully", isLogin
+          });
+        }
+      })
       // } else {
       //   res.render("page-register", {
       //     errorMsgOTP: "Invalid OTP",
@@ -748,7 +749,7 @@ module.exports.postAddToWishlist = async (req, res) => {
       });
       if (userWishlist) {
         let productIndex = -1;
-        productIndex = userWishlist.products.findIndex((product)=> product.productId == productId)
+        productIndex = userWishlist.products.findIndex((product) => product.productId == productId)
 
         if (productIndex === -1) {
           userWishlist.products.push({ productId });
@@ -805,7 +806,7 @@ module.exports.getCheckoutPage = async (req, res) => {
         path: "products.productId",
         model: "Product",
       });
-    if (userCart && userCart.products.length>0) {
+    if (userCart && userCart.products.length > 0) {
       let grandTotal = 0;
       const stockCheck = [];
       for (let i = 0; i < userCart.products.length; i++) {
@@ -834,8 +835,14 @@ module.exports.getCheckoutPage = async (req, res) => {
 // Place order COD ( Cash on Delivery )
 module.exports.getPlaceOrderCOD = async (req, res) => {
   try {
+    const { grantTotal, couponCode } = req.query;
     let totalAmount = 0;
+    const coupon = await couponModel.findOne({ couponCode: couponCode });
     const user = await customerModel.findOne({ email: req.user });
+    let discountAmount = 0;
+    if (coupon) {
+      discountAmount = coupon.amount;
+    }
     const cart = await cartModel.findOne({ userId: user._id }).populate({
       path: 'products.productId',
       model: 'Product'
@@ -866,14 +873,15 @@ module.exports.getPlaceOrderCOD = async (req, res) => {
         altPhone: address.address[0].altPhone
       },
       paymentMethod: "COD",
-      referenceId: "ref4337fgh37747",
+      referenceId: "order_qw4567854",
       shippingCharge: 0,
-      discount: 0,
-      totalAmount: totalAmount,
+      discount: discountAmount,
+      totalAmount: grantTotal,
       createdOn: new Date(),
       orderStatus: "Order Placed",
       paymentStatus: "Pending",
       deliveredOn: new Date(),
+      couponCode: couponCode
     }).then(async () => {
       for (const product of cart.products) {
         await productsModel.updateOne(
@@ -885,7 +893,7 @@ module.exports.getPlaceOrderCOD = async (req, res) => {
     })
     res.render('order-placed')
   } catch (error) {
-    next(error)
+    // next(error)
     console.error(error);
   }
 }
@@ -893,6 +901,7 @@ module.exports.getPlaceOrderCOD = async (req, res) => {
 // Place Order ( Online Payement methods using RazorPay )
 module.exports.getPlaceOrderOnline = async (req, res) => {
   try {
+    const { grantTotal, couponCode } = req.query;
     let totalAmount = 0;
     const user = await customerModel.findOne({ email: req.user });
     const cart = await cartModel.findOne({ userId: user._id }).populate({
@@ -915,7 +924,7 @@ module.exports.getPlaceOrderOnline = async (req, res) => {
     });
 
     var options = {
-      amount: totalAmount * 100,
+      amount: grantTotal * 100,
       currency: "INR",
       receipt: uuidv4(),
       payment_capture: "1"
@@ -940,11 +949,12 @@ module.exports.getPlaceOrderOnline = async (req, res) => {
       referenceId: newOrder.id,
       shippingCharge: 0,
       discount: 0,
-      totalAmount: totalAmount,
+      totalAmount: grantTotal,
       createdOn: new Date(),
       orderStatus: "Order Placed",
       paymentStatus: "Pending",
       deliveredOn: new Date(),
+      couponCode: couponCode
     });
 
     for (const product of cart.products) {
@@ -958,7 +968,7 @@ module.exports.getPlaceOrderOnline = async (req, res) => {
 
     res.status(200).json({ order_id: newOrder.id });
   } catch (error) {
-    next(error)
+    // next(error)
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
@@ -967,13 +977,19 @@ module.exports.getPlaceOrderOnline = async (req, res) => {
 // Handle Payement Status on DB on Success and Failure of Payement Through Razorpay
 module.exports.postUpdatePaymentStatus = async (req, res) => {
   try {
-    const { paymentStatus, orderId, response } = req.query;
+
+    const { paymentStatus, orderId, response, couponCode } = req.query;
+    const coupon = await couponModel.findOne({ couponCode: couponCode })
+    let discountAmount = 0;
+    if (coupon) {
+      discountAmount = coupon.amount
+    }
 
     if (paymentStatus === 'Success') {
-      await orderModel.updateOne({ referenceId: orderId }, { $set: { paymentStatus: 'Success' } });
+      await orderModel.updateOne({ referenceId: orderId }, { $set: { paymentStatus: 'Success', discount: discountAmount } });
       res.redirect('/profile')
     } else {
-      await orderModel.updateOne({ referenceId: orderId }, { $set: { paymentStatus: 'Failure' } });
+      await orderModel.updateOne({ referenceId: orderId }, { $set: { paymentStatus: 'Failure', discount: discountAmount } });
       const order = await orderModel.findOne({ referenceId: orderId });
       if (order) {
         for (const item of order.products) {
@@ -987,7 +1003,7 @@ module.exports.postUpdatePaymentStatus = async (req, res) => {
 
     }
   } catch (error) {
-    next(error)
+    // next(error)
     console.error(error);
     res.status(500).json({ error: 'Failed to update payment status' });
   }
@@ -1170,3 +1186,18 @@ module.exports.postUpdateUserDetails = async (req, res) => {
     res.status(500).json({ data: "An error occurred" });
   }
 };
+
+// Redeem Coupon While Checkout
+module.exports.postRedeemCoupon = async (req, res) => {
+  try {
+    const { couponCode } = req.body;
+    const coupon = await couponModel.findOne({ couponCode: couponCode });
+    if (!coupon) {
+      res.status(500).json({ data: "No coupon Found" });
+    } else {
+      res.status(200).json({ data: "Coupon Found", coupon: coupon });
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}

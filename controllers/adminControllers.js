@@ -16,6 +16,7 @@ const productsModel = require("../Model/product");
 const brandModel = require("../Model/brand");
 const orderModel = require("../Model/order");
 const bannerModel = require("../Model/banner");
+const couponModel = require('../Model/coupon')
 
 const middlewares = require("../middlewares/adminAuth");
 
@@ -892,3 +893,90 @@ Delivered On: ${order.deliveredOn}
     res.status(500).send("Error generating sales report");
   }
 };
+
+module.exports.getCouponManagementPage = async(req, res) => {
+  try {
+    const coupons = await couponModel.find({})
+     res.render('page-coupon', { coupons, moment })
+  } catch ( error ) {
+    console.error(error);
+  }
+}
+
+module.exports.postAddCoupon = async(req, res) => {
+  try {
+    const { couponCode, couponType, amount, description, minimumPurchase, expiryDate, status } = req.body;
+    await couponModel.create({
+      couponCode,
+      couponType,
+      amount,
+      description,
+      minimumPurchase,
+      expiryDate,
+      status
+    }) 
+    res.redirect('/admin/coupon')
+  } catch ( error ) {
+    console.error(error)
+  }
+}
+
+module.exports.getBlockCoupon = async(req, res) => {
+  try {
+    const { couponId } = req.query;
+    await couponModel.updateOne({ _id : couponId },{
+      $set : {
+        status : "Unlist"
+      }
+    })
+    res.redirect('/admin/coupon')
+  } catch ( error ) {
+    console.error(error)
+  } 
+}
+
+module.exports.getUnBlockCoupon = async(req, res) => {
+  try {
+    const { couponId } = req.query;
+    await couponModel.updateOne({ _id : couponId },{
+      $set : {
+        status : "List"
+      }
+    })
+    res.redirect('/admin/coupon')
+  } catch ( error ) {
+    console.error(error)
+  } 
+}
+
+module.exports.getEditCouponPage = async(req, res) => {
+  try {
+    const { couponId } = req.query;
+    const coupon = await couponModel.findOne({_id : couponId});
+    const coupons = await couponModel.find({});
+    res.render('page-edit-coupon', { coupon, coupons, moment })
+  } catch ( error ) {
+    console.error(error)
+  }
+}
+
+module.exports.postEditCoupon = async(req, res) => {
+  try {
+    const { couponId } = req.query;
+    const { couponCode, couponType, amount, description, minimumPurchase, expiryDate, status } = req.body;
+    await couponModel.updateOne({ _id : couponId },{
+      $set : {
+        couponCode,
+        couponType,
+        amount,
+        description,
+        minimumPurchase,
+        expiryDate,
+        status
+      }
+    })
+    res.redirect('/admin/coupon')
+  } catch ( error ) {
+    console.error(error)
+  }
+}
