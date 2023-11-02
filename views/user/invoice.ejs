@@ -37,6 +37,12 @@
                 <p><%=order.address.landMark%></p>
                 <p><%=order.address.city%>, <%=order.address.state%>, <%=order.address.pincode%></p>
                 <p><%=order.address.phone%></p>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12">
+                <p>Order ID: <%=order.referenceId%> </p>
+                <p>Order Date: <%=order.createdOn%> </p>
                 <p> Order Status : 
                     <% if (order.orderStatus === "Delivered") { %>
                         <span class="badge rounded-pill alert-success"><%=order.orderStatus%></span>
@@ -48,12 +54,8 @@
                           <span class="badge rounded-pill alert-warning"><%=order.orderStatus%></span>
                         <%}%>
                 </p>
-            </div>
-        </div>
-        <div class="row mt-4">
-            <div class="col-12">
-                <p>Order Number: <%=order.referenceId%> </p>
-                <p>Order Date: <%=order.createdOn%> </p>
+                <p>Payement Status : <%=order.paymentStatus%></p>
+                <p>Payement Method : <%=order.paymentMethod%></p>
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -85,9 +87,21 @@
             </div>
         </div>
         <div class="row mt-4 mb-5">
-            <div class="col-12">
-                <h4>TOTAL AMOUNT</h4>
-                <h4>RS <%=order.totalAmount%></h4>
+            <div class="col-3">
+                <h4>GROSS AMOUNT</h4>
+                <h4>₹ <%=order.totalAmount%></h4>
+            </div>
+            <div class="col-3">
+                <h4>DISCOUNT</h4>
+                <h4>₹ <%=order.discount%></h4>
+            </div>
+            <div class="col-3">
+                <h4>SHIPPING CHARGE</h4>
+                <h4>₹ <%=order.shippingCharge%></h4>
+            </div>
+            <div class="col-3">
+                <h4>TOTAL</h4>
+                <h4>₹ <%=order.totalAmount - order.discount + order.shippingCharge%></h4>
             </div>
         </div>
     </div>
