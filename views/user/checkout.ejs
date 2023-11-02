@@ -211,8 +211,11 @@
             })
             .then((response) => {
               if (!response.ok) {
-                alert("No Coupon Found!")
-                throw new Error('Network response was not ok');
+                return response.text().then((errorMessage) => {              
+                  const message = JSON.parse(errorMessage);
+                  alert(message.data);
+                  throw new Error('Network response was not ok');
+                });
               }
               return response.json(); 
             })

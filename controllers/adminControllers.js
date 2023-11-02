@@ -913,7 +913,8 @@ module.exports.postAddCoupon = async(req, res) => {
       description,
       minimumPurchase,
       expiryDate,
-      status
+      status,
+      redeemedUsers : []
     }) 
     res.redirect('/admin/coupon')
   } catch ( error ) {
@@ -964,6 +965,7 @@ module.exports.postEditCoupon = async(req, res) => {
   try {
     const { couponId } = req.query;
     const { couponCode, couponType, amount, description, minimumPurchase, expiryDate, status } = req.body;
+    const coupon = await couponModel.findOne({ _id : couponId })
     await couponModel.updateOne({ _id : couponId },{
       $set : {
         couponCode,
@@ -972,7 +974,8 @@ module.exports.postEditCoupon = async(req, res) => {
         description,
         minimumPurchase,
         expiryDate,
-        status
+        status,
+        redeemedUsers : coupon.redeemedUsers
       }
     })
     res.redirect('/admin/coupon')
