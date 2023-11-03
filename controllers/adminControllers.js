@@ -766,6 +766,7 @@ module.exports.salesReportExcel = async (req, res) => {
       { key: "address", header: "Customer Address" },
       { key: "shippingCharge", header: "Shipping Charge" },
       { key: "discount", header: "Discount" },
+      { key: "couponCode", header: "Coupon Code" },
       { key: "totalAmount", header: "Total Amount" },
       { key: "createdOn", header: "Order Date" },
       { key: "orderStatus", header: "Order Status" },
@@ -785,6 +786,7 @@ module.exports.salesReportExcel = async (req, res) => {
           address: order.address,
           shippingCharge: order.shippingCharge,
           discount: order.discount,
+          couponCode: order.couponCode,
           totalAmount: order.totalAmount,
           createdOn: order.createdOn,
           orderStatus: order.orderStatus,
@@ -869,6 +871,7 @@ Product Details: ${product.productId.productName}, Price: ${product.price}, Quan
 Address: ${order.address}
 Shipping Charge: ${order.shippingCharge}
 Discount: ${order.discount}
+Coupon Code: ${order.couponCode}
 Total Amount: ${order.totalAmount}
 Created On: ${order.createdOn}
 Order Status: ${order.orderStatus}
