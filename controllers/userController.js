@@ -204,7 +204,7 @@ module.exports.getProductPage = async (req, res) => {
     const brand = await brandsModel.findOne({ brandName: product.brand });
     res.render("shop-product-full", { product, brand, isLogin });
   } catch (err) {
-    next(err)
+    // next(err)
     console.error(err);
   }
 };
