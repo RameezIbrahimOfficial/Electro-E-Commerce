@@ -95,7 +95,6 @@ module.exports.postUserRegister = async (req, res) => {
     const { fname, lname, email, SignupPassword, phoneNumber } = req.body;
     const isLogin = req.cookies.isLogin;
     bcrypt.hash(SignupPassword, 10, async (err, hash) => {
-      // if (isOtpVerified) {
       await customerModel.create({
         firstName: fname,
         lastName: lname,
@@ -110,12 +109,6 @@ module.exports.postUserRegister = async (req, res) => {
           });
         }
       })
-      // } else {
-      //   res.render("page-register", {
-      //     errorMsgOTP: "Invalid OTP",
-      //     isLogin,
-      //   });
-      // }
     })
 
   } catch (err) {
