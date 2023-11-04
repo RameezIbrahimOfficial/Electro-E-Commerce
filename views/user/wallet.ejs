@@ -1,0 +1,42 @@
+<%- include('../partials/user-header')%>
+    
+    <main class="container my-4">
+
+        <section class="gift-cards p-4 bg-light mb-3">
+            <h3>Wallet</h3>
+        </section>
+        <section class="gift-cards p-4 bg-light mb-3">
+        </section>
+
+
+        <section class="wallet-balance p-4 bg-light">
+            <h2>Account Balance</h2>
+            <p>Your current account balance: ₹<%=wallet.amount%></p>
+            <button class="btn btn-primary">Add Funds</button>
+        </section>
+        
+        <section class="payment-methods p-4 bg-light mt-3">
+            <!-- <h2>Payment Methods</h2>
+            <ul>
+                <li class="d-flex justify-content-between">
+                    <span>Visa ending in **** 1234</span>
+                    <button class="btn btn-secondary">Edit</button>
+                </li>
+                <li class="d-flex justify-content-between">
+                    <span>PayPal</span>
+                    <button class="btn btn-secondary">Edit</button>
+                </li>
+            </ul> -->
+        </section>
+        
+        <section class="gift-cards p-4 bg-light mt-3">
+            <!-- <h2>Gift Cards</h2>
+            <ul>
+                <li><span>Gift Card #1: $50.00</span></li>
+                <li><span>Gift Card #2: $25.00</span></li>
+                <li><span>Gift Card #3: $10.00</span></li>
+            </ul> -->
+        </section>
+    </main>
+<%- include('../partials/user-footer')%>
+

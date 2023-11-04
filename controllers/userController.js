@@ -16,8 +16,20 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const RAZOR_PAY_key_id = process.env.RAZOR_PAY_key_id;
 const RAZOR_PAY_key_secret = process.env.RAZOR_PAY_key_secret;
 
-const { addressModel, adminModel, bannerModel, brandModel, cartModel, categoryModel, couponModel, customerModel, orderModel, productModel, wishlistModel } = require("../Model");
+const { addressModel,
+        adminModel, 
+        bannerModel, 
+        brandModel, 
+        cartModel, 
+        categoryModel, 
+        couponModel, 
+        customerModel, 
+        orderModel, 
+        productModel, 
+        wishlistModel,
+        walletModel } = require("../Model");
 
+// Razorpay Instance
 const razorpay = new Razorpay({
   key_id: RAZOR_PAY_key_id,
   key_secret: RAZOR_PAY_key_secret,
@@ -90,8 +102,13 @@ module.exports.postUserRegister = async (req, res) => {
           phoneNumber: phoneNumber,
           createdOn: new Date(),
         })
-        .then((data) => {
+        .then(async(data) => {
           if (data) {
+            const currUser = await customerModel.findOne({email:email})
+            await walletModel.create({
+              userId : currUser._id,
+              amount : 0
+            })
             res.render("page-register", {
               errorMsgSignup: "Account Created Successfully",
               isLogin,
@@ -133,7 +150,7 @@ module.exports.postUserLogin = async (req, res) => {
           isLogin,
         });
       } else {
-        bcrypt.compare(password, user.password, (err, result) => {
+        bcrypt.compare(password, user.password,async (err, result) => {
           if (email === user.email && result == true) {
             const token = jwt.sign(user.email, JWT_SECRET);
             res.cookie("userToken", token, { maxAge: 24 * 60 * 60 * 1000 });
@@ -1021,6 +1038,19 @@ module.exports.getOrderCancel = async (req, res) => {
         );
       });
 
+      const newOrder = await orderModel.findOne({_id:orderId});
+      const wallet = await walletModel.findOne({userId:user._id})
+      const walletAmount = wallet.amount ?? 0;
+      const totalOrderAmount = newOrder.totalAmount ?? 0;
+      const newWalletAmount = walletAmount+totalOrderAmount
+      if(newOrder.paymentStatus === 'Success'){
+        await walletModel.updateOne({userId : user._id },{
+          $set : {
+            amount : newWalletAmount
+          }
+        })
+      }
+
       res.redirect("/profile");
     } else {
       res.redirect("/");
@@ -1047,6 +1077,20 @@ module.exports.getOrderReturn = async (req, res) => {
           { $inc: { units: product.quantity } }
         );
       });
+
+      const newOrder = await orderModel.findOne({_id:orderId});
+      const wallet = await walletModel.findOne({userId:user._id})
+      const walletAmount = wallet.amount ?? 0;
+      const totalOrderAmount = newOrder.totalAmount ?? 0;
+      const newWalletAmount = walletAmount+totalOrderAmount
+      if(newOrder.paymentStatus === 'Success'){
+        await walletModel.updateOne({userId : user._id },{
+          $set : {
+            amount : newWalletAmount
+          }
+        })
+      }
+      
       res.redirect("/profile");
     } else {
       res.redirect("/");
@@ -1202,3 +1246,15 @@ module.exports.postRedeemCoupon = async (req, res) => {
     return res.status(500).json({ data: "An error occurred" });
   }
 };
+
+// Display Wallet Page
+module.exports.getWalletPage = async(req, res) => {
+  try {
+    const user = await customerModel.findOne({email:req.user})
+    const wallet = await walletModel.findOne({userId:user._id})
+    const isLogin = req.cookies.isLogin;
+    res.render('wallet',{isLogin, wallet})
+  } catch ( error ) {
+    console.error(error);
+  }
+}

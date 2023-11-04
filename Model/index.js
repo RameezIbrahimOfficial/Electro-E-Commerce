@@ -9,6 +9,7 @@ const customerModel = require('./customer');
 const orderModel = require('./order');
 const productModel = require('./product');
 const wishlistModel = require('./wishlist')
+const walletModel = require('./wallet');
 
 module.exports = {
     addressModel,
@@ -21,5 +22,6 @@ module.exports = {
     customerModel,
     orderModel,
     productModel,
-    wishlistModel
+    wishlistModel,
+    walletModel
 }
