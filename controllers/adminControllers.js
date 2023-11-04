@@ -6,18 +6,23 @@ const Excel = require("exceljs");
 const path = require("path");
 const PDFDocument = require("pdfkit");
 const fs = require("fs");
-const sharp = require('sharp')
+const sharp = require("sharp");
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const adminModel = require("../Model/admin");
-const categoryModel = require("../Model/category");
-const customerModel = require("../Model/customer");
-const productsModel = require("../Model/product");
-const brandModel = require("../Model/brand");
-const orderModel = require("../Model/order");
-const bannerModel = require("../Model/banner");
-const couponModel = require('../Model/coupon')
+const {
+  addressModel,
+  adminModel,
+  bannerModel,
+  brandModel,
+  cartModel,
+  categoryModel,
+  couponModel,
+  customerModel,
+  orderModel,
+  productModel,
+  wishlistModel,
+} = require("../Model");
 
 const middlewares = require("../middlewares/adminAuth");
 
@@ -103,7 +108,7 @@ module.exports.getAdminPanel = async (req, res) => {
     const currentMonthSalesCount = monthlySalesCounts[currentMonth];
 
     const orders = await orderModel.find({});
-    const products = await productsModel.find({});
+    const products = await productModel.find({});
     const categories = await categoryModel.find({});
     const cancelledOrder = await orderModel.find({ orderStatus: "Canceled" });
     const returnedOrder = await orderModel.find({ orderStatus: "Returned" });
@@ -137,7 +142,7 @@ module.exports.getAdminPanel = async (req, res) => {
 
 module.exports.getProductsPage = async (req, res) => {
   try {
-    const products = await productsModel.find({});
+    const products = await productModel.find({});
     res.render("admin-products-list", { products });
   } catch (err) {
     console.error(err);
@@ -278,7 +283,7 @@ module.exports.postAddProducts = async (req, res) => {
 
     for (let i = 0; i < images.length; i++) {
       const croppedImage = await sharp(images[i].path)
-        .resize({ width: 300 }) 
+        .resize({ width: 300 })
         .toBuffer();
 
       const filename = `cropped_${images[i].filename}`;
@@ -291,7 +296,7 @@ module.exports.postAddProducts = async (req, res) => {
         path: filePath,
       });
     }
-    await productsModel.create({
+    await productModel.create({
       id: req.body.product_id,
       productName: req.body.product_name,
       description: req.body.product_description,
@@ -321,7 +326,7 @@ module.exports.postAddProducts = async (req, res) => {
 module.exports.getEditProducts = async (req, res) => {
   try {
     const id = req.query.id;
-    const product = await productsModel.find({ _id: id });
+    const product = await productModel.find({ _id: id });
     const categories = await categoryModel.find({});
     res.render("page-edit-product", { product, categories });
   } catch (err) {
@@ -333,7 +338,7 @@ module.exports.getEditProducts = async (req, res) => {
 module.exports.postEditProducts = async (req, res) => {
   try {
     const id = req.query.id;
-    const product = await productsModel.findOne({ _id: id });
+    const product = await productModel.findOne({ _id: id });
     const images = req.files;
     const productImages = [];
 
@@ -363,7 +368,7 @@ module.exports.postEditProducts = async (req, res) => {
       }
     }
 
-    await productsModel.updateOne(
+    await productModel.updateOne(
       { _id: id },
       {
         $set: {
@@ -396,15 +401,14 @@ module.exports.postEditProducts = async (req, res) => {
   }
 };
 
-
 module.exports.getBlockProducts = async (req, res) => {
   try {
     const id = req.query.id;
-    const product = await productsModel.findOne({ _id: id });
+    const product = await productModel.findOne({ _id: id });
     if (product.isBlocked) {
       res.redirect("/admin/admin_panel/products");
     } else {
-      await productsModel.updateOne({ _id: id }, { isBlocked: true });
+      await productModel.updateOne({ _id: id }, { isBlocked: true });
       res.redirect("/admin/admin_panel/products");
     }
   } catch (err) {
@@ -416,9 +420,9 @@ module.exports.getBlockProducts = async (req, res) => {
 module.exports.getUnblockProducts = async (req, res) => {
   try {
     const id = req.query.id;
-    const product = await productsModel.findOne({ _id: id });
+    const product = await productModel.findOne({ _id: id });
     if (product.isBlocked) {
-      const data = await productsModel.updateOne(
+      const data = await productModel.updateOne(
         { _id: id },
         { $set: { isBlocked: false } }
       );
@@ -503,10 +507,10 @@ module.exports.postEditBrand = async (req, res) => {
     const brand = await brandModel.findOne({ _id: id });
     const newBrandImage = brandImage
       ? {
-        fileName: brandImage.filename,
-        originalname: brandImage.originalname,
-        path: brandImage.path,
-      }
+          fileName: brandImage.filename,
+          originalname: brandImage.originalname,
+          path: brandImage.path,
+        }
       : brand.brandImage;
 
     await brandModel.updateOne(
@@ -631,10 +635,10 @@ module.exports.postUpdateBanner = async (req, res) => {
 
     const bannerImage = newbannerImage
       ? {
-        filename: newbannerImage.originalname,
-        originalname: newbannerImage.originalname,
-        path: newbannerImage.path,
-      }
+          filename: newbannerImage.originalname,
+          originalname: newbannerImage.originalname,
+          path: newbannerImage.path,
+        }
       : banner.bannerImage;
     if (req.body) {
       const { description, startDate, endDate, isBlocked } = req.body;
@@ -862,15 +866,15 @@ module.exports.salesReportPdf = async (req, res) => {
     doc.pipe(fs.createWriteStream(filePath));
     doc.fillColor("red");
     doc.text("SALES REPORT");
-    doc.fillColor("black")
+    doc.fillColor("black");
 
-    doc.moveDown()
+    doc.moveDown();
     orders.forEach((order) => {
       order.products.forEach((product) => {
         doc.moveDown();
-        doc.fillColor("green")
-        doc.text("NEW ORDER")
-        doc.fillColor("black")
+        doc.fillColor("green");
+        doc.text("NEW ORDER");
+        doc.fillColor("black");
         doc.moveDown();
 
         const salesDataString = `
@@ -907,19 +911,27 @@ Delivered On: ${order.deliveredOn}
   }
 };
 
-module.exports.getCouponManagementPage = async(req, res) => {
+module.exports.getCouponManagementPage = async (req, res) => {
   try {
-    const coupons = await couponModel.find({})
-     res.render('page-coupon', { coupons, moment })
-  } catch ( error ) {
+    const coupons = await couponModel.find({});
+    res.render("page-coupon", { coupons, moment });
+  } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
   }
-}
+};
 
-module.exports.postAddCoupon = async(req, res) => {
+module.exports.postAddCoupon = async (req, res) => {
   try {
-    const { couponCode, couponType, amount, description, minimumPurchase, expiryDate, status } = req.body;
+    const {
+      couponCode,
+      couponType,
+      amount,
+      description,
+      minimumPurchase,
+      expiryDate,
+      status,
+    } = req.body;
     await couponModel.create({
       couponCode,
       couponType,
@@ -928,77 +940,94 @@ module.exports.postAddCoupon = async(req, res) => {
       minimumPurchase,
       expiryDate,
       status,
-      redeemedUsers : []
-    }) 
-    res.redirect('/admin/coupon')
-  } catch ( error ) {
-    console.error(error)
+      redeemedUsers: [],
+    });
+    res.redirect("/admin/coupon");
+  } catch (error) {
+    console.error(error);
     res.status(500).send("Internal Server Error");
   }
-}
+};
 
-module.exports.getBlockCoupon = async(req, res) => {
+module.exports.getBlockCoupon = async (req, res) => {
   try {
     const { couponId } = req.query;
-    await couponModel.updateOne({ _id : couponId },{
-      $set : {
-        status : "Unlist"
+    await couponModel.updateOne(
+      { _id: couponId },
+      {
+        $set: {
+          status: "Unlist",
+        },
       }
-    })
-    res.redirect('/admin/coupon')
-  } catch ( error ) {
-    console.error(error)
+    );
+    res.redirect("/admin/coupon");
+  } catch (error) {
+    console.error(error);
     res.status(500).send("Internal Server Error");
-  } 
-}
+  }
+};
 
-module.exports.getUnBlockCoupon = async(req, res) => {
+module.exports.getUnBlockCoupon = async (req, res) => {
   try {
     const { couponId } = req.query;
-    await couponModel.updateOne({ _id : couponId },{
-      $set : {
-        status : "List"
+    await couponModel.updateOne(
+      { _id: couponId },
+      {
+        $set: {
+          status: "List",
+        },
       }
-    })
-    res.redirect('/admin/coupon')
-  } catch ( error ) {
-    console.error(error)
+    );
+    res.redirect("/admin/coupon");
+  } catch (error) {
+    console.error(error);
     res.status(500).send("Internal Server Error");
-  } 
-}
+  }
+};
 
-module.exports.getEditCouponPage = async(req, res) => {
+module.exports.getEditCouponPage = async (req, res) => {
   try {
     const { couponId } = req.query;
-    const coupon = await couponModel.findOne({_id : couponId});
+    const coupon = await couponModel.findOne({ _id: couponId });
     const coupons = await couponModel.find({});
-    res.render('page-edit-coupon', { coupon, coupons, moment })
-  } catch ( error ) {
-    console.error(error)
+    res.render("page-edit-coupon", { coupon, coupons, moment });
+  } catch (error) {
+    console.error(error);
     res.status(500).send("Internal Server Error");
   }
-}
+};
 
-module.exports.postEditCoupon = async(req, res) => {
+module.exports.postEditCoupon = async (req, res) => {
   try {
     const { couponId } = req.query;
-    const { couponCode, couponType, amount, description, minimumPurchase, expiryDate, status } = req.body;
-    const coupon = await couponModel.findOne({ _id : couponId })
-    await couponModel.updateOne({ _id : couponId },{
-      $set : {
-        couponCode,
-        couponType,
-        amount,
-        description,
-        minimumPurchase,
-        expiryDate,
-        status,
-        redeemedUsers : coupon.redeemedUsers
+    const {
+      couponCode,
+      couponType,
+      amount,
+      description,
+      minimumPurchase,
+      expiryDate,
+      status,
+    } = req.body;
+    const coupon = await couponModel.findOne({ _id: couponId });
+    await couponModel.updateOne(
+      { _id: couponId },
+      {
+        $set: {
+          couponCode,
+          couponType,
+          amount,
+          description,
+          minimumPurchase,
+          expiryDate,
+          status,
+          redeemedUsers: coupon.redeemedUsers,
+        },
       }
-    })
-    res.redirect('/admin/coupon')
-  } catch ( error ) {
-    console.error(error)
+    );
+    res.redirect("/admin/coupon");
+  } catch (error) {
+    console.error(error);
     res.status(500).send("Internal Server Error");
   }
-}
+};

@@ -16,16 +16,20 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const RAZOR_PAY_key_id = process.env.RAZOR_PAY_key_id;
 const RAZOR_PAY_key_secret = process.env.RAZOR_PAY_key_secret;
 
-const customerModel = require("../Model/customer");
-const productsModel = require("../Model/product");
-const categoryModel = require("../Model/category");
-const brandsModel = require("../Model/brand");
-const cartModel = require("../Model/cart");
-const addressModel = require("../Model/address");
-const wishlistModel = require("../Model/wishlist");
-const orderModel = require("../Model/order");
-const bannerModel = require("../Model/banner");
-const couponModel = require("../Model/coupon");
+const {
+  addressModel,
+  adminModel,
+  bannerModel,
+  brandModel,
+  cartModel,
+  categoryModel,
+  couponModel,
+  customerModel,
+  orderModel,
+  productModel,
+  wishlistModel,
+} = require("../Model");
+
 
 const razorpay = new Razorpay({
   key_id: RAZOR_PAY_key_id,
@@ -75,8 +79,8 @@ module.exports.getVerifyOtp = async (req, res) => {
 module.exports.getHome = async (req, res) => {
   try {
     const isLogin = req.cookies.isLogin;
-    let products = await productsModel.find({});
-    let brands = await brandsModel.find({});
+    let products = await productModel.find({});
+    let brands = await brandModel.find({});
     const banners = await bannerModel.find({ status: false });
     res.render("home-page", { products, brands, banners, moment, isLogin });
   } catch (err) {
@@ -174,8 +178,8 @@ module.exports.getProductsPage = async (req, res) => {
     const limit = 9;
     const isLogin = req.cookies.isLogin;
     const categories = await categoryModel.find({});
-    const brands = await brandsModel.find({});
-    const products = await productsModel
+    const brands = await brandModel.find({});
+    const products = await productModel
       .aggregate([
         {
           $skip: (page - 1) * limit,
@@ -196,8 +200,8 @@ module.exports.getProductPage = async (req, res) => {
   try {
     const isLogin = req.cookies.isLogin;
     const id = req.query.id;
-    const product = await productsModel.findOne({ _id: id });
-    const brand = await brandsModel.findOne({ brandName: product.brand });
+    const product = await productModel.findOne({ _id: id });
+    const brand = await brandModel.findOne({ brandName: product.brand });
     res.render("shop-product-full", { product, brand, isLogin });
   } catch (err) {
     console.error(err);
@@ -359,9 +363,9 @@ module.exports.getSearch = async (req, res) => {
     const search_category = req.query.category;
     const isLogin = req.cookies.isLogin;
     const categories = await categoryModel.find({});
-    const brands = await brandsModel.find({});
+    const brands = await brandModel.find({});
     if (search_category) {
-      const products = await productsModel.find({ category: search_category });
+      const products = await productModel.find({ category: search_category });
       res.render("products-grid-view", {
         products,
         categories,
@@ -370,7 +374,7 @@ module.exports.getSearch = async (req, res) => {
       });
     }
     if (product_search) {
-      const products = await productsModel.find({
+      const products = await productModel.find({
         productName: { $regex: `^${product_search}`, $options: "xi" },
       });
       res.render("products-grid-view", {
@@ -389,7 +393,7 @@ module.exports.getSearch = async (req, res) => {
 module.exports.postSearch = async (req, res) => {
   try {
     const categories = await categoryModel.find({});
-    const brands = await brandsModel.find({});
+    const brands = await brandModel.find({});
     const isLogin = req.cookies.isLogin;
     const {
       ram,
@@ -480,7 +484,7 @@ module.exports.postSearch = async (req, res) => {
     }
 
     if (aggregationStages.length > 0) {
-      const products = await productsModel.aggregate(aggregationStages);
+      const products = await productModel.aggregate(aggregationStages);
       res.render("products-grid-view", {
         products,
         categories,
@@ -488,7 +492,7 @@ module.exports.postSearch = async (req, res) => {
         isLogin,
       });
     } else {
-      const products = await productsModel.find({});
+      const products = await productModel.find({});
       res.render("products-grid-view", {
         products,
         categories,
@@ -865,7 +869,7 @@ module.exports.getPlaceOrderCOD = async (req, res) => {
       })
       .then(async () => {
         for (const product of cart.products) {
-          await productsModel.updateOne(
+          await productModel.updateOne(
             { _id: product.productId._id },
             { $inc: { units: -product.quantity } }
           );
@@ -942,7 +946,7 @@ module.exports.getPlaceOrderOnline = async (req, res) => {
     });
 
     for (const product of cart.products) {
-      await productsModel.updateOne(
+      await productModel.updateOne(
         { _id: product.productId._id },
         { $inc: { units: -product.quantity } }
       );
@@ -982,7 +986,7 @@ module.exports.postUpdatePaymentStatus = async (req, res) => {
       const order = await orderModel.findOne({ referenceId: orderId });
       if (order) {
         for (const item of order.products) {
-          await productsModel.updateOne(
+          await productModel.updateOne(
             { _id: item.productId },
             { $inc: { units: item.quantity } }
           );
@@ -1024,7 +1028,7 @@ module.exports.getOrderCancel = async (req, res) => {
       );
       const order = await orderModel.findOne({ _id: orderId });
       order.products.forEach(async (product) => {
-        await productsModel.updateOne(
+        await productModel.updateOne(
           { _id: product.productId },
           { $inc: { units: product.quantity } }
         );
@@ -1051,7 +1055,7 @@ module.exports.getOrderReturn = async (req, res) => {
       );
       const order = await orderModel.findOne({ _id: orderId });
       order.products.forEach(async (product) => {
-        await productsModel.updateOne(
+        await productModel.updateOne(
           { _id: product.productId },
           { $inc: { units: product.quantity } }
         );
