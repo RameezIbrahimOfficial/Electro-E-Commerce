@@ -16,20 +16,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const RAZOR_PAY_key_id = process.env.RAZOR_PAY_key_id;
 const RAZOR_PAY_key_secret = process.env.RAZOR_PAY_key_secret;
 
-const {
-  addressModel,
-  adminModel,
-  bannerModel,
-  brandModel,
-  cartModel,
-  categoryModel,
-  couponModel,
-  customerModel,
-  orderModel,
-  productModel,
-  wishlistModel,
-} = require("../Model");
-
+const { addressModel, adminModel, bannerModel, brandModel, cartModel, categoryModel, couponModel, customerModel, orderModel, productModel, wishlistModel } = require("../Model");
 
 const razorpay = new Razorpay({
   key_id: RAZOR_PAY_key_id,

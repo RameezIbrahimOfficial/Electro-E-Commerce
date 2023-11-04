@@ -2,8 +2,8 @@ const express = require('express');
 const multer = require('multer');
 const cookieParser = require('cookie-parser')
 const adminControllers = require('../controllers/adminControllers');
-const adminAuth = require('../middlewares/adminAuth')
-const adminMiddleware = require('../middlewares/adminMiddleware')
+
+const { adminAuth, adminMiddleware } = require('../middlewares')
 
 const adminRouter = express.Router();
 

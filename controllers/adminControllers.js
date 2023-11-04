@@ -10,21 +10,9 @@ const sharp = require("sharp");
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const {
-  addressModel,
-  adminModel,
-  bannerModel,
-  brandModel,
-  cartModel,
-  categoryModel,
-  couponModel,
-  customerModel,
-  orderModel,
-  productModel,
-  wishlistModel,
-} = require("../Model");
+const { addressModel, adminModel, bannerModel, brandModel, cartModel, categoryModel, couponModel, customerModel, orderModel, productModel, wishlistModel } = require("../Model");
 
-const middlewares = require("../middlewares/adminAuth");
+const {adminAuth} = require("../middlewares");
 
 const adminHelpers = require("../helpers/adminHelpers");
 

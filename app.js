@@ -1,7 +1,6 @@
 const express = require('express');
 const path = require('path');
-const userRouter = require('./Routes/userRouter');
-const adminRouter = require('./Routes/adminRouter');
+const {userRouter, adminRouter} = require('./Routes');
 const morgan = require('morgan');
 const { default: mongoose } = require('mongoose');
 require('dotenv').config()

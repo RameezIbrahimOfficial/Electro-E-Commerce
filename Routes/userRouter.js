@@ -3,11 +3,9 @@ const express = require("express");
 const userRouter = express.Router();
 
 const userController = require('../controllers/userController')
-const userAuth = require('../middlewares/userAuth');
 const cookieParser = require("cookie-parser");
 
-const userMiddlewares = require('../middlewares/userMiddlewares');
-const { appendXML } = require("pdfkit");
+const {userMiddlewares, userAuth} = require('../middlewares');
 
 userRouter.use(express.static("Public"));
 userRouter.use('/address', express.static('Public'));
