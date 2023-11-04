@@ -6,7 +6,8 @@ const userController = require('../controllers/userController')
 const userAuth = require('../middlewares/userAuth');
 const cookieParser = require("cookie-parser");
 
-const userMiddlewares = require('../middlewares/userMiddlewares')
+const userMiddlewares = require('../middlewares/userMiddlewares');
+const { appendXML } = require("pdfkit");
 
 userRouter.use(express.static("Public"));
 userRouter.use('/address', express.static('Public'));
@@ -53,7 +54,6 @@ userRouter.get('/forgetPassword/verifyOtp', userController.getVerifyOtpPasswordR
 userRouter.get('/changePassword', userController.getchangePasswordPage);
 userRouter.post('/changePassword', userController.postNewPassword)
 userRouter.post('/profile/update', userAuth.isUserLogin, userAuth.isUserBloked, userController.postUpdateUserDetails)
-
 userRouter.post('/coupon/redeem', userAuth.isUserLogin, userAuth.isUserBloked, userController.postRedeemCoupon)
 
 // userRouter.use(userMiddlewares.errorHandlingMiddleware)

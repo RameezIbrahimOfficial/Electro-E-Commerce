@@ -6,6 +6,7 @@ const Excel = require("exceljs");
 const path = require("path");
 const PDFDocument = require("pdfkit");
 const fs = require("fs");
+const sharp = require('sharp')
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -38,8 +39,8 @@ module.exports.postAdminLogin = async (req, res) => {
       res.render("admin-login", { errorMsg: "Incorrect Credentials" });
     }
   } catch (err) {
-    next(err);
     console.error(err);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -48,7 +49,7 @@ module.exports.getAdminPanel = async (req, res) => {
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth();
-    const currentWeek = getWeekNumber(currentDate);
+    const currentWeek = adminHelpers.getWeekNumber(currentDate);
     const currentDay = currentDate.getDate();
 
     const SalesOrders = await orderModel.find({ orderStatus: "Delivered" });
@@ -78,7 +79,7 @@ module.exports.getAdminPanel = async (req, res) => {
       if (order.deliveredOn instanceof Date) {
         const orderYear = order.deliveredOn.getFullYear();
         const orderMonth = order.deliveredOn.getMonth();
-        const orderWeek = getWeekNumber(order.deliveredOn);
+        const orderWeek = adminHelpers.getWeekNumber(order.deliveredOn);
         const orderDay = order.deliveredOn.getDate();
 
         if (!isNaN(orderMonth)) {
@@ -129,22 +130,10 @@ module.exports.getAdminPanel = async (req, res) => {
       dailySalesCounts,
     });
   } catch (error) {
-    next(err);
     console.error(error);
     res.status(500).send("Internal Server Error");
   }
 };
-
-// Function to get the week number for a given date
-function getWeekNumber(date) {
-  const d = new Date(
-    Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-  );
-  d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-  const weekNumber = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
-  return weekNumber;
-}
 
 module.exports.getProductsPage = async (req, res) => {
   try {
@@ -152,6 +141,7 @@ module.exports.getProductsPage = async (req, res) => {
     res.render("admin-products-list", { products });
   } catch (err) {
     console.error(err);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -160,8 +150,8 @@ module.exports.getCategoriesPage = async (req, res) => {
     const categories = await categoryModel.find({});
     res.render("page-categories", { categories });
   } catch (err) {
-    next(err);
     console.error(err);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -172,8 +162,8 @@ module.exports.getEditCategory = async (req, res) => {
     const category = await categoryModel.findOne({ _id: id });
     res.render("page-edit-categories", { categories, category });
   } catch (err) {
-    next(err);
     console.error(err);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -193,8 +183,8 @@ module.exports.postEditCategory = async (req, res) => {
     );
     res.redirect("/admin/admin_panel/categories");
   } catch (err) {
-    next(err);
     console.error(err);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -207,8 +197,8 @@ module.exports.getBlockCategory = async (req, res) => {
     );
     res.redirect("/admin/admin_panel/categories");
   } catch (err) {
-    next(err);
     console.error(err);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -221,8 +211,8 @@ module.exports.getUnblockCategory = async (req, res) => {
     );
     res.redirect("/admin/admin_panel/categories");
   } catch (err) {
-    next(err);
     console.error(err);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -236,8 +226,8 @@ module.exports.postCreateCategory = async (req, res) => {
     });
     res.redirect("/admin/admin_panel/categories");
   } catch (err) {
-    next(err);
     console.error(err);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -265,8 +255,8 @@ module.exports.getUserManagement = async (req, res) => {
     const users = await customerModel.find({});
     res.render("page-users", { users });
   } catch (err) {
-    next(err);
     console.error(err);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -276,8 +266,8 @@ module.exports.getAddProducts = async (req, res) => {
     const brands = await brandModel.find({});
     res.render("page-form-product-1", { categories, brands });
   } catch (err) {
-    next(err);
     console.error(err);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -285,11 +275,20 @@ module.exports.postAddProducts = async (req, res) => {
   try {
     const images = req.files;
     const productImages = [];
+
     for (let i = 0; i < images.length; i++) {
+      const croppedImage = await sharp(images[i].path)
+        .resize({ width: 300 }) 
+        .toBuffer();
+
+      const filename = `cropped_${images[i].filename}`;
+      const filePath = `Public/uploads/${filename}`;
+      await sharp(croppedImage).toFile(filePath);
+
       productImages.push({
-        fileName: images[i].filename,
+        fileName: filename,
         originalname: images[i].originalname,
-        path: images[i].path,
+        path: filePath,
       });
     }
     await productsModel.create({
@@ -314,8 +313,8 @@ module.exports.postAddProducts = async (req, res) => {
     });
     res.redirect("/admin/admin_panel/products");
   } catch (err) {
-    next(err);
     console.error(err);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -326,8 +325,8 @@ module.exports.getEditProducts = async (req, res) => {
     const categories = await categoryModel.find({});
     res.render("page-edit-product", { product, categories });
   } catch (err) {
-    next(err);
     console.error(err);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -337,12 +336,21 @@ module.exports.postEditProducts = async (req, res) => {
     const product = await productsModel.findOne({ _id: id });
     const images = req.files;
     const productImages = [];
+
     if (images.length > 0) {
       for (let i = 0; i < images.length; i++) {
+        const croppedImage = await sharp(images[i].path)
+          .resize({ width: 300 })
+          .toBuffer();
+
+        const filename = `cropped_${images[i].filename}`;
+        const filePath = `Public/uploads/${filename}`;
+        await sharp(croppedImage).toFile(filePath);
+
         productImages.push({
-          fileName: images[i].filename,
+          fileName: filename,
           originalname: images[i].originalname,
-          path: images[i].path,
+          path: filePath,
         });
       }
     } else {
@@ -354,6 +362,7 @@ module.exports.postEditProducts = async (req, res) => {
         });
       }
     }
+
     await productsModel.updateOne(
       { _id: id },
       {
@@ -382,10 +391,11 @@ module.exports.postEditProducts = async (req, res) => {
     );
     res.redirect("/admin/admin_panel/products");
   } catch (err) {
-    next(err);
     console.error(err);
+    res.status(500).send("Internal Server Error");
   }
 };
+
 
 module.exports.getBlockProducts = async (req, res) => {
   try {
@@ -398,8 +408,8 @@ module.exports.getBlockProducts = async (req, res) => {
       res.redirect("/admin/admin_panel/products");
     }
   } catch (err) {
-    next(err);
     console.error(err);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -417,8 +427,8 @@ module.exports.getUnblockProducts = async (req, res) => {
       res.redirect("/admin/admin_panel/products");
     }
   } catch (err) {
-    next(err);
     console.error(err);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -427,8 +437,8 @@ module.exports.getBrands = async (req, res) => {
     brands = await brandModel.find({});
     res.render("page-brands", { brands });
   } catch (err) {
-    next(err);
     console.error(err);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -447,8 +457,8 @@ module.exports.postAddBrands = async (req, res) => {
     });
     res.redirect("/admin/admin_panel/brands");
   } catch (err) {
-    next(err);
     console.error(err);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -458,8 +468,8 @@ module.exports.getBlockBrand = async (req, res) => {
     await brandModel.updateOne({ _id: id }, { $set: { isBlocked: true } });
     res.redirect("/admin/admin_panel/brands");
   } catch (err) {
-    next(err);
     console.error(err);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -469,8 +479,8 @@ module.exports.getUnblockBrand = async (req, res) => {
     await brandModel.updateOne({ _id: id }, { $set: { isBlocked: false } });
     res.redirect("/admin/admin_panel/brands");
   } catch (err) {
-    next(err);
     console.error(err);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -481,8 +491,8 @@ module.exports.getEditBrand = async (req, res) => {
     const brand = await brandModel.findOne({ _id: id });
     res.render("page-edit-brand", { brand, brands });
   } catch (err) {
-    next(err);
     console.error(err);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -512,8 +522,8 @@ module.exports.postEditBrand = async (req, res) => {
     );
     res.redirect("/admin/admin_panel/brands");
   } catch (err) {
-    next(err);
     console.error(err);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -527,8 +537,8 @@ module.exports.getOrderManagementPage = async (req, res) => {
     const orders = await orderModel.find();
     res.render("page-orders", { orders, moment });
   } catch (error) {
-    next(error);
     console.error(error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -541,8 +551,8 @@ module.exports.getOrderEditPage = async (req, res) => {
     });
     res.render("page-orders-detail", { order });
   } catch (error) {
-    next(error);
     console.error(error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -559,8 +569,8 @@ module.exports.postOrderEdit = async (req, res) => {
       res.redirect("/admin/order_management");
     }
   } catch (error) {
-    next(error);
     console.error(error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -569,8 +579,8 @@ module.exports.getBannerManagement = async (req, res) => {
     const banners = await bannerModel.find({});
     res.render("page-banner", { banners, moment });
   } catch (error) {
-    next(error);
     console.error(error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -598,8 +608,8 @@ module.exports.postAddBanner = async (req, res) => {
       res.redirect("/admin/banner_management");
     }
   } catch (error) {
-    next(error);
     console.error(error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -609,8 +619,8 @@ module.exports.getEditBannerPage = async (req, res) => {
     const banners = await bannerModel.find({});
     res.render("page-edit-banner", { banners, banner, moment });
   } catch (error) {
-    next(error);
     console.error(error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -644,8 +654,8 @@ module.exports.postUpdateBanner = async (req, res) => {
       res.redirect("/admin/banner_management");
     }
   } catch (error) {
-    next(error);
     console.error(error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -661,8 +671,8 @@ module.exports.getBlockBanner = async (req, res) => {
     );
     res.redirect("/admin/banner_management");
   } catch (error) {
-    next(error);
     console.error(error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -678,8 +688,8 @@ module.exports.getUnblockBanner = async (req, res) => {
     );
     res.redirect("/admin/banner_management");
   } catch (error) {
-    next(error);
     console.error(error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -691,8 +701,8 @@ module.exports.getSalesReportPage = async (req, res) => {
     });
     res.render("page-sales-report", { sales, moment });
   } catch (error) {
-    next(error);
     console.error(error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -738,7 +748,6 @@ module.exports.getMonthWeekYearSales = async (req, res) => {
       res.render("page-sales-report", { sales: ordersThisYear, moment });
     }
   } catch (error) {
-    next(error);
     console.log(error);
     res.status(500).send("An error occurred");
   }
@@ -825,6 +834,7 @@ module.exports.salesReportExcel = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -903,6 +913,7 @@ module.exports.getCouponManagementPage = async(req, res) => {
      res.render('page-coupon', { coupons, moment })
   } catch ( error ) {
     console.error(error);
+    res.status(500).send("Internal Server Error");
   }
 }
 
@@ -922,6 +933,7 @@ module.exports.postAddCoupon = async(req, res) => {
     res.redirect('/admin/coupon')
   } catch ( error ) {
     console.error(error)
+    res.status(500).send("Internal Server Error");
   }
 }
 
@@ -936,6 +948,7 @@ module.exports.getBlockCoupon = async(req, res) => {
     res.redirect('/admin/coupon')
   } catch ( error ) {
     console.error(error)
+    res.status(500).send("Internal Server Error");
   } 
 }
 
@@ -950,6 +963,7 @@ module.exports.getUnBlockCoupon = async(req, res) => {
     res.redirect('/admin/coupon')
   } catch ( error ) {
     console.error(error)
+    res.status(500).send("Internal Server Error");
   } 
 }
 
@@ -961,6 +975,7 @@ module.exports.getEditCouponPage = async(req, res) => {
     res.render('page-edit-coupon', { coupon, coupons, moment })
   } catch ( error ) {
     console.error(error)
+    res.status(500).send("Internal Server Error");
   }
 }
 
@@ -984,5 +999,6 @@ module.exports.postEditCoupon = async(req, res) => {
     res.redirect('/admin/coupon')
   } catch ( error ) {
     console.error(error)
+    res.status(500).send("Internal Server Error");
   }
 }
