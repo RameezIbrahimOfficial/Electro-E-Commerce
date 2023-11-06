@@ -55,11 +55,11 @@
                             
                             <%if(users[i].isBlocked){%>
                             <td class="text-end">
-                                <a href="/admin/admin_panel/user_management?id=<%= users[i]._id %>" class="btn btn-md rounded font-sm unblock">Unblock</a>
+                                <a href="/admin/admin_panel/user/unblock?id=<%= users[i]._id %>" class="btn btn-md rounded font-sm unblock">Unblock</a>
                             </td>
                             <%}else{%>
                                 <td class="text-end">
-                                    <a href="/admin/admin_panel/user_management?id=<%= users[i]._id %>" class="btn  rounded font-sm btn-danger block">Block</a>
+                                    <a href="/admin/admin_panel/user/block?id=<%= users[i]._id %>" class="btn  rounded font-sm btn-danger block">Block</a>
                                 </td>
                             <%}%>
                         </tr>
