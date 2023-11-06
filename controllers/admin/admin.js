@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const { orderModel, productModel, categoryModel, adminModel } = require("../../Model");
-const {getWeekNumber} = require("../../helpers");
+const { getWeekNumber } = require("../../helpers");
 
 const getAdminLogin = async (req, res) => {
   res.render("admin-login");

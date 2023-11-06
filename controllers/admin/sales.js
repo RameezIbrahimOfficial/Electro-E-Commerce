@@ -4,8 +4,8 @@ const PDFDocument = require("pdfkit");
 const path = require("path");
 const fs = require("fs");
 
-const {orderModel} = require('../../Model')
-const {filterOrdersForMonth, filterOrdersForYear, filterOrdersForWeek} = require("../../helpers");
+const { orderModel } = require('../../Model')
+const { filterOrdersForMonth, filterOrdersForYear, filterOrdersForWeek } = require("../../helpers");
 
 const getSalesReportPage = async (req, res) => {
     try {

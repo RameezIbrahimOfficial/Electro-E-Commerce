@@ -1,8 +1,8 @@
 const express = require('express');
 const path = require('path');
-const {userRouter, adminRouter} = require('./Routes');
+const { userRouter, adminRouter } = require('./Routes');
 const morgan = require('morgan');
-const { default: mongoose } = require('mongoose');
+const mongoose = require('mongoose');
 require('dotenv').config()
 
 const app = express();
@@ -21,7 +21,7 @@ app.use('/Public', express.static('Public'));
 
 app.listen(PORT, async (req, res) => {
     try {
-        await mongoose.connect(MONGO_CON_STR,{useNewUrlParser: true, useUnifiedTopology: true})
+        await mongoose.connect(MONGO_CON_STR, { useNewUrlParser: true, useUnifiedTopology: true })
         console.log("SERVER STARTED")
         console.log(`http://127.0.0.1:${PORT}`)
     } catch (error) {
