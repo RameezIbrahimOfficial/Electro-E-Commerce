@@ -60,7 +60,7 @@
             <%if(orders){%>
               <%orders.forEach((order)=>{%>
                 <tr>
-                  <td><%=order._id%></td>
+                  <td><%=order.referenceId  %></td>
                   <td><b><%=order.address.name%></b></td>
                   <td>
                     <%=order.paymentMethod%>

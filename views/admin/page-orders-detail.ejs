@@ -3,7 +3,7 @@
   <div class="content-header">
     <div>
       <h2 class="content-title card-title">Order detail</h2>
-      <p>Details for Order ID:<%=order._id%></p>
+      <p>Details for Order ID:<%=order.referenceId%></p>
     </div>
   </div>
   <div class="card">
@@ -15,7 +15,7 @@
             <b><%=order.createdOn%></b>
           </span>
           <br />
-          <small class="text-muted">Order ID: <%=order._id%></small>
+          <small class="text-muted">Order ID: <%=order.referenceId%></small>
         </div>
         <div class="col-lg-6 col-md-6 ms-auto text-md-end">
             <form method="post" action="/admin/order/edit?orderId=<%=order._id%>">
