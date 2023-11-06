@@ -28,9 +28,13 @@ adminRouter.use(express.json());
 adminRouter.use(express.urlencoded({ extended: true }));
 adminRouter.use(cookieParser())
 
+// Home
 adminRouter.get('/', adminControllers.getAdminLogin)
 adminRouter.post('/admin_login', adminControllers.postAdminLogin)
 adminRouter.get('/admin_panel', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getAdminPanel)
+adminRouter.get('/logout', adminControllers.getLogout)
+
+// Product Management
 adminRouter.get('/admin_panel/products', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getProductsPage)
 adminRouter.get('/admin_panel/add_products', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getAddProducts)
 adminRouter.post('/admin_panel/add_products', upload.array('product_images'), adminAuth.isLogin, adminControllers.postAddProducts)
@@ -38,34 +42,46 @@ adminRouter.get('/edit_products', adminAuth.isLogin, adminMiddleware.currentRout
 adminRouter.post('/edit_products', upload.array('product_images'), adminAuth.isLogin, adminControllers.postEditProducts)
 adminRouter.get('/block_products', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getBlockProducts)
 adminRouter.get('/unblock_products', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getUnblockProducts)
+
+// Category Management
 adminRouter.get('/admin_panel/categories', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getCategoriesPage)
 adminRouter.get('/admin_panel/edit_category', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getEditCategory)
 adminRouter.post('/admin_panel/edit_category', adminAuth.isLogin, adminControllers.postEditCategory)
 adminRouter.get('/admin_panel/block_category', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getBlockCategory)
 adminRouter.get('/admin_panel/unblock_category', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getUnblockCategory)
 adminRouter.post('/admin_panel/ceate_category', adminAuth.isLogin, adminControllers.postCreateCategory)
+
+// User Management
 adminRouter.get('/admin_panel/user_management', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getUserManagement)
+
+// Brand Management
 adminRouter.get('/admin_panel/brands', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getBrands)
 adminRouter.post('/admin_panel/brand/add', upload.single('brandLogo'), adminAuth.isLogin, adminControllers.postAddBrands)
 adminRouter.get('/admin_panel/brand/block', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getBlockBrand)
 adminRouter.get('/admin_panel/brand/unblock', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getUnblockBrand)
 adminRouter.get('/admin_panel/edit_brand', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getEditBrand)
 adminRouter.post('/admin_panel/brand/update', upload.single('brandLogo'), adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.postEditBrand)
-adminRouter.get('/logout', adminControllers.getLogout)
+
+// Order Mangement 
 adminRouter.get('/order_management', adminAuth.isLogin, adminMiddleware.currentRouter , adminControllers.getOrderManagementPage)
 adminRouter.get('/order/edit', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getOrderEditPage)
 adminRouter.post('/order/edit', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.postOrderEdit)
+
+// Banner Mangement
 adminRouter.get('/banner_management', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getBannerManagement)
 adminRouter.post('/banner_management/add',upload.single('bannerImage'), adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.postAddBanner)
 adminRouter.get('/banner/edit', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getEditBannerPage)
 adminRouter.post('/banner/edit',upload.single('bannerImage'), adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.postUpdateBanner)
 adminRouter.get('/banner/block', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getBlockBanner)
 adminRouter.get('/banner/unblock', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getUnblockBanner)
+
+// Sales Management
 adminRouter.get('/sales_report',adminAuth.isLogin,adminMiddleware.currentRouter, adminControllers.getSalesReportPage)
 adminRouter.get('/sale',adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getMonthWeekYearSales)
 adminRouter.get('/salesReport/excel', adminAuth.isLogin, adminControllers.salesReportExcel)
 adminRouter.get('/salesReport/pdf', adminAuth.isLogin, adminControllers.salesReportPdf)
 
+// Coupon Management 
 adminRouter.get('/coupon', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getCouponManagementPage)
 adminRouter.post('/coupon/add', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.postAddCoupon)   
 adminRouter.get('/coupon/block', adminAuth.isLogin, adminMiddleware.currentRouter, adminControllers.getBlockCoupon)
