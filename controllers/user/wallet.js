@@ -1,3 +1,4 @@
+const {v4:uuidv4} = require('uuid')
 const { customerModel, walletModel, couponModel, cartModel, addressModel, orderModel, productModel } = require('../../Model')
 
 // Display Wallet Page
@@ -62,7 +63,7 @@ const getPlaceOrderWallet = async (req, res) => {
             altPhone: address.address[0].altPhone,
           },
           paymentMethod: "Wallet",
-          referenceId: "order_a456tfk4",
+          referenceId: uuidv4(),
           shippingCharge: 0,
           discount: discountAmount,
           totalAmount: grantTotal,

@@ -57,7 +57,7 @@ const getPlaceOrderCOD = async (req, res) => {
           altPhone: address.address[0].altPhone,
         },
         paymentMethod: "COD",
-        referenceId: "order_qw4567854",
+        referenceId: uuidv4(),
         shippingCharge: 0,
         discount: discountAmount,
         totalAmount: grantTotal,

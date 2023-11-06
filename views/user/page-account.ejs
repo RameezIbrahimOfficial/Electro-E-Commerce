@@ -118,7 +118,7 @@
                               <%if(orders){%>
                                 <%orders.forEach((order)=>{%>
                                   <tr>
-                                    <td><%=order._id%></td>
+                                    <td><%=order.referenceId%></td>
                                     <td><%=moment(order.createdOn).format('MMMM Do YYYY, h:mm:ss a')%></td>
                                     <%if(order.orderStatus==='Delivered'){%>
                                       <td><span class="badge rounded-pill alert-success"><%=order.orderStatus%></span></td>
