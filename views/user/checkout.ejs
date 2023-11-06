@@ -176,6 +176,7 @@
                     <a href="/placeorder/cod" class="btn btn-fill-out btn-block place-order-cod">Place Order ( COD )</a>
                     <a href="" class="btn btn-fill-out btn-block  place-order-online" id="rzp-button1">Online
                       Payement</a>
+                      <a href="/placeorder/wallet" class="btn btn-fill-out btn-block place-order-wallet">Place Order ( Wallet )</a>
                   </div>
                 </div>
               </div>
@@ -257,6 +258,49 @@
             }
 
           });
+
+          //Place Order Wallet
+          document.querySelector(".place-order-wallet").addEventListener("click", (event) => {
+            event.preventDefault();
+
+            const couponCode = document.querySelector('.couponCode').value.trim();
+            const grandTotal = document.querySelector('.grand-total').textContent 
+            const selectedAddressRadioButtons = document.querySelectorAll(".selected-address");
+            let selectedAddressValue = null;
+            for (const radioButton of selectedAddressRadioButtons) {
+              if (radioButton.checked) {
+                selectedAddressValue = radioButton.value;
+                fetch(`/placeorder/wallet?addressId=${selectedAddressValue}&couponCode=${couponCode}&grantTotal=${grandTotal}`)
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error("Insufficient Balance");
+    }
+    return response.json();
+  })
+  .then((data) => {
+    alert(data.data); // This line displays the JSON response
+    window.location.href="/profile"
+  })
+  .catch((error) => {
+    alert(error.message);
+  });
+
+                // break;
+              }
+            }
+            if (selectedAddressValue !== null) {
+              console.log("Selected Address ID:", selectedAddressValue);
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'No Address is Selected!',
+                footer: '<a href="">Why do I have this issue?</a>'
+              })
+            }
+
+          });
+
 
           // Place Order Razorpay
           document.querySelector('.place-order-online').addEventListener('click', (event) => {

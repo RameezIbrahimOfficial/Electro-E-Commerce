@@ -53,8 +53,10 @@ userRouter.get('/changePassword', userController.getchangePasswordPage);
 userRouter.post('/changePassword', userController.postNewPassword)
 userRouter.post('/profile/update', userAuth.isUserLogin, userAuth.isUserBloked, userController.postUpdateUserDetails)
 userRouter.post('/coupon/redeem', userAuth.isUserLogin, userAuth.isUserBloked, userController.postRedeemCoupon)
-
 userRouter.get('/wallet', userAuth.isUserLogin, userAuth.isUserBloked, userController.getWalletPage)
+
+
+userRouter.get('/placeorder/wallet', userAuth.isUserLogin,userAuth.isUserBloked, userController.getPlaceOrderWallet)
 
 // userRouter.use(userMiddlewares.errorHandlingMiddleware)
 
