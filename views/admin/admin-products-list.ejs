@@ -66,29 +66,29 @@
             </tr>
           </thead>
           <tbody>
-            <% if (products.length > 0) { %> <% for (let i = 0; i <
-            products.length; i++) { %>
+            <% if (products.length > 0) { %> 
+              <% products.forEach((product) =>{%>
             <tr>
               <td></td>
-              <td><%=products[i].id%></td>
+              <td><%=product.id%></td>
               <td>
-                <% if (products[i].productImage &&
-                products[i].productImage.length > 0) { %>
+                <% if (product.productImage &&
+                product.productImage.length > 0) { %>
                 <img
-                  src="/<%= products[i].productImage[0].path %>"
+                  src="/<%= product.productImage[0].path %>"
                   class="img-sm img-thumbnail"
                   alt="product Image"
                 />
                 <% } else { %> No image <% } %>
               </td>
-              <td><%=products[i].brand%></td>
-              <td><b><%=products[i].productName%></b></td>
-              <td><%=products[i].description%></td>
-              <td><%=products[i].category%></td>
-              <td><%=products[i].stock%></td>
-              <td><%=products[i].regularPrice%></td>
+              <td><%=product.brand%></td>
+              <td><b><%=product.productName%></b></td>
+              <td><%=product.description%></td>
+              <td><%=product.category%></td>
+              <td><%=product.stock%></td>
+              <td><%=product.regularPrice%></td>
               <td>
-                <% if (products[i].isBlocked) { %>
+                <% if (product.isBlocked) { %>
                 <span class="badge rounded-pill alert-danger">Blocked</span>
                 <% } else { %>
                 <span class="badge rounded-pill alert-success">Active</span>
@@ -96,27 +96,27 @@
               </td>
               <td class="text-end">
                 <a
-                  href="/admin/edit_products?id=<%= products[i]._id%>"
+                  href="/admin/edit_products?id=<%= product._id%>"
                   class="btn btn-md rounded font-sm mb-2"
                   >Edit</a
                 >
 
-                <% if (products[i].isBlocked) { %>
+                <% if (product.isBlocked) { %>
                 <a
-                  href="/admin/unblock_products?id=<%= products[i]._id %>"
+                  href="/admin/unblock_products?id=<%= product._id %>"
                   class="btn btn-md rounded font-sm unblock"
                   >Unblock</a
                 >
                 <% } else { %>
                 <a
-                  href="/admin/block_products?id=<%= products[i]._id %>"
+                  href="/admin/block_products?id=<%= product._id %>"
                   class="btn btn-danger rounded font-sm block"
                   >Block</a
                 >
                 <% } %>
               </td>
             </tr>
-            <% } %> <% } else { %>
+            <% }) %> <% } else { %>
             <tr>
               <td colspan="10">No Products Found</td>
             </tr>

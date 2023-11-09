@@ -64,13 +64,13 @@ userRouter.get('/order/cancel', userAuth.isUserLogin, userAuth.isUserBloked, get
 userRouter.get('/order/return', userAuth.isUserLogin, userAuth.isUserBloked, getOrderReturn)
 userRouter.get('/placeorder/online', userAuth.isUserLogin, userAuth.isUserBloked, getPlaceOrderOnline)
 userRouter.post('/updatePaymentStatus', userAuth.isUserLogin, userAuth.isUserBloked, postUpdatePaymentStatus)
+userRouter.get('/placeorder/wallet', userAuth.isUserLogin, userAuth.isUserBloked, getPlaceOrderWallet)
 
 // Coupon
 userRouter.post('/coupon/redeem', userAuth.isUserLogin, userAuth.isUserBloked, postRedeemCoupon)
 
 // Wallet
 userRouter.get('/wallet', userAuth.isUserLogin, userAuth.isUserBloked, getWalletPage)
-userRouter.get('/placeorder/wallet', userAuth.isUserLogin, userAuth.isUserBloked, getPlaceOrderWallet)
 
 // userRouter.use(userMiddlewares.errorHandlingMiddleware)
 

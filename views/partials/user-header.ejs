@@ -97,12 +97,6 @@
             <div class="header-right">
               <div class="search-style-2">
                 <form action="/search">
-                  <!-- <select class="select-active">
-                                    <option>All Categories</option>
-                                    <option>Android</option>
-                                    <option>iOS</option>
-                                    <option>Windows Phone</option>
-                                </select> -->
                   <input
                     type="text"
                     placeholder="Search for items..."
@@ -129,7 +123,6 @@
                         alt="cart"
                         src="user-assets/imgs/theme/icons/icon-cart.svg"
                       />
-                      <!-- <span class="pro-count blue">1</span> -->
                     </a>
                   </div>
                 </div>
@@ -142,7 +135,6 @@
         <div class="container">
           <div class="header-wrap header-space-between position-relative">
             <div class="logo logo-width-1 d-block d-lg-none">
-              <!-- <a href="/"><img src="user-assets/imgs/theme/logo.svg" alt="logo"></a> -->
               <a href="/"><h4 style="color: #088178">Electro</h4></a>
             </div>
             <div class="header-nav d-none d-lg-flex">
@@ -244,7 +236,7 @@
         </div>
         <div class="mobile-header-content-area">
           <div class="mobile-search search-style-3 mobile-header-border">
-            <form action="#">
+            <form action="/search">
               <input type="text" placeholder="Search for items…" />
               <button type="submit"><i class="fi-rs-search"></i></button>
             </form>
@@ -299,11 +291,12 @@
               <a href=""> Our location </a>
             </div>
             <div class="single-mobile-header-info">
-              <a href="/register"> Sign Up </a>
-              <%if(isLogin){%>
-              <a href="/logout">Logout</a>
-              <%} else {%>
-              <a href="/signin">Log In </a>
+              <%if(isLogin == "true"){%>
+                <a href="/logout">Logout</a>
+                <a href="/profile">Profile</a>
+                <%} else {%>
+                  <a href="/signin">Log In </a>
+                  <a href="/register"> Sign Up </a>
               <%}%>
             </div>
             <div class="single-mobile-header-info">
