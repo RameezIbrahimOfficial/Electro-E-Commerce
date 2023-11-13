@@ -168,7 +168,7 @@ const salesReportPdf = async (req, res) => {
             __dirname,
             "..",
             "..",
-            "public",
+            "Public",
             "sales-report",
             "sales_report.pdf"
         );
