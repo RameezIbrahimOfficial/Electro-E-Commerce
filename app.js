@@ -7,8 +7,8 @@ require('dotenv').config()
 
 const app = express();
 const PORT = process.env.PORT;
-const MONGO_CON_STR = process.env.MONGO_CON_STR;
-const MONGO_CON_STR_ATLAS = process.env.MONGO_CON_STR_ATLAS;
+const MONGO_CON_STR = process.env.MONGO_CON_STR_ATLAS;
+// const MONGO_CON_STR_ATLAS = process.env.MONGO_CON_STR_ATLAS;
 
 app.set('view engine', 'ejs')
 app.set('views', [path.join(__dirname, "views/user"), path.join(__dirname, "views/admin")])
