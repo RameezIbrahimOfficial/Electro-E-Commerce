@@ -22,7 +22,7 @@ app.use('/Public', express.static('Public'));
 
 app.listen(PORT, async (req, res) => {
     try {
-        await mongoose.connect(MONGO_CON_STR_ATLAS, { useNewUrlParser: true, useUnifiedTopology: true })
+        await mongoose.connect(MONGO_CON_STR, { useNewUrlParser: true, useUnifiedTopology: true })
         console.log("SERVER STARTED")
         console.log(`http://127.0.0.1:${PORT}`)
     } catch (error) {

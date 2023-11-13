@@ -33,7 +33,7 @@ const postOrderEdit = async (req, res) => {
     if (orderStatus) {
       await orderModel.updateOne(
         { _id: orderId },
-        { $set: { orderStatus: orderStatus } }
+        { $set: { orderStatus: orderStatus ,deliveredOn:Date.now()} }
       );
       res.redirect("/admin/order_management");
     }

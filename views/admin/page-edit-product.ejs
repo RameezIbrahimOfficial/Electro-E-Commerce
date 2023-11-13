@@ -12,8 +12,7 @@
           <h4>Basic</h4>
         </div>
         <div class="card-body">
-          <form method="post" action="/admin/edit_products?id=<%=product[0]._id%>" enctype="multipart/form-data" onsubmit="return validateForm()">
-            <div class="mb-4">
+          <form method="post" action="/admin/edit_products?id=<%=product[0]._id%>" enctype="multipart/form-data" onsubmit="return validateForm()">            <div class="mb-4">
               <label for="product_id" class="form-label">Product #ID</label>
               <input type="number" placeholder="Type here" class="form-control" id="product_id" name="product_id" value="<%=product[0].id %>" required>
             </div>
@@ -164,6 +163,11 @@
     var product_id = document.getElementById("product_id").value;
     var product_name = document.getElementById("product_name").value.trim();
     var product_brand = document.getElementById("product_brand").value.trim();
+    var product_description = document.querySelector('[name="product_description"]').value.trim();
+    var regular_price = parseFloat(document.querySelector('[name="regular_price"]').value.trim());
+    var sales_price = parseFloat(document.querySelector('[name="sales_price"]').value.trim());
+    var units = parseInt(document.querySelector('[name="units"]').value.trim(), 10);
+    var batteryCapacity = parseFloat(document.querySelector('[name="batteryCapacity"]').value.trim());
 
     // Number validation for product_id
     if (isNaN(product_id)) {
@@ -183,10 +187,41 @@
       return false; // Prevent form submission
     }
 
+    // Check if product_description is empty
+    if (product_description === "") {
+      alert("Product Description cannot be empty.");
+      return false; // Prevent form submission
+    }
+
+    // Regular price must be a valid number and non-negative
+    if (isNaN(regular_price) || regular_price < 0) {
+      alert("Regular Price must be a valid non-negative number.");
+      return false; // Prevent form submission
+    }
+
+    // Sales price must be a valid number, non-negative, and less than regular price
+    if (isNaN(sales_price) || sales_price < 0 || sales_price >= regular_price) {
+      alert("Sales Price must be a valid non-negative number and less than Regular Price.");
+      return false; // Prevent form submission
+    }
+
+    // Units must be a valid number and non-negative
+    if (isNaN(units) || units < 0) {
+      alert("Units must be a valid non-negative number.");
+      return false; // Prevent form submission
+    }
+
+    // Check if batteryCapacity is a valid number and non-negative
+    if (isNaN(batteryCapacity) || batteryCapacity < 0) {
+      alert("Battery Capacity must be a valid non-negative number.");
+      return false; // Prevent form submission
+    }
+
+    // Additional validation can be added for other fields as needed
+
     // All fields are valid, allow form submission
     return true;
   }
-
   document.querySelector('.submit').addEventListener('click', () => {
     Swal.fire({
       position: 'top-end',

@@ -56,7 +56,6 @@ const postSearch = async (req, res) => {
       battery_capacityArray = [],
       operating_systemArray = [];
 
-    // Build an array of $or conditions for each field with multiple values
     if (ram && ram.length > 0) {
       if (Array.isArray(ram)) {
         orConditions.push({ ram: { $in: ram.map(Number) } });
@@ -73,7 +72,7 @@ const postSearch = async (req, res) => {
         priceArray.push(price);
         orConditions.push({ salePrice: { $in: priceArray.map(Number) } });
       }
-    }
+    }  
 
     if (brand && brand.length > 0) {
       if (Array.isArray(brand)) {

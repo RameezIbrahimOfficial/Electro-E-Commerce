@@ -67,7 +67,7 @@ const getPlaceOrderWallet = async (req, res) => {
           shippingCharge: 0,
           discount: discountAmount,
           totalAmount: grantTotal,
-          createdOn: new Date(),
+          createdOn:  Date.now(),
           orderStatus: "Order Placed",
           paymentStatus: "Success",
           deliveredOn: new Date(),

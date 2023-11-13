@@ -172,8 +172,8 @@
     var stock = document.querySelector('[name="stock"]').value;
     var product_category = document.querySelector('[name="product_category"]').value;
 
-    // Number validation for product_id
-    if (isNaN(product_id)) {
+     // Number validation for product_id
+     if (isNaN(product_id)) {
         alert("Product #ID must be a valid number.");
         return false; // Prevent form submission
     }
@@ -196,31 +196,30 @@
         return false; // Prevent form submission
     }
 
-    // Regular price must be a valid number
-    if (isNaN(regular_price)) {
-        alert("Regular Price must be a valid number.");
+    // Regular price must be a valid number and non-negative
+    if (isNaN(regular_price) || regular_price < 0) {
+        alert("Regular Price must be a valid non-negative number.");
         return false; // Prevent form submission
     }
 
-    // Sales price must be a valid number
-    if (isNaN(sales_price)) {
-        alert("Sales Price must be a valid number.");
+    // Sales price must be a valid number, non-negative, and less than regular price
+    if (isNaN(sales_price) || sales_price < 0 || sales_price >= regular_price) {
+        alert("Sales Price must be a valid non-negative number and less than Regular Price.");
         return false; // Prevent form submission
     }
 
-    // Units must be a valid number
-    if (isNaN(units)) {
-        alert("Units must be a valid number.");
+    // Units must be a valid number and non-negative
+    if (isNaN(units) || units < 0) {
+        alert("Units must be a valid non-negative number.");
         return false; // Prevent form submission
     }
 
-    // Check if batteryCapacity is a valid number
-    if (isNaN(batteryCapacity)) {
-        alert("Battery Capacity must be a valid number.");
+    // Check if batteryCapacity is a valid number and non-negative
+    if (isNaN(batteryCapacity) || batteryCapacity < 0) {
+        alert("Battery Capacity must be a valid non-negative number.");
         return false; // Prevent form submission
     }
 
-    // Additional validation can be added for other fields as needed
 
     // All fields are valid, allow form submission
     e.target.submit(); // Submit the form
