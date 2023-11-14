@@ -5,7 +5,7 @@ const postRedeemCoupon = async (req, res) => {
   try {
     const { couponCode } = req.body;
     const user = await customerModel.findOne({ email: req.user });
-    const coupon = await couponModel.findOne({ couponCode: couponCode });
+    const coupon = await couponModel.findOne({status:"List",couponCode: couponCode });
     if (!coupon) {
       return res.status(500).json({ data: "No coupon Found" });
     }

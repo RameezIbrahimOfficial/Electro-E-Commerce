@@ -7,7 +7,7 @@ const twilio = require("twilio")(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, {
   lazyLoading: true,
 });
 
-const { customerModel, addressModel, couponModel, orderModel } = require('../../Model')
+const { customerModel, addressModel, couponModel, orderModel, walletModel } = require('../../Model')
 
 // Display user Profile Page
 const getProfile = async (req, res) => {
@@ -17,8 +17,13 @@ const getProfile = async (req, res) => {
     const user = await customerModel.findOne({ email: userEmail });
     const userAddress = await addressModel.findOne({ userId: user._id });
     const coupons = await couponModel.find({});
+    const wallet = await walletModel.findOne({userId:user._id})
     const orders = await orderModel.aggregate([
       { $match: { customerId: user._id } },
+      { $sort: { createdOn: -1 } },
+    ]);
+    const WalletOrders = await orderModel.aggregate([
+      { $match: { customerId: user._id ,paymentMethod:"Wallet"} },
       { $sort: { createdOn: -1 } },
     ]);
     const { firstName, lastName } = await customerModel.findOne(
@@ -33,6 +38,8 @@ const getProfile = async (req, res) => {
       moment,
       user,
       coupons,
+      wallet,
+      WalletOrders
     });
   } catch (error) {
     console.error(error);

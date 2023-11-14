@@ -65,14 +65,22 @@ const postSearch = async (req, res) => {
       }
     }
 
+    // if (price && price.length > 0) {
+    //   if (Array.isArray(price)) {
+    //     orConditions.push({ salePrice: { $in: price.map(Number) } });
+    //   } else {
+    //     priceArray.push(price);
+    //     orConditions.push({ salePrice: { $in: priceArray.map(Number) } });
+    //   }
+    // }  
     if (price && price.length > 0) {
       if (Array.isArray(price)) {
-        orConditions.push({ salePrice: { $in: price.map(Number) } });
+        orConditions.push({ salePrice: { $lt: price.map(Number)[0] } });
       } else {
         priceArray.push(price);
-        orConditions.push({ salePrice: { $in: priceArray.map(Number) } });
+        orConditions.push({ salePrice: { $lt: priceArray.map(Number)[0] } });
       }
-    }  
+    }
 
     if (brand && brand.length > 0) {
       if (Array.isArray(brand)) {
